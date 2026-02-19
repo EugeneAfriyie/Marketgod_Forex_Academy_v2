@@ -15,6 +15,6 @@ export interface Resource {
   video?: string;
   author?: string;
   date?: string;
-  platform?: "youtube" | "instagram" | "telegram" | "article";
+  platform?: "youtube" | "instagram" | "telegram" | "article" | "website";
   media?: ResourceMedia[];
 }

@@ -23,33 +23,33 @@ import MarketGodQuotes from "../Components/Home/MarketGodQuotes";
 // ENGAGEMENT & CONVERSION
 import JoinCommunity from "../Components/Home/JoinCommunity";
 import FAQ from "../Components/Home/FAQ";
-import SeminarHighlight from "../Components/Home/SeminarHighlight";
+// import SeminarHighlight from "../Components/Home/SeminarHighlight";
 import AboutMentor from "../Components/Home/AboutMentor";
-import PlansNavFloating from "../Components/Plans/PlansNav"; 
+// import PlansNavFloating from "../Components/Plans/PlansNav"; 
 import Quiz from "../Components/Quiz/Quiz";
 import TourSection from "../Components/Tour/TourSection";
-import EventPreHeader from "../Components/Tour/EventPreHeader";
+// import EventPreHeader from "../Components/Tour/EventPreHeader";
 
 
-const homeSections = [
-  { id: "hero", label: "Hero" },
-  { id: "seminar-highlight", label: "Seminar Highlight" },
-  { id: "about", label: "About" },
-  { id: "quiz", label: "Quiz" },
-  { id: "services", label: "Services" },
-  { id: "what-is-forex", label: "What Is Forex?" },
-  { id: "why-forex", label: "Why Forex?" },
-  { id: "why-marketgod", label: "Why MarketGod?" },
-  { id: "webinars", label: "Webinars" },
-  { id: "mentorship", label: "Mentorship" },
-  { id: "plans", label: "Plans" },
-  { id: "exness", label: "Exness" },
-  { id: "testimonials", label: "Testimonials" },
-  { id: "quotes", label: "Quotes" },
-  { id: "join-community", label: "Community" },
-  { id: "faq", label: "FAQ" },
-  { id: "faq-cta", label: "CTA" },
-];
+// const homeSections = [
+//   { id: "hero", label: "Hero" },
+//   { id: "seminar-highlight", label: "Seminar Highlight" },
+//   { id: "about", label: "About" },
+//   { id: "quiz", label: "Quiz" },
+//   { id: "services", label: "Services" },
+//   { id: "what-is-forex", label: "What Is Forex?" },
+//   { id: "why-forex", label: "Why Forex?" },
+//   { id: "why-marketgod", label: "Why MarketGod?" },
+//   { id: "webinars", label: "Webinars" },
+//   { id: "mentorship", label: "Mentorship" },
+//   { id: "plans", label: "Plans" },
+//   { id: "exness", label: "Exness" },
+//   { id: "testimonials", label: "Testimonials" },
+//   { id: "quotes", label: "Quotes" },
+//   { id: "join-community", label: "Community" },
+//   { id: "faq", label: "FAQ" },
+//   { id: "faq-cta", label: "CTA" },
+// ];
 
 
 

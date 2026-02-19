@@ -90,7 +90,7 @@ export default function EventPreHeader() {
             }}
             whileTap={{ scale: 0.95 }}
           >
-           Reserve Spot Now
+           Reserve
           </motion.a>
         </div>
 

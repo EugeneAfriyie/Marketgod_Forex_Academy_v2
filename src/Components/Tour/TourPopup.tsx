@@ -23,7 +23,7 @@ export default function TourPopup() {
 
   // Close on Escape
   useEffect(() => {
-    const handleEsc = (e) => {
+    const handleEsc = (e : KeyboardEvent) => {
       if (e.key === "Escape") setOpen(false);
     };
     window.addEventListener("keydown", handleEsc);

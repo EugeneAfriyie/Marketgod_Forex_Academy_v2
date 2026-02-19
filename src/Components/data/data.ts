@@ -52,6 +52,46 @@ import type { Resource } from "../../types";
 
 
 export const resources: Resource[] = [
+
+  {
+  id: 18,
+  title: "MarketGod 2026 Tour: Bringing Forex Mastery to Your City",
+  category: "Events",
+  description: "Join Eyram Dela and the MarketGod team for the 2026 Tour. Check the schedule for Ho, Takoradi, Kumasi, Tamale, Koforidua, and Techiman.",
+  fullText: `
+## MarketGod 2026 Tour: Empowering the Next Generation of Traders
+
+We are thrilled to announce the **MarketGod 2026 Tour**, a nationwide initiative designed to bridge the gap between aspiring traders and professional profitability. After the massive success of our previous events, we are taking the education directly to you.
+
+### Tour Schedule
+Mark your calendars! We will be visiting the following cities:
+
+*   **Ho:** 21st Feb
+*   **Takoradi:** 7th Mar
+*   **Kumasi:** 21st Mar
+*   **Tamale:** 28th Mar
+*   **Koforidua:** 11th Apr
+*   **Techiman:** 25th Apr
+
+### What to Expect
+*   **Live Trading Breakdowns:** See exactly how we analyze the market in real-time.
+*   **Strategy Sessions:** Deep dives into the "MarketGod" strategies for Gold and currency pairs.
+*   **Q&A with Eyram Dela:** Get your burning questions answered directly.
+*   **Networking:** Connect with like-minded traders in your city.
+`,
+  author: "Eyram Dela(Marketgod)",
+  date: "2025-12-20",
+  platform: "website",
+  image: "https://res.cloudinary.com/dzqdfaghg/image/upload/v1771486217/kumasi_ocr0pl.webp",
+  link: "https://mainstack.com/s/marketgod",
+  media: [
+    {
+      src: "https://res.cloudinary.com/dzqdfaghg/video/upload/v1771486301/SnapInsta.to_AQO2j7jwk-UJMC7KoSnDYZQjd5HpRXDGSMjrpIKEK2Y8FurpzyhtZ9tATt4khyt4TROqOkB-rSBX6Xi0D9y4oJqV_b8rmnt.mp4",
+      thumbnail: "https://res.cloudinary.com/dzqdfaghg/image/upload/v1771486217/kumasi_ocr0pl.webp"
+    },
+ 
+  ]
+},
   {
   id: 1, // Unique ID for this resource
   title: "The Dangers of Overtrading: Why Patience Pays in Forex Trading",
@@ -779,4 +819,5 @@ This post celebrates the success of a community member, Kenzie, who turned a pro
       thumbnail: "https://images.unsplash.com/photo-1611606063065-ee7946f0787a?auto=format&fit=crop&w=400&q=60" // Placeholder thumbnail
     }
   ]
-}];
+},
+];
