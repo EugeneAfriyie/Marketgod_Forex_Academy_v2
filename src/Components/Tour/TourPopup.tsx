@@ -117,7 +117,9 @@ export default function TourPopup() {
 
     {/* CTA */}
     <button className="w-full bg-mg-gold text-mg-black font-semibold py-3 rounded-xl shadow-gold-glow hover:shadow-gold-glow-lg transition-all duration-300">
-      Secure My Seat
+      <a href="https://mainstack.com/s/marketgod" target="_blank" rel="noopener noreferrer">
+        Secure My Seat
+      </a>
     </button>
   </div>
 </div>
