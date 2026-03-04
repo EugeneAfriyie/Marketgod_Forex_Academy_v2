@@ -1,7 +1,5 @@
-// Eugene Afriyie UEB3502023
-// src/components/HeroCarousel/HeroCarousel.tsx
 import React, { useEffect, useRef, useState } from "react";
-// Eugene Afriyie UEB3502023
+
 import {
   motion,
   AnimatePresence,
@@ -23,7 +21,7 @@ type CTA = { label: string; href: string; primary?: boolean };
 type Slide = {
   id: string;
   type: "video" | "image";
-  src: string; // video src or image url
+  src: string; 
   title: React.ReactNode;
   subtitle?: string;
   desc?: React.ReactNode;
@@ -34,7 +32,7 @@ const slides: Slide[] = [
   {
   id: "tour-2026",
   type: "image",
-  src: "https://res.cloudinary.com/dzqdfaghg/image/upload/v1771486217/kumasi_ocr0pl.webp", // replace with your tour image
+  src: "https://res.cloudinary.com/dzqdfaghg/image/upload/v1771486217/kumasi_ocr0pl.webp", 
   title: (
     <>
       Marketgod <span className="text-mg-gold">2026 Tour</span>
