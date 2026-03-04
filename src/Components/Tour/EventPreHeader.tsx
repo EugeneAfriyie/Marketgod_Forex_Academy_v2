@@ -1,5 +1,6 @@
 import { motion } from "framer-motion";
 import { useState } from "react";
+import { Check } from "lucide-react";
 
 const tourDates = [
   { city: "Ho", date: "21 Feb" },
@@ -9,6 +10,8 @@ const tourDates = [
   { city: "Koforidua", date: "11 Apr" },
   { city: "Techiman", date: "25 Apr" },
 ];
+
+const firstUpcoming = 1;
 
 export default function EventPreHeader() {
   const [visible, setVisible] = useState(true);
@@ -68,14 +71,20 @@ export default function EventPreHeader() {
             animate={{ x: ["0%", "-100%"] }}
             transition={{ repeat: Infinity, duration: 20, ease: "linear" }}
           >
-            {tourDates.concat(tourDates).map((item, index) => (
-              <div
-                key={index}
-                className="flex-shrink-0 border border-mg-gold rounded-full px-3 py-1 text-[0.6rem] sm:text-sm font-medium text-mg-white shadow-gold-glow transition-all duration-300"
-              >
-                {item.city} — {item.date}
-              </div>
-            ))}
+            {tourDates.concat(tourDates).map((item, index) => {
+              const isCompleted = index % tourDates.length < firstUpcoming;
+              return (
+                <div
+                  key={index}
+                  className={`flex-shrink-0 border rounded-full px-3 py-1 text-[0.6rem] sm:text-sm font-medium flex items-center gap-1 transition-all duration-300 ${
+                    isCompleted ? "border-mg-dark-border text-mg-dark-textSecondary" : "border-mg-gold text-mg-white shadow-gold-glow"
+                  }`}
+                >
+                  {isCompleted && <Check size={12} className="text-mg-gold" />}
+                  {item.city} — {item.date}
+                </div>
+              );
+            })}
           </motion.div>
         </div>
 

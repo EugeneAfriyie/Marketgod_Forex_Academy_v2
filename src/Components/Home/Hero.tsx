@@ -17,19 +17,6 @@ import {
 } from "lucide-react";
 import { useTheme } from "../../context/ThemeContext";
 
-/**
- * Features:
- * - Video background slide + image slides
- * - Keyboard navigation (ArrowLeft, ArrowRight), Space to pause/resume
- * - Swipe/drag support (Framer Motion) with threshold
- * - Autoplay with pause on hover/focus
- * - Minimal gold accents for CTA & active dot only
- * - Accessible controls and indicators
- *
- * Tailwind / design notes:
- * - Uses mg color tokens (mg-gold, mg-black, mg-paper...) defined in your tailwind.config
- * - Keep gold usage minimal: CTA and active dot
- */
 
 type CTA = { label: string; href: string; primary?: boolean };
 
@@ -47,7 +34,7 @@ const slides: Slide[] = [
   {
   id: "tour-2026",
   type: "image",
-  src: "https://res.cloudinary.com/dzqdfaghg/image/upload/v1771486216/ho_fnlyhk.webp", // replace with your tour image
+  src: "https://res.cloudinary.com/dzqdfaghg/image/upload/v1771486217/kumasi_ocr0pl.webp", // replace with your tour image
   title: (
     <>
       Marketgod <span className="text-mg-gold">2026 Tour</span>
@@ -59,7 +46,7 @@ const slides: Slide[] = [
       The journey continues across Ghana.
       <br />
       <span className="text-mg-gold font-semibold">
-        Next Stop: Takoradi — 7 Mar
+        Next Stop: Kumasi — 21 Mar
       </span>
       <br />
       Limited seats. Serious traders only.
@@ -70,6 +57,28 @@ const slides: Slide[] = [
     { label: "View All Cities", href: "https://mainstack.com/s/marketgod" }
   ],
 },
+  {
+    id: "appreciation",
+    type: "image",
+    src: "https://res.cloudinary.com/dzqdfaghg/image/upload/v1771783834/d45de409-00cf-4b60-8f90-4d84964836aa.png",
+    title: (
+      <>
+        Thank You <span className="text-mg-gold">Ho </span>
+      </>
+    ),
+    subtitle: "The energy was unmatched.",
+    desc: (
+      <>
+        We appreciate every trader who showed up.
+        <br />
+        History was made. Now we move to Takoradi.
+      </>
+    ),
+    ctas: [
+      { label: "View Highlights", href: "https://www.instagram.com/eyram_dela", primary: true },
+      { label: "Join Next City", href: "https://mainstack.com/s/marketgod" },
+    ],
+  },
   {
     id: "video",
     type: "video",
