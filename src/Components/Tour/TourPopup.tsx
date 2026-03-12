@@ -13,7 +13,7 @@ export default function TourPopup() {
     { city: "Techiman", date: "25 Apr" },
   ];
 
-  const firstUpcoming = 1; // Highlight first city
+  const firstUpcoming = 2; // Highlight first city
 
   // Open popup after 3 seconds
   useEffect(() => {

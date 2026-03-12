@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+ import React, { useEffect, useRef, useState } from "react";
 
 import {
   motion,
@@ -61,7 +61,7 @@ const slides: Slide[] = [
     src: "https://res.cloudinary.com/dzqdfaghg/image/upload/v1771783834/d45de409-00cf-4b60-8f90-4d84964836aa.png",
     title: (
       <>
-        Thank You <span className="text-mg-gold">Ho </span>
+        Thank You <span className="text-mg-gold">Ho & Takoradi </span>
       </>
     ),
     subtitle: "The energy was unmatched.",
