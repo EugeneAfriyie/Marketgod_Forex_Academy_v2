@@ -405,7 +405,7 @@ export default function AppShell({ title, description, area }: AppShellProps) {
         )}
       </AnimatePresence>
 
-      <div className={`mx-auto grid h-full max-w-[1600px] scale-[0.96] gap-4 origin-top transition-[grid-template-columns] duration-500 ease-in-out ${isSidebarCollapsed ? 'xl:grid-cols-[88px_minmax(0,1fr)]' : 'xl:grid-cols-[270px_minmax(0,1fr)]'} 2xl:scale-100`}>
+      <div className={`relative mx-auto grid h-full max-w-[1600px] scale-[0.96] gap-4 origin-top transition-[grid-template-columns] duration-500 ease-in-out ${isSidebarCollapsed ? 'xl:grid-cols-[88px_minmax(0,1fr)]' : 'xl:grid-cols-[270px_minmax(0,1fr)]'} 2xl:scale-100`}>
         <aside
           className={`fixed inset-y-4 left-4 z-50 flex w-[280px] flex-col rounded-[2rem] border p-4 shadow-2xl transition-all duration-500 ease-in-out xl:relative xl:inset-auto xl:z-auto xl:w-auto xl:translate-x-0 ${
             isDark
@@ -413,21 +413,13 @@ export default function AppShell({ title, description, area }: AppShellProps) {
               : "border-black/10 bg-white/95 backdrop-blur-2xl"
           } ${isMobileMenuOpen ? "translate-x-0" : "-translate-x-[150%]"}`}
         >
-          <div className={`mb-8 flex items-center ${isSidebarCollapsed ? 'xl:justify-center xl:flex-col xl:gap-4' : 'justify-between'}`}>
+          <div className={`mb-8 flex items-center ${isSidebarCollapsed ? 'xl:justify-center' : ''}`}>
             <Link to="/" className="flex items-center gap-3" title={isSidebarCollapsed ? "Marketgod Academy" : undefined}>
               <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-mg-gold text-black">
                 <BookOpen size={16} />
               </span>
               <span className={`text-lg font-bold transition-all duration-300 ${isSidebarCollapsed ? 'xl:hidden' : 'block'}`}>Marketgod</span>
             </Link>
-            
-            <button
-              onClick={() => setIsSidebarCollapsed(!isSidebarCollapsed)}
-              className={`hidden xl:flex p-1.5 rounded-lg transition-colors ${isDark ? "hover:bg-white/10 text-white/50 hover:text-white" : "hover:bg-black/10 text-mg-light-textSecondary hover:text-mg-light-text"}`}
-              title={isSidebarCollapsed ? "Expand sidebar" : "Collapse sidebar"}
-            >
-              {isSidebarCollapsed ? <PanelLeftOpen size={18} /> : <PanelLeftClose size={18} />}
-            </button>
           
           <button
             onClick={() => setIsMobileMenuOpen(false)}
@@ -503,6 +495,19 @@ export default function AppShell({ title, description, area }: AppShellProps) {
             </button>
           </div>
         </aside>
+
+        {/* Sidebar Collapse Toggle Button */}
+        <button
+          onClick={() => setIsSidebarCollapsed(!isSidebarCollapsed)}
+          className={`hidden xl:flex absolute top-8 -translate-x-1/2 z-50 items-center justify-center h-7 w-7 rounded-full border-2 transition-all duration-500 ease-in-out ${
+            isDark
+              ? "bg-[#111111] border-white/10 text-white/60 hover:bg-white/10 hover:text-white"
+              : "bg-white border-black/10 text-mg-light-textSecondary hover:bg-black/5 hover:text-mg-light-text"
+          } ${isSidebarCollapsed ? 'left-[88px]' : 'left-[270px]'}`}
+          title={isSidebarCollapsed ? "Expand sidebar" : "Collapse sidebar"}
+        >
+          {isSidebarCollapsed ? <PanelLeftOpen size={16} /> : <PanelLeftClose size={16} />}
+        </button>
 
         <main className={`flex min-w-0 flex-col gap-5 overflow-y-auto [&::-webkit-scrollbar]:w-2 [&::-webkit-scrollbar-track]:bg-transparent [&::-webkit-scrollbar-thumb]:rounded-full ${
           isDark ? "[&::-webkit-scrollbar-thumb]:bg-white/10 hover:[&::-webkit-scrollbar-thumb]:bg-white/20" : "[&::-webkit-scrollbar-thumb]:bg-black/10 hover:[&::-webkit-scrollbar-thumb]:bg-black/20"
