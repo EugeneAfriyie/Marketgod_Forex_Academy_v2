@@ -1,15 +1,9 @@
 import React from "react";
 import { motion } from "framer-motion";
+import { useNavigate } from "react-router-dom";
 
 const PlansFinalCTA: React.FC = () => {
-
-
-  const scrollToPlans = () => {
-    const el = document.getElementById("pricing");
-    if (el) {
-      el.scrollIntoView({ behavior: "smooth", block: "start" });
-    }
-  };
+  const navigate = useNavigate();
 
   return (
     <motion.section
@@ -41,10 +35,10 @@ const PlansFinalCTA: React.FC = () => {
         <motion.button
         whileHover={{ scale: 1.05, boxShadow: "0 0 25px rgba(212,175,55,0.5)" }}
           whileTap={{ scale: 0.95 }}
-          onClick={scrollToPlans}
+          onClick={() => navigate("/register")}
           className="bg-mg-white text-black  px-8 py-4 rounded-full font-bold shadow-lg hover:shadow-mg-gold/50 transition-all"
         >
-          View Plans
+          Create Your Account
         </motion.button>
       </div>
     </motion.section>

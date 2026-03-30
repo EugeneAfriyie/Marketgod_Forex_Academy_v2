@@ -85,7 +85,7 @@ const slides: Slide[] = [
     title: <>Learn to Trade <span className="text-mg-gold">Professionally</span></>,
     subtitle: "Structured mentorship • practical skills",
     desc: <>Clear lessons, live guidance, and practical trade plans for serious traders.</>,
-    ctas: [{ label: "Start Learning", href: "/plans#pricing-plans", primary: true }],
+    ctas: [{ label: "Create Your Account", href: "/register", primary: true }],
   },
 
   {
@@ -96,7 +96,7 @@ const slides: Slide[] = [
     title: <>Build <span className="text-mg-gold">Consistent Skills</span></>,
     subtitle: "Professional trading, clear guidance",
     desc: <>Methods backed by practice and market experience — focus on skill, not hype.</>,
-    ctas: [{ label: "See Courses", href: "/plans" }],
+    ctas: [{ label: "Explore The Platform", href: "/register" }],
   },
 ];
 

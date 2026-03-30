@@ -220,13 +220,13 @@ const Header = () => {
         {/* JOIN BUTTON + THEME */}
         <div className="flex items-center gap-4">
           <motion.button
-            onClick={() => handleNavClick("/plans")}
+            onClick={() => handleNavClick("/register")}
             className="relative overflow-hidden px-6 py-2.5 rounded-full font-bold uppercase tracking-wide text-xs flex items-center gap-2 shadow-lg bg-mg-black text-mg-paper dark:bg-mg-paper dark:text-mg-black"
             style={{ scale: pulse }}
              whileHover={{ scale: 1.05, boxShadow: "0 0 25px rgba(212,175,55,0.5)" }}
           whileTap={{ scale: 0.95 }}
           >
-            <span className="relative z-10">Join Now</span>
+            <span className="relative z-10">Get Started</span>
             <motion.div
               className="absolute inset-0 bg-mg-gold/80"
               initial={{ x: "-120%" }}
