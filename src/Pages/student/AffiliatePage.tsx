@@ -1,5 +1,6 @@
 import { BadgeDollarSign, Link2, TrendingUp } from "lucide-react";
 import { useTheme } from "../../context/ThemeContext";
+import { useLanguage } from "../../context/LanguageContext";
 import StudentSectionCard from "../../Components/student/StudentSectionCard";
 
 const affiliateStats = [
@@ -10,12 +11,18 @@ const affiliateStats = [
 
 export default function AffiliatePage() {
   const { theme } = useTheme();
+  const { language } = useLanguage();
   const isDark = theme === "dark";
+  const isFrench = language === "fr";
 
   return (
     <StudentSectionCard
-      title="Affiliate"
-      description="This page will grow into the affiliate and referral center for students who promote the platform."
+      title={isFrench ? "Affiliation" : "Affiliate"}
+      description={
+        isFrench
+          ? "Cette page evoluera vers un centre de parrainage et d'affiliation pour les etudiants qui promeuvent la plateforme."
+          : "This page will grow into the affiliate and referral center for students who promote the platform."
+      }
     >
       <div className="grid gap-4 md:grid-cols-3">
         {affiliateStats.map((item) => {
@@ -30,7 +37,15 @@ export default function AffiliatePage() {
             >
               <div className="flex items-start justify-between gap-4">
                 <div>
-                  <p className={`text-sm ${isDark ? "text-white/58" : "text-mg-light-textSecondary/78"}`}>{item.label}</p>
+                  <p className={`text-sm ${isDark ? "text-white/58" : "text-mg-light-textSecondary/78"}`}>
+                    {isFrench
+                      ? item.label === "Referral Code"
+                        ? "Code de Parrainage"
+                        : item.label === "Referred Users"
+                          ? "Utilisateurs Parraines"
+                          : "Paiement Estime"
+                      : item.label}
+                  </p>
                   <p className={`mt-3 text-2xl font-black ${isDark ? "text-white" : "text-mg-light-text"}`}>{item.value}</p>
                 </div>
                 <Icon size={18} className="text-mg-gold" />

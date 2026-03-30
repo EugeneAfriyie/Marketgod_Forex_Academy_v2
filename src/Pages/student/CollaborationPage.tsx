@@ -1,5 +1,6 @@
 import { MessageSquareMore, UsersRound, Video } from "lucide-react";
 import { useTheme } from "../../context/ThemeContext";
+import { useLanguage } from "../../context/LanguageContext";
 import StudentSectionCard from "../../Components/student/StudentSectionCard";
 
 const spaces = [
@@ -10,12 +11,18 @@ const spaces = [
 
 export default function CollaborationPage() {
   const { theme } = useTheme();
+  const { language } = useLanguage();
   const isDark = theme === "dark";
+  const isFrench = language === "fr";
 
   return (
     <StudentSectionCard
-      title="Collaboration"
-      description="A dedicated area for student interaction, peer support, and future collaboration features."
+      title={isFrench ? "Collaboration" : "Collaboration"}
+      description={
+        isFrench
+          ? "Un espace dedie aux interactions entre etudiants, au soutien mutuel et aux futures fonctions collaboratives."
+          : "A dedicated area for student interaction, peer support, and future collaboration features."
+      }
     >
       <div className="grid gap-4 lg:grid-cols-3">
         {spaces.map((space) => {
@@ -29,8 +36,24 @@ export default function CollaborationPage() {
               }`}
             >
               <Icon size={20} className="text-mg-gold" />
-              <h3 className={`mt-4 text-lg font-bold ${isDark ? "text-white" : "text-mg-light-text"}`}>{space.title}</h3>
-              <p className={`mt-3 text-sm leading-6 ${isDark ? "text-white/58" : "text-mg-light-textSecondary/78"}`}>{space.detail}</p>
+              <h3 className={`mt-4 text-lg font-bold ${isDark ? "text-white" : "text-mg-light-text"}`}>
+                {isFrench
+                  ? space.title === "Peer Accountability Circle"
+                    ? "Cercle de Responsabilite"
+                    : space.title === "Live Review Room"
+                      ? "Salle de Revue Live"
+                      : "Hub de Conversation"
+                  : space.title}
+              </h3>
+              <p className={`mt-3 text-sm leading-6 ${isDark ? "text-white/58" : "text-mg-light-textSecondary/78"}`}>
+                {isFrench
+                  ? space.detail === "Small student groups for discipline and weekly check-ins."
+                    ? "Petits groupes d'etudiants pour la discipline et les suivis hebdomadaires."
+                    : space.detail === "A future space for lesson discussions and chart feedback."
+                      ? "Un futur espace pour discuter des lecons et recevoir des retours sur les graphiques."
+                      : "Canal pour les questions, les victoires et le partage d'idees."
+                  : space.detail}
+              </p>
             </article>
           );
         })}

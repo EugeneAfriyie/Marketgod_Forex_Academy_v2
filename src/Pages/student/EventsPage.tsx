@@ -1,5 +1,6 @@
 import { CalendarRange, MapPin, Users } from "lucide-react";
 import { useTheme } from "../../context/ThemeContext";
+import { useLanguage } from "../../context/LanguageContext";
 import StudentSectionCard from "../../Components/student/StudentSectionCard";
 
 const events = [
@@ -10,12 +11,18 @@ const events = [
 
 export default function EventsPage() {
   const { theme } = useTheme();
+  const { language } = useLanguage();
   const isDark = theme === "dark";
+  const isFrench = language === "fr";
 
   return (
     <StudentSectionCard
-      title="Events"
-      description="This area will handle upcoming mentorship sessions, live breakdowns, and event participation."
+      title={isFrench ? "Evenements" : "Events"}
+      description={
+        isFrench
+          ? "Cette section gerera les sessions de mentorat, lives et participations aux evenements."
+          : "This area will handle upcoming mentorship sessions, live breakdowns, and event participation."
+      }
     >
       <div className="space-y-4">
         {events.map((event) => (
@@ -31,17 +38,29 @@ export default function EventsPage() {
                 <div className={`mt-3 flex flex-wrap gap-4 text-sm ${isDark ? "text-white/58" : "text-mg-light-textSecondary/78"}`}>
                   <span className="inline-flex items-center gap-2">
                     <CalendarRange size={16} className="text-mg-gold" />
-                    {event.date}
+                    {isFrench
+                      ? event.date === "Thursday, 7:00 PM GMT"
+                        ? "Jeudi, 19:00 GMT"
+                        : event.date === "Saturday, 11:00 AM GMT"
+                          ? "Samedi, 11:00 GMT"
+                          : "18 Avril 2026"
+                      : event.date}
                   </span>
                   <span className="inline-flex items-center gap-2">
                     <MapPin size={16} className="text-mg-gold" />
-                    {event.venue}
+                    {isFrench
+                      ? event.venue === "Live stream room"
+                        ? "Salle de diffusion"
+                        : event.venue === "Mentorship call"
+                          ? "Appel de mentorat"
+                          : "Evenement physique"
+                      : event.venue}
                   </span>
                 </div>
               </div>
               <span className="inline-flex items-center gap-2 rounded-full bg-mg-gold/12 px-3 py-1 text-xs font-semibold uppercase tracking-[0.2em] text-mg-gold">
                 <Users size={14} />
-                Open
+                {isFrench ? "Ouvert" : "Open"}
               </span>
             </div>
           </article>

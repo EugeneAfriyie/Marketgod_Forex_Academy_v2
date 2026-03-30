@@ -1,5 +1,6 @@
 import { Clock3, PlayCircle } from "lucide-react";
 import { useTheme } from "../../context/ThemeContext";
+import { useLanguage } from "../../context/LanguageContext";
 import StudentSectionCard from "../../Components/student/StudentSectionCard";
 
 const courses = [
@@ -10,12 +11,18 @@ const courses = [
 
 export default function CoursesPage() {
   const { theme } = useTheme();
+  const { language } = useLanguage();
   const isDark = theme === "dark";
+  const isFrench = language === "fr";
 
   return (
     <StudentSectionCard
-      title="My Courses"
-      description="This page previews how purchased courses, lesson counts, and progress indicators will be presented to the student."
+      title={isFrench ? "Mes Cours" : "My Courses"}
+      description={
+        isFrench
+          ? "Cette page montre comment les cours achetes, les lecons et la progression seront presentes."
+          : "This page previews how purchased courses, lesson counts, and progress indicators will be presented to the student."
+      }
     >
       <div className="grid gap-4 lg:grid-cols-2">
         {courses.map((course) => (
@@ -27,7 +34,7 @@ export default function CoursesPage() {
           >
             <div className="flex items-center justify-between gap-4">
               <span className="rounded-full bg-mg-gold/12 px-3 py-1 text-xs font-semibold uppercase tracking-[0.2em] text-mg-gold">
-                {course.status}
+                {isFrench ? (course.status === "Active" ? "Actif" : "Termine") : course.status}
               </span>
               <span className={`text-sm ${isDark ? "text-white/55" : "text-mg-light-textSecondary/75"}`}>{course.progress}</span>
             </div>
@@ -37,11 +44,11 @@ export default function CoursesPage() {
             <div className={`mt-4 flex items-center gap-5 text-sm ${isDark ? "text-white/58" : "text-mg-light-textSecondary/78"}`}>
               <span className="inline-flex items-center gap-2">
                 <PlayCircle size={16} className="text-mg-gold" />
-                {course.lessons} lessons
+                {course.lessons} {isFrench ? "lecons" : "lessons"}
               </span>
               <span className="inline-flex items-center gap-2">
                 <Clock3 size={16} className="text-mg-gold" />
-                Progress tracked
+                {isFrench ? "Progression suivie" : "Progress tracked"}
               </span>
             </div>
 

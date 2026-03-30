@@ -1,5 +1,6 @@
 import { Download, FileText, PlayCircle } from "lucide-react";
 import { useTheme } from "../../context/ThemeContext";
+import { useLanguage } from "../../context/LanguageContext";
 import StudentSectionCard from "../../Components/student/StudentSectionCard";
 
 const resources = [
@@ -10,12 +11,18 @@ const resources = [
 
 export default function ResourcesPage() {
   const { theme } = useTheme();
+  const { language } = useLanguage();
   const isDark = theme === "dark";
+  const isFrench = language === "fr";
 
   return (
     <StudentSectionCard
-      title="Resources"
-      description="A curated student resource library for guides, downloadable references, and replay material."
+      title={isFrench ? "Ressources" : "Resources"}
+      description={
+        isFrench
+          ? "Une bibliotheque de ressources pour guides, references telechargeables et contenus de revision."
+          : "A curated student resource library for guides, downloadable references, and replay material."
+      }
     >
       <div className="grid gap-4 lg:grid-cols-3">
         {resources.map((resource) => {
@@ -32,8 +39,18 @@ export default function ResourcesPage() {
                 <Icon size={20} className="text-mg-gold" />
               </div>
               <h3 className={`mt-4 text-lg font-bold ${isDark ? "text-white" : "text-mg-light-text"}`}>{resource.title}</h3>
-              <p className={`mt-2 text-sm ${isDark ? "text-white/58" : "text-mg-light-textSecondary/78"}`}>{resource.type}</p>
-              <p className="mt-4 text-sm font-semibold text-mg-gold">{resource.access}</p>
+              <p className={`mt-2 text-sm ${isDark ? "text-white/58" : "text-mg-light-textSecondary/78"}`}>
+                {isFrench
+                  ? resource.type === "PDF Guide"
+                    ? "Guide PDF"
+                    : resource.type === "Quick Reference"
+                      ? "Reference Rapide"
+                      : "Ressource Video"
+                  : resource.type}
+              </p>
+              <p className="mt-4 text-sm font-semibold text-mg-gold">
+                {isFrench ? (resource.access === "Available now" ? "Disponible maintenant" : "Mises a jour hebdomadaires") : resource.access}
+              </p>
             </article>
           );
         })}

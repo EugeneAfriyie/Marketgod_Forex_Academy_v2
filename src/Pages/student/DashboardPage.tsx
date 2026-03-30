@@ -1,5 +1,6 @@
 import { ArrowUpRight, BookOpen, CalendarDays, CreditCard, PlayCircle } from "lucide-react";
 import { useTheme } from "../../context/ThemeContext";
+import { useLanguage } from "../../context/LanguageContext";
 import StudentSectionCard from "../../Components/student/StudentSectionCard";
 
 const stats = [
@@ -22,7 +23,9 @@ const quickActions = [
 
 export default function DashboardPage() {
   const { theme } = useTheme();
+  const { language } = useLanguage();
   const isDark = theme === "dark";
+  const isFrench = language === "fr";
 
   return (
     <div className="space-y-5">
@@ -39,9 +42,25 @@ export default function DashboardPage() {
             >
               <div className="flex items-start justify-between gap-4">
                 <div>
-                  <p className={`text-sm ${isDark ? "text-white/58" : "text-mg-light-textSecondary/80"}`}>{stat.label}</p>
+                  <p className={`text-sm ${isDark ? "text-white/58" : "text-mg-light-textSecondary/80"}`}>
+                    {isFrench
+                      ? stat.label === "Active Programs"
+                        ? "Programmes Actifs"
+                        : stat.label === "Courses Available"
+                          ? "Cours Disponibles"
+                          : "Reservation Prochaine"
+                      : stat.label}
+                  </p>
                   <p className={`mt-3 text-4xl font-black ${isDark ? "text-white" : "text-mg-light-text"}`}>{stat.value}</p>
-                  <p className="mt-2 text-sm text-mg-gold">{stat.note}</p>
+                  <p className="mt-2 text-sm text-mg-gold">
+                    {isFrench
+                      ? stat.note === "Mentorship + VIP"
+                        ? "Mentorat + VIP"
+                        : stat.note === "Protected lessons"
+                          ? "Lecons protegees"
+                          : "Jeudi, 19:00"
+                      : stat.note}
+                  </p>
                 </div>
                 <div className={`rounded-2xl p-3 ${isDark ? "bg-mg-gold/12" : "bg-mg-gold/16"}`}>
                   <Icon size={20} className="text-mg-gold" />
@@ -54,8 +73,12 @@ export default function DashboardPage() {
 
       <div className="grid gap-5 xl:grid-cols-[1.2fr_0.8fr]">
         <StudentSectionCard
-          title="Continue Learning"
-          description="Your recent lessons and progress should be front and center, so students always know what to watch next."
+          title={isFrench ? "Continuer l'Apprentissage" : "Continue Learning"}
+          description={
+            isFrench
+              ? "Les lecons recentes et la progression doivent rester visibles pour guider l'etudiant."
+              : "Your recent lessons and progress should be front and center, so students always know what to watch next."
+          }
         >
           <div className="space-y-3">
             {recentLessons.map((lesson) => (
@@ -72,7 +95,7 @@ export default function DashboardPage() {
                   </div>
                   <div className="text-right">
                     <p className="text-sm font-semibold text-mg-gold">{lesson.progress}</p>
-                    <p className={`mt-1 text-xs ${isDark ? "text-white/45" : "text-mg-light-textSecondary/65"}`}>Completed</p>
+                    <p className={`mt-1 text-xs ${isDark ? "text-white/45" : "text-mg-light-textSecondary/65"}`}>{isFrench ? "Termine" : "Completed"}</p>
                   </div>
                 </div>
                 <div className={`mt-4 h-2 overflow-hidden rounded-full ${isDark ? "bg-white/10" : "bg-black/8"}`}>
@@ -84,8 +107,12 @@ export default function DashboardPage() {
         </StudentSectionCard>
 
         <StudentSectionCard
-          title="Quick Actions"
-          description="These become high-intent entry points once the real backend flows are connected."
+          title={isFrench ? "Actions Rapides" : "Quick Actions"}
+          description={
+            isFrench
+              ? "Ces actions deviendront des points d'entree majeurs apres l'integration backend."
+              : "These become high-intent entry points once the real backend flows are connected."
+          }
         >
           <div className="space-y-3">
             {quickActions.map((action) => (
@@ -109,22 +136,26 @@ export default function DashboardPage() {
       </div>
 
       <StudentSectionCard
-        title="Membership Snapshot"
-        description="A compact summary of what the student currently has access to inside the platform."
+        title={isFrench ? "Apercu des Abonnements" : "Membership Snapshot"}
+        description={
+          isFrench
+            ? "Un resume compact de ce a quoi l'etudiant a actuellement acces sur la plateforme."
+            : "A compact summary of what the student currently has access to inside the platform."
+        }
       >
         <div className="grid gap-4 md:grid-cols-2">
           <div className={`rounded-3xl border p-5 ${isDark ? "border-white/10 bg-black/25" : "border-black/10 bg-[#faf7f0]"}`}>
             <p className="text-sm text-mg-gold">Marketgod Mentorship</p>
-            <p className={`mt-2 text-2xl font-black ${isDark ? "text-white" : "text-mg-light-text"}`}>Active</p>
-            <p className={`mt-2 text-sm ${isDark ? "text-white/58" : "text-mg-light-textSecondary/78"}`}>Renews after payment flow is connected.</p>
+            <p className={`mt-2 text-2xl font-black ${isDark ? "text-white" : "text-mg-light-text"}`}>{isFrench ? "Actif" : "Active"}</p>
+            <p className={`mt-2 text-sm ${isDark ? "text-white/58" : "text-mg-light-textSecondary/78"}`}>{isFrench ? "Renouvelle apres l'integration du paiement." : "Renews after payment flow is connected."}</p>
           </div>
           <div className={`rounded-3xl border p-5 ${isDark ? "border-white/10 bg-black/25" : "border-black/10 bg-[#faf7f0]"}`}>
             <p className="text-sm text-mg-gold">VIP Signals</p>
             <div className="mt-2 flex items-center gap-2">
               <PlayCircle size={18} className="text-mg-gold" />
-              <p className={`text-2xl font-black ${isDark ? "text-white" : "text-mg-light-text"}`}>Included</p>
+              <p className={`text-2xl font-black ${isDark ? "text-white" : "text-mg-light-text"}`}>{isFrench ? "Inclus" : "Included"}</p>
             </div>
-            <p className={`mt-2 text-sm ${isDark ? "text-white/58" : "text-mg-light-textSecondary/78"}`}>Ready for backend access control and expiry rules.</p>
+            <p className={`mt-2 text-sm ${isDark ? "text-white/58" : "text-mg-light-textSecondary/78"}`}>{isFrench ? "Pret pour les regles d'acces et d'expiration backend." : "Ready for backend access control and expiry rules."}</p>
           </div>
         </div>
       </StudentSectionCard>
