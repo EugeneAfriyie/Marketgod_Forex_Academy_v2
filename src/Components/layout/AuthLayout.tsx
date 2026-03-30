@@ -35,7 +35,7 @@ export default function AuthLayout({
 
   return (
     <main
-      className={`min-h-screen flex items-center justify-center p-4 sm:p-6 lg:p-8 relative isolate ${
+      className={`min-h-screen flex items-center justify-center p-4 sm:p-6 lg:p-8 relative isolate transition-colors duration-500 ease-in-out ${
         isDark ? "bg-[#050505] text-mg-white" : "bg-[#f7f3ea] text-mg-light-text"
       }`}
     >
@@ -50,7 +50,7 @@ export default function AuthLayout({
 
       {/* Main Unified Card Container */}
       <div
-        className={`w-full max-w-[1100px] grid grid-cols-1 ${imagePosition === "right" ? "lg:grid-cols-[1.1fr_0.9fr]" : "lg:grid-cols-[0.9fr_1.1fr]"} rounded-[2rem] sm:rounded-[2.5rem] overflow-hidden backdrop-blur-2xl lg:h-[85vh] lg:max-h-[850px] lg:min-h-[600px] ${
+        className={`w-full max-w-[1100px] grid grid-cols-1 ${imagePosition === "right" ? "lg:grid-cols-[1.1fr_0.9fr]" : "lg:grid-cols-[0.9fr_1.1fr]"} rounded-[2rem] sm:rounded-[2.5rem] overflow-hidden backdrop-blur-2xl lg:h-[85vh] lg:max-h-[850px] lg:min-h-[600px] transition-all duration-500 ease-in-out ${
           isDark
             ? "border border-white/10 bg-[#0a0a0a]/90 shadow-[0_20px_80px_rgba(0,0,0,0.6)]"
             : "border border-black/10 bg-white/85 shadow-[0_20px_80px_rgba(0,0,0,0.12)]"
@@ -61,7 +61,7 @@ export default function AuthLayout({
         <motion.aside
           layout
           transition={{ duration: 0.7, type: "spring", bounce: 0.2 }}
-          className={`relative hidden lg:flex flex-col justify-between p-8 xl:p-12 overflow-hidden ${
+          className={`relative hidden lg:flex flex-col justify-between p-8 xl:p-12 overflow-hidden transition-colors duration-500 ease-in-out ${
             imagePosition === "right"
               ? isDark
                 ? "lg:order-last border-l border-white/5 bg-black"
@@ -93,9 +93,9 @@ export default function AuthLayout({
           </div>
 
           <div className="relative z-10 max-w-sm mt-auto">
-            <p className={`text-[11px] font-semibold uppercase tracking-[0.28em] ${isDark ? "text-white/50" : "text-white/70"}`}>{eyebrow}</p>
+            <p className={`text-[11px] font-semibold uppercase tracking-[0.28em] transition-colors duration-500 ease-in-out ${isDark ? "text-white/50" : "text-white/70"}`}>{eyebrow}</p>
             <h2 className="mt-2 text-3xl font-black leading-tight text-white">{asideTitle}</h2>
-            <p className={`mt-3 text-sm leading-relaxed ${isDark ? "text-white/70" : "text-white/85"}`}>{asideDescription}</p>
+            <p className={`mt-3 text-sm leading-relaxed transition-colors duration-500 ease-in-out ${isDark ? "text-white/70" : "text-white/85"}`}>{asideDescription}</p>
 
             <div className="mt-8 flex flex-col gap-4">
               {highlights.slice(0, 3).map((item) => (
@@ -105,7 +105,7 @@ export default function AuthLayout({
                       <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
                     </svg>
                   </div>
-                  <p className={`text-sm font-medium ${isDark ? "text-white/80" : "text-white"}`}>{item}</p>
+                  <p className={`text-sm font-medium transition-colors duration-500 ease-in-out ${isDark ? "text-white/80" : "text-white"}`}>{item}</p>
                 </div>
               ))}
             </div>
@@ -127,19 +127,19 @@ export default function AuthLayout({
             </Link>
 
             <div className="mt-8">
-              <h1 className={`text-3xl font-black leading-tight sm:text-4xl ${isDark ? "text-white" : "text-mg-light-text"}`}>{title}</h1>
-              <p className={`mt-3 text-sm leading-relaxed ${isDark ? "text-white/60" : "text-mg-light-textSecondary/80"}`}>{description}</p>
+            <h1 className={`text-3xl font-black leading-tight sm:text-4xl transition-colors duration-500 ease-in-out ${isDark ? "text-white" : "text-mg-light-text"}`}>{title}</h1>
+            <p className={`mt-3 text-sm leading-relaxed transition-colors duration-500 ease-in-out ${isDark ? "text-white/60" : "text-mg-light-textSecondary/80"}`}>{description}</p>
             </div>
 
-            <div className={`my-8 h-px w-full ${isDark ? "bg-gradient-to-r from-mg-gold/30 via-white/10 to-transparent" : "bg-gradient-to-r from-mg-gold/45 via-black/10 to-transparent"}`} />
+          <div className={`my-8 h-px w-full transition-all duration-500 ease-in-out ${isDark ? "bg-gradient-to-r from-mg-gold/30 via-white/10 to-transparent" : "bg-gradient-to-r from-mg-gold/45 via-black/10 to-transparent"}`} />
 
             <div>
               {children}
             </div>
 
-            <div className={`mt-8 pt-4 text-sm ${isDark ? "text-white/50" : "text-mg-light-textSecondary/75"}`}>
+          <div className={`mt-8 pt-4 text-sm transition-colors duration-500 ease-in-out ${isDark ? "text-white/50" : "text-mg-light-textSecondary/75"}`}>
               {footerPrompt}{" "}
-              <Link to={footerLinkTo} className={`font-semibold text-mg-gold transition-colors ${isDark ? "hover:text-white" : "hover:text-mg-light-text"}`}>
+            <Link to={footerLinkTo} className={`font-semibold text-mg-gold transition-colors duration-500 ease-in-out ${isDark ? "hover:text-white" : "hover:text-mg-light-text"}`}>
                 {footerLinkLabel}
               </Link>
             </div>

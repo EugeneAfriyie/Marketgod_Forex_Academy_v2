@@ -19,8 +19,10 @@ import DashboardPage from "../Pages/student/DashboardPage";
 import CoursesPage from "../Pages/student/CoursesPage";
 import CourseDetailsPage from "../Pages/student/CourseDetailsPage";
 import LessonPlayerPage from "../Pages/student/LessonPlayerPage";
-import SubscriptionsPage from "../Pages/student/SubscriptionsPage";
-import BookingsPage from "../Pages/student/BookingsPage";
+import ResourcesPage from "../Pages/student/ResourcesPage";
+import EventsPage from "../Pages/student/EventsPage";
+import CollaborationPage from "../Pages/student/CollaborationPage";
+import AffiliatePage from "../Pages/student/AffiliatePage";
 import ProfilePage from "../Pages/student/ProfilePage";
 import SupportPage from "../Pages/student/SupportPage";
 import AdminDashboardPage from "../Pages/admin/AdminDashboardPage";
@@ -64,6 +66,7 @@ export default function AppRoutes() {
           path="/dashboard"
           element={
             <AppShell
+              area="student"
               title="Student Dashboard"
               description="This app area will become the protected student workspace for courses, subscriptions, profile management, and support."
             />
@@ -73,8 +76,32 @@ export default function AppRoutes() {
           <Route path="courses" element={<CoursesPage />} />
           <Route path="courses/:courseId" element={<CourseDetailsPage />} />
           <Route path="courses/:courseId/lessons/:lessonId" element={<LessonPlayerPage />} />
-          <Route path="subscriptions" element={<SubscriptionsPage />} />
-          <Route path="bookings" element={<BookingsPage />} />
+          <Route path="resources" element={<ResourcesPage />} />
+          <Route path="events" element={<EventsPage />} />
+          <Route path="collaboration" element={<CollaborationPage />} />
+          <Route path="affiliate" element={<AffiliatePage />} />
+          <Route path="profile" element={<ProfilePage />} />
+          <Route path="support" element={<SupportPage />} />
+        </Route>
+
+        <Route
+          path="/premium"
+          element={
+            <AppShell
+              area="premium"
+              title="Premium Dashboard"
+              description="Your exclusive workspace for VIP signals, advanced mentorship, and premium resources."
+            />
+          }
+        >
+          <Route index element={<DashboardPage />} />
+          <Route path="mentorship" element={<CoursesPage />} />
+          <Route path="signals" element={<ResourcesPage />} />
+          <Route path="courses" element={<CoursesPage />} />
+          <Route path="courses/:courseId" element={<CourseDetailsPage />} />
+          <Route path="courses/:courseId/lessons/:lessonId" element={<LessonPlayerPage />} />
+          <Route path="resources" element={<ResourcesPage />} />
+          <Route path="events" element={<EventsPage />} />
           <Route path="profile" element={<ProfilePage />} />
           <Route path="support" element={<SupportPage />} />
         </Route>
@@ -83,6 +110,7 @@ export default function AppRoutes() {
           path="/admin"
           element={
             <AppShell
+              area="admin"
               title="Admin Dashboard"
               description="This app area will become the control center for users, courses, subscriptions, bookings, and support operations."
             />
