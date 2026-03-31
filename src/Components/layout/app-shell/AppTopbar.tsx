@@ -1,34 +1,15 @@
 import { AnimatePresence, motion } from "framer-motion";
 import { Menu, Moon, Sun } from "lucide-react";
 import { useTheme } from "../../../context/ThemeContext";
-import type { AppLanguage } from "./data";
+import type { AppLanguage, CarouselItem, NotificationItem } from "./data";
 import AppHeaderCarousel from "./AppHeaderCarousel";
 import LanguageMenu from "./LanguageMenu";
 import NotificationMenu from "./NotificationMenu";
 
-interface NotificationItem {
-  id: number;
-  title: string;
-  desc: string;
-  time: string;
-  unread: boolean;
-}
-
-
-
-
-
 interface AppTopbarProps {
   areaLabel: string;
   menuLabel: string;
-  carouselItems: Array<{
-    type: "pageContext" | "quote" | "ad";
-    title?: string;
-    description?: string;
-    text?: string;
-    link?: string;
-    img?: string;
-  }>;
+  carouselItems: CarouselItem[];
   dailyMotivationLabel: string;
   announcementLabel: string;
   notificationsLabel: string;

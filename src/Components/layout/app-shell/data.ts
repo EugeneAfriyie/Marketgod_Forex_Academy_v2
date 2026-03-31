@@ -41,6 +41,15 @@ export interface NotificationItem {
   unread: boolean;
 }
 
+export interface CarouselItem {
+  type: "pageContext" | "quote" | "ad";
+  title?: string;
+  description?: string;
+  text?: string;
+  link?: string;
+  img?: string;
+}
+
 export const defaultUser: UserProfile = {
   name: "Eyram Dela",
   email: "eyram@marketgod.com",
