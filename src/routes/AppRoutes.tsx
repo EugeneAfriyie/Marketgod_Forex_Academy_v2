@@ -1,4 +1,4 @@
-import { Route, Routes } from "react-router-dom";
+import { Navigate, Route, Routes } from "react-router-dom";
 import { SEOData, getBlogSEO } from "../Components/SEO/SEOData";
 import SEO from "../Components/SEO/SEO";
 import { useLocation } from "react-router-dom";
@@ -17,12 +17,19 @@ import RegisterPage from "../Pages/auth/RegisterPage";
 import ForgotPasswordPage from "../Pages/auth/ForgotPasswordPage";
 import DashboardPage from "../Pages/student/DashboardPage";
 import CoursesPage from "../Pages/student/CoursesPage";
+import EnrolledCoursesPage from "../Pages/student/EnrolledCoursesPage";
 import CourseDetailsPage from "../Pages/student/CourseDetailsPage";
 import LessonPlayerPage from "../Pages/student/LessonPlayerPage";
 import ResourcesPage from "../Pages/student/ResourcesPage";
 import EventsPage from "../Pages/student/EventsPage";
 import CollaborationPage from "../Pages/student/CollaborationPage";
 import AffiliatePage from "../Pages/student/AffiliatePage";
+import MeetingsPage from "../Pages/student/MeetingsPage";
+import GiveawaysPage from "../Pages/student/GiveawaysPage";
+import ToolsPage from "../Pages/student/ToolsPage";
+import MilestonesPage from "../Pages/student/MilestonesPage";
+import MentorshipPage from "../Pages/student/MentorshipPage";
+import SignalsPage from "../Pages/student/SignalsPage";
 import ProfilePage from "../Pages/student/ProfilePage";
 import SupportPage from "../Pages/student/SupportPage";
 import AdminDashboardPage from "../Pages/admin/AdminDashboardPage";
@@ -73,13 +80,21 @@ export default function AppRoutes() {
           }
         >
           <Route index element={<DashboardPage />} />
-          <Route path="courses" element={<CoursesPage />} />
+          <Route path="courses" element={<Navigate to="all" replace />} />
+          <Route path="courses/all" element={<CoursesPage />} />
+          <Route path="courses/enrolled" element={<EnrolledCoursesPage />} />
           <Route path="courses/:courseId" element={<CourseDetailsPage />} />
           <Route path="courses/:courseId/lessons/:lessonId" element={<LessonPlayerPage />} />
           <Route path="resources" element={<ResourcesPage />} />
           <Route path="events" element={<EventsPage />} />
-          <Route path="collaboration" element={<CollaborationPage />} />
           <Route path="affiliate" element={<AffiliatePage />} />
+          <Route path="collaboration" element={<CollaborationPage />} />
+          <Route path="meetings" element={<MeetingsPage />} />
+          <Route path="giveaways" element={<GiveawaysPage />} />
+          <Route path="tools" element={<ToolsPage />} />
+          <Route path="milestones" element={<MilestonesPage />} />
+          <Route path="mentorship" element={<MentorshipPage />} />
+          <Route path="signals" element={<SignalsPage />} />
           <Route path="profile" element={<ProfilePage />} />
           <Route path="support" element={<SupportPage />} />
         </Route>

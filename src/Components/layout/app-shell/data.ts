@@ -14,6 +14,10 @@ import {
   CreditCard,
   Signal,
   Crown,
+  Gift,
+  Wrench,
+  Award,
+  GraduationCap,
 } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
 
@@ -25,6 +29,14 @@ export interface NavItem {
   label: string;
   icon: LucideIcon;
   description: string;
+  children?: NavItem[];
+  group?: string;
+}
+
+export interface TranslatedNavItem extends NavItem {
+  translatedLabel: string;
+  translatedDescription: string;
+  children?: TranslatedNavItem[];
 }
 
 export interface UserProfile {
@@ -64,33 +76,59 @@ export const mockNotifications: NotificationItem[] = [
 
 export const navConfig: Record<AppArea, NavItem[]> = {
   student: [
-    { to: "/dashboard", label: "Overview", icon: LayoutDashboard, description: "Welcome back! Here is a summary of your progress." },
-    { to: "/dashboard/courses", label: "My Courses", icon: BookOpen, description: "Access your enrolled mentorship programs and courses." },
-    { to: "/dashboard/resources", label: "Resources", icon: LibraryBig, description: "Download trading tools, templates, and essential files." },
-    { to: "/dashboard/events", label: "Events", icon: CalendarDays, description: "Keep track of upcoming webinars and physical seminars." },
-    { to: "/dashboard/collaboration", label: "Collaboration", icon: Handshake, description: "Connect and trade with the Marketgod community." },
-    { to: "/dashboard/affiliate", label: "Affiliate", icon: BadgeDollarSign, description: "Manage your referral links and track your earnings." },
-    { to: "/dashboard/profile", label: "Profile", icon: UserCircle2, description: "Update your personal details and account settings." },
-    { to: "/dashboard/support", label: "Support", icon: LifeBuoy, description: "Need help? Reach out to the Marketgod support team." }
+    { to: "/dashboard", label: "Overview", icon: LayoutDashboard, description: "Welcome back! Here is a summary of your progress.", group: "Dashboard" },
+    { to: "/dashboard/milestones", label: "Milestones", icon: Award, description: "Celebrate the user's achievements and growth inside the platform.", group: "Dashboard" },
+    {
+      to: "/dashboard/courses/all",
+      label: "Courses",
+      icon: BookOpen,
+      description: "Browse all academy courses and manage your enrolled learning paths.",
+      group: "Learning",
+      children: [
+        {
+          to: "/dashboard/courses/all",
+          label: "All Courses",
+          icon: FolderKanban,
+          description: "Display all courses currently available on the platform."
+        },
+        {
+          to: "/dashboard/courses/enrolled",
+          label: "Enrolled Courses",
+          icon: BookOpen,
+          description: "Display the courses this user has already enrolled in."
+        }
+      ]
+    },
+    { to: "/dashboard/mentorship", label: "Mentorship", icon: GraduationCap, description: "Explore all mentorship programs and coaching offerings we provide.", group: "Learning" },
+    { to: "/dashboard/resources", label: "Resources", icon: LibraryBig, description: "Download trading tools, templates, and essential files.", group: "Learning" },
+    { to: "/dashboard/signals", label: "Signals", icon: Signal, description: "Display the premium and standard signal services offered on the platform.", group: "Trading" },
+    { to: "/dashboard/tools", label: "Tools", icon: Wrench, description: "Access trading utilities like calculators and other practical tools.", group: "Trading" },
+    { to: "/dashboard/events", label: "Events", icon: CalendarDays, description: "Track tours, webinars, and past or upcoming academy events.", group: "Community" },
+    { to: "/dashboard/collaboration", label: "Collaboration", icon: Handshake, description: "Present partnership opportunities for brands and organizations that want to work with us.", group: "Community" },
+    { to: "/dashboard/meetings", label: "Meetings", icon: BriefcaseBusiness, description: "Book and manage private sessions with mentors and coaches.", group: "Community" },
+    { to: "/dashboard/giveaways", label: "Giveaways", icon: Gift, description: "Complete tasks, challenges, or campaigns to unlock platform rewards.", group: "Community" },
+    { to: "/dashboard/profile", label: "Profile", icon: UserCircle2, description: "Update your personal details and account settings.", group: "Settings" },
+    { to: "/dashboard/affiliate", label: "Affiliate", icon: BadgeDollarSign, description: "Share our courses and offerings while tracking your referral rewards.", group: "Settings" },
+    { to: "/dashboard/support", label: "Support", icon: LifeBuoy, description: "Need help? Reach out to the Marketgod support team.", group: "Settings" }
   ],
   admin: [
-    { to: "/admin", label: "Overview", icon: LayoutDashboard, description: "Platform metrics, recent activity, and quick actions." },
-    { to: "/admin/users", label: "Users", icon: Users, description: "Manage platform members, their access, and details." },
-    { to: "/admin/roles", label: "Roles", icon: ShieldCheck, description: "Configure system permissions and staff access levels." },
-    { to: "/admin/courses", label: "Courses", icon: FolderKanban, description: "Create, edit, and manage educational content." },
-    { to: "/admin/subscriptions", label: "Subscriptions", icon: CreditCard, description: "Manage pricing plans and monitor active subscribers." },
-    { to: "/admin/bookings", label: "Bookings", icon: BriefcaseBusiness, description: "Review and manage mentorship and event reservations." },
-    { to: "/admin/support", label: "Support", icon: LifeBuoy, description: "Handle student inquiries, tickets, and assistance." }
+    { to: "/admin", label: "Overview", icon: LayoutDashboard, description: "Platform metrics, recent activity, and quick actions.", group: "Dashboard" },
+    { to: "/admin/users", label: "Users", icon: Users, description: "Manage platform members, their access, and details.", group: "Management" },
+    { to: "/admin/roles", label: "Roles", icon: ShieldCheck, description: "Configure system permissions and staff access levels.", group: "Management" },
+    { to: "/admin/courses", label: "Courses", icon: FolderKanban, description: "Create, edit, and manage educational content.", group: "Content" },
+    { to: "/admin/subscriptions", label: "Subscriptions", icon: CreditCard, description: "Manage pricing plans and monitor active subscribers.", group: "Financials" },
+    { to: "/admin/bookings", label: "Bookings", icon: BriefcaseBusiness, description: "Review and manage mentorship and event reservations.", group: "Financials" },
+    { to: "/admin/support", label: "Support", icon: LifeBuoy, description: "Handle student inquiries, tickets, and assistance.", group: "System" }
   ],
   premium: [
-    { to: "/premium", label: "VIP Overview", icon: LayoutDashboard, description: "Welcome to your exclusive premium workspace." },
-    { to: "/premium/mentorship", label: "Mentorship", icon: Crown, description: "Access your high-level VIP mentorship content." },
-    { to: "/premium/signals", label: "VIP Signals", icon: Signal, description: "Real-time trading signals, setups, and deep market analysis." },
-    { to: "/premium/courses", label: "Pro Courses", icon: BookOpen, description: "Advanced trading courses and exclusive strategies." },
-    { to: "/premium/resources", label: "Vault", icon: LibraryBig, description: "Exclusive tools, indicators, and private templates." },
-    { to: "/premium/events", label: "Private Events", icon: CalendarDays, description: "Invite-only webinars, live sessions, and VIP meetups." },
-    { to: "/premium/profile", label: "Profile", icon: UserCircle2, description: "Manage your premium account and preferences." },
-    { to: "/premium/support", label: "Priority Support", icon: LifeBuoy, description: "Jump the queue with priority assistance and VIP care." }
+    { to: "/premium", label: "VIP Overview", icon: LayoutDashboard, description: "Welcome to your exclusive premium workspace.", group: "Dashboard" },
+    { to: "/premium/mentorship", label: "Mentorship", icon: Crown, description: "Access your high-level VIP mentorship content.", group: "VIP Access" },
+    { to: "/premium/signals", label: "VIP Signals", icon: Signal, description: "Real-time trading signals, setups, and deep market analysis.", group: "VIP Access" },
+    { to: "/premium/courses", label: "Pro Courses", icon: BookOpen, description: "Advanced trading courses and exclusive strategies.", group: "VIP Access" },
+    { to: "/premium/resources", label: "Vault", icon: LibraryBig, description: "Exclusive tools, indicators, and private templates.", group: "VIP Access" },
+    { to: "/premium/events", label: "Private Events", icon: CalendarDays, description: "Invite-only webinars, live sessions, and VIP meetups.", group: "VIP Access" },
+    { to: "/premium/profile", label: "Profile", icon: UserCircle2, description: "Manage your premium account and preferences.", group: "Settings" },
+    { to: "/premium/support", label: "Priority Support", icon: LifeBuoy, description: "Jump the queue with priority assistance and VIP care.", group: "Settings" }
   ]
 };
 
@@ -174,11 +212,12 @@ export function translateDescription(description: string, language: AppLanguage)
   return descriptionMap[description]?.[language] || description;
 }
 
-export function getTranslatedNavItems(items: NavItem[], language: AppLanguage) {
+export function getTranslatedNavItems(items: NavItem[], language: AppLanguage): TranslatedNavItem[] {
   return items.map((item) => ({
     ...item,
     translatedLabel: translateLabel(item.label, language),
-    translatedDescription: translateDescription(item.description, language)
+    translatedDescription: translateDescription(item.description, language),
+    children: item.children ? getTranslatedNavItems(item.children, language) : undefined
   }));
 }
 

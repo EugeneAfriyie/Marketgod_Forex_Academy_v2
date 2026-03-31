@@ -86,7 +86,11 @@ export default function AppShell({ title, description, area }: AppShellProps) {
         )}
       </AnimatePresence>
 
-      <div className="mx-auto grid h-full max-w-[1600px] gap-5 xl:grid-cols-[280px_minmax(0,1fr)]">
+      <div
+        className={`relative mx-auto grid h-full max-w-[1600px] gap-5 transition-[grid-template-columns] duration-500 ease-in-out ${
+          isSidebarCollapsed ? "xl:grid-cols-[92px_minmax(0,1fr)]" : "xl:grid-cols-[280px_minmax(0,1fr)]"
+        }`}
+      >
         <AppSidebar
           area={area}
           navItems={translatedNavItems}
@@ -117,6 +121,7 @@ export default function AppShell({ title, description, area }: AppShellProps) {
             language={language as AppLanguage}
             onLanguageChange={(value) => setLanguage(value)}
             onToggleMobileMenu={() => setIsMobileMenuOpen(true)}
+            isMobileMenuOpen={isMobileMenuOpen}
             onToggleTheme={toggleTheme}
           />
 

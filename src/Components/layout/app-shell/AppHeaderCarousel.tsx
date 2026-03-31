@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { ArrowRight } from "lucide-react";
 import { Link } from "react-router-dom";
@@ -22,18 +22,30 @@ export default function AppHeaderCarousel({
   const isDark = theme === "dark";
   const [carouselIndex, setCarouselIndex] = useState(0);
   const [direction, setDirection] = useState(0);
+  const intervalRef = useRef<NodeJS.Timeout | null>(null);
 
   useEffect(() => {
     setCarouselIndex(0);
   }, [areaLabel, carouselItems]);
 
-  useEffect(() => {
-    const interval = setInterval(() => {
+  const stopInterval = () => {
+    if (intervalRef.current) {
+      clearInterval(intervalRef.current);
+      intervalRef.current = null;
+    }
+  };
+
+  const startInterval = () => {
+    stopInterval();
+    intervalRef.current = setInterval(() => {
       setDirection(1);
       setCarouselIndex((prevIndex) => (prevIndex + 1) % carouselItems.length);
-    }, 7000);
+    }, 4000);
+  };
 
-    return () => clearInterval(interval);
+  useEffect(() => {
+    startInterval();
+    return () => stopInterval();
   }, [carouselItems]);
 
   const onDragEnd = (_event: MouseEvent | TouchEvent | PointerEvent, info: { offset: { x: number } }) => {
@@ -52,7 +64,11 @@ export default function AppHeaderCarousel({
   const hasBgImage = Boolean(currentItem.img);
 
   return (
-    <div className="relative h-[110px] w-full overflow-hidden rounded-lg sm:h-[120px]">
+    <div
+      className="relative h-[110px] w-full overflow-hidden rounded-lg sm:h-[120px]"
+      onMouseEnter={stopInterval}
+      onMouseLeave={startInterval}
+    >
       <AnimatePresence>
         {currentItem.img && (
           <motion.div

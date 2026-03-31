@@ -17,11 +17,11 @@ export default function CoursesPage() {
 
   return (
     <StudentSectionCard
-      title={isFrench ? "Mes Cours" : "My Courses"}
+      title={isFrench ? "Tous les Cours" : "All Courses"}
       description={
         isFrench
-          ? "Cette page montre comment les cours achetes, les lecons et la progression seront presentes."
-          : "This page previews how purchased courses, lesson counts, and progress indicators will be presented to the student."
+          ? "Cette page presente l'ensemble des cours disponibles sur la plateforme, qu'ils soient deja debloques ou non."
+          : "This page presents the full course catalog available on the platform, whether the user is already enrolled or not."
       }
     >
       <div className="grid gap-4 lg:grid-cols-2">

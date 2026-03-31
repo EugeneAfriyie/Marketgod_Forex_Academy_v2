@@ -19,6 +19,7 @@ interface AppTopbarProps {
   language: AppLanguage;
   onLanguageChange: (language: AppLanguage) => void;
   onToggleMobileMenu: () => void;
+  isMobileMenuOpen: boolean;
   onToggleTheme: () => void;
 }
 
@@ -35,6 +36,7 @@ export default function AppTopbar({
   language,
   onLanguageChange,
   onToggleMobileMenu,
+  isMobileMenuOpen,
   onToggleTheme,
 }: AppTopbarProps) {
   const { theme } = useTheme();
@@ -50,6 +52,8 @@ export default function AppTopbar({
         <div className="mb-2 xl:hidden">
           <button
             onClick={onToggleMobileMenu}
+            aria-expanded={isMobileMenuOpen}
+            aria-label="Open menu"
             className={`flex w-fit items-center gap-2 rounded-xl p-2.5 transition-colors ${
               isDark ? "bg-white/5 text-white hover:bg-white/10" : "bg-black/5 text-mg-light-text hover:bg-black/10"
             }`}
