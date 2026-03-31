@@ -80,7 +80,7 @@ export default function AppSidebar({
     setOpenMenus((prev) => ({ ...prev, [key]: !prev[key] }));
   };
 
-  const tooltipClass = `absolute left-full ml-4 px-3 py-1.5 text-xs font-semibold whitespace-nowrap rounded-lg shadow-xl opacity-0 pointer-events-none group-hover:opacity-100 transition-opacity z-50 ${
+  const tooltipClass = `fixed left-full ml-4 px-3 py-1.5 text-xs font-semibold whitespace-nowrap rounded-lg shadow-xl opacity-0 pointer-events-none group-hover:opacity-100 transition-opacity z-50 ${
     isDark ? "bg-white text-black" : "bg-black text-white"
   }`;
   
@@ -117,7 +117,7 @@ export default function AppSidebar({
         </button>
 
         <nav
-          className={`flex-1 flex flex-col gap-6 overflow-y-auto pr-1 [&::-webkit-scrollbar]:w-1.5 [&::-webkit-scrollbar-track]:bg-transparent [&::-webkit-scrollbar-thumb]:rounded-full ${
+          className={`flex-1 flex flex-col gap-6 overflow-y-auto overflow-x-hidden pr-1 [&::-webkit-scrollbar]:w-1.5 [&::-webkit-scrollbar-track]:bg-transparent [&::-webkit-scrollbar-thumb]:rounded-full ${
             isDark ? "[&::-webkit-scrollbar-thumb]:bg-white/10 hover:[&::-webkit-scrollbar-thumb]:bg-white/20" : "[&::-webkit-scrollbar-thumb]:bg-black/10 hover:[&::-webkit-scrollbar-thumb]:bg-black/20"
           }`}
         >

@@ -1,10 +1,12 @@
 import { useMemo, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import AuthLayout from "../../Components/layout/AuthLayout";
 import AuthField from "../../Components/common/AuthField";
 
 export default function ForgotPasswordPage() {
   const [email, setEmail] = useState("");
   const [touched, setTouched] = useState(false);
+  const navigate = useNavigate();
 
   const errors = useMemo(() => {
     if (!touched) return {};
@@ -17,6 +19,11 @@ export default function ForgotPasswordPage() {
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     setTouched(true);
+
+    // Proceed if there are no validation errors
+    if (email.trim()) {
+      navigate("/login");
+    }
   };
 
   return (

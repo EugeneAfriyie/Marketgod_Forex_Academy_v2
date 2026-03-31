@@ -1,4 +1,5 @@
 import { useMemo, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import AuthLayout from "../../Components/layout/AuthLayout";
 import AuthField from "../../Components/common/AuthField";
 import { useTheme } from "../../context/ThemeContext";
@@ -12,6 +13,7 @@ export default function RegisterPage() {
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [touched, setTouched] = useState(false);
+  const navigate = useNavigate();
 
   const errors = useMemo(() => {
     if (!touched) return {};
@@ -30,6 +32,11 @@ export default function RegisterPage() {
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     setTouched(true);
+
+    // Proceed if there are no validation errors
+    if (fullName.trim() && email.trim() && password.trim() && confirmPassword === password) {
+      navigate("/dashboard");
+    }
   };
 
   return (

@@ -1,4 +1,4 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useMemo, useState } from "react";
 import AuthLayout from "../../Components/layout/AuthLayout";
 import AuthField from "../../Components/common/AuthField";
@@ -10,6 +10,7 @@ export default function LoginPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [touched, setTouched] = useState(false);
+  const navigate = useNavigate();
 
   const errors = useMemo(() => {
     if (!touched) return {};
@@ -23,6 +24,11 @@ export default function LoginPage() {
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     setTouched(true);
+
+    // Proceed if there are no validation errors
+    if (email.trim() && password.trim()) {
+      navigate("/dashboard");
+    }
   };
 
   return (
