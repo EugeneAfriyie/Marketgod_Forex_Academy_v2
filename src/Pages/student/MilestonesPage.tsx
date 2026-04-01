@@ -1,5 +1,5 @@
 import { Award, BarChart3, CheckCircle, Crown, Footprints, Star } from "lucide-react";
-import { motion } from "framer-motion";
+import { motion, Variants } from "framer-motion";
 import { useTheme } from "../../context/ThemeContext";
 import { useLanguage } from "../../context/LanguageContext";
 import StudentSectionCard from "../../Components/student/StudentSectionCard";
@@ -58,13 +58,13 @@ export default function MilestonesPage() {
   const unlockedCount = milestones.filter((m) => m.unlocked).length;
   const totalXP = milestones.reduce((sum, m) => (m.unlocked ? sum + m.xp : sum), 0);
 
-  const container = {
+  const container: Variants = {
     hidden: { opacity: 0 },
     show: { opacity: 1, transition: { staggerChildren: 0.1 } }
   };
-  const item = {
+  const item: Variants = {
     hidden: { opacity: 0, y: 20 },
-    show: { opacity: 1, y: 0, transition: { type: "spring", stiffness: 300, damping: 24 } }
+    show: { opacity: 1, y: 0, transition: { type: "spring" as const, stiffness: 300, damping: 24 } }
   };
 
   return (

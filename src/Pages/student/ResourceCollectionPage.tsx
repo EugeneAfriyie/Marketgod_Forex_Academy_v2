@@ -3,12 +3,12 @@ import { useNavigate, useParams } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import { useTheme } from "../../context/ThemeContext";
 import { useLanguage } from "../../context/LanguageContext";
-import { ArrowLeft, Download, ExternalLink, FileText, Globe, Instagram, PlayCircle, Send, Twitter, Video, Youtube, X } from "lucide-react";
 import { ArrowLeft, Download, ExternalLink, FileText, Globe, Instagram, PlayCircle, Send, Twitter, Video, Youtube, X, Crown, Loader2, CheckCircle2, XCircle, Lock } from "lucide-react";
 
 // Mock Data for different resource collections
-const collectionsData = {
+const collectionsData: Record<string, any> = {
   "pdf-guides": {
+    isPremium: false,
     title: { en: "PDF Cheat Sheets", fr: "Fiches Pratiques PDF" },
     description: { en: "Download our most valuable, printable PDF guides and checklists to keep on your trading desk.", fr: "Téléchargez nos guides et listes de contrôle PDF les plus précieux et imprimables à conserver sur votre bureau de trading." },
     items: [
@@ -18,6 +18,7 @@ const collectionsData = {
     ]
   },
   "video-archives": {
+    isPremium: false,
     title: { en: "Video Archives", fr: "Archives Vidéo" },
     description: { en: "Browse our full library of past live sessions and weekly breakdowns to sharpen your edge.", fr: "Parcourez notre bibliothèque complète de sessions en direct passées et d'analyses hebdomadaires pour affiner votre avantage." },
     items: [
@@ -37,6 +38,7 @@ const collectionsData = {
     ]
   },
   "social-media": {
+    isPremium: false,
     title: { en: "Official Social Media", fr: "Réseaux Sociaux Officiels" },
     description: { en: "Connect with MarketGod Academy across all our official platforms to stay updated and engage with the community.", fr: "Connectez-vous avec MarketGod Academy sur toutes nos plateformes officielles pour rester informé." },
     items: [

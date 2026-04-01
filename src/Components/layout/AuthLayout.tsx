@@ -1,5 +1,6 @@
 import type { ReactNode } from "react";
 import { useTheme } from "../../context/ThemeContext";
+import { useLanguage } from "../../context/LanguageContext";
 import AuthBrandPanel from "./auth-layout/AuthBrandPanel";
 import AuthFormPanel from "./auth-layout/AuthFormPanel";
 
@@ -32,10 +33,14 @@ export default function AuthLayout({
 }: AuthLayoutProps) {
   const { theme } = useTheme();
   const isDark = theme === "dark";
+  const { language } = useLanguage();
+  const isFrench = language === "fr";
+  const currentYear = new Date().getFullYear();
 
   return (
     <main
-      className={`min-h-screen flex items-center justify-center p-4 sm:p-6 lg:p-8 relative isolate transition-colors duration-500 ease-in-out ${
+      // Changed to flex-col to accommodate footer
+      className={`min-h-screen flex flex-col items-center justify-center p-4 sm:p-6 lg:p-8 relative isolate transition-colors duration-500 ease-in-out ${
         isDark ? "bg-[#050505] text-mg-white" : "bg-[#f7f3ea] text-mg-light-text"
       }`}
     >
@@ -76,6 +81,16 @@ export default function AuthLayout({
         >
           {children}
         </AuthFormPanel>
+      </div>
+
+      {/* Auth Page Footer */}
+      <div className="w-full max-w-[1100px] mt-8 px-4 text-center">
+        <p className={`text-xs font-medium ${isDark ? "text-white/40" : "text-gray-500"}`}>
+          &copy; {currentYear} Marketgod Academy. {isFrench ? "Tous droits réservés." : "All rights reserved."}
+        </p>
+        <p className={`mt-2 text-xs font-medium ${isDark ? "text-white/30" : "text-gray-400"}`}>
+          {isFrench ? "Le trading comporte des risques. Assurez-vous de comprendre ces risques avant d'investir." : "Trading involves high risk. Ensure you fully understand these risks before investing."}
+        </p>
       </div>
     </main>
   );

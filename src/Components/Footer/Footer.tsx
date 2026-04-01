@@ -67,7 +67,7 @@ const Footer = () => {
         </motion.button>
       )}
 
-      <footer className="relative overflow-hidden bg-mg-black text-mg-paper mt-5">
+      <footer className="relative overflow-hidden bg-mg-black text-mg-paper mt-auto">
         {/* Cinematic Background */}
         <div className="absolute inset-0 opacity-30" style={{
           backgroundImage: `url('/logo.png')`,

@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { ArrowRight, Calculator, Download, ExternalLink, FileText, FolderArchive, LineChart, Link2, PlayCircle, Share2 } from "lucide-react";
-import { motion, AnimatePresence } from "framer-motion";
+import { ArrowRight, Calculator, Download, ExternalLink, FileText, FolderArchive, LineChart, Link2, PlayCircle, Share2, Crown, Loader2, CheckCircle2, XCircle, Lock } from "lucide-react";
+import { motion, AnimatePresence, Variants } from "framer-motion";
 import { useTheme } from "../../context/ThemeContext";
 import { useLanguage } from "../../context/LanguageContext";
 
@@ -21,7 +21,7 @@ const resources = [
   { category: "links", title: "Marketgod Chart Layout", type: "TradingView", desc: "Copy Eyram's exact clean, black-and-white TradingView layout.", icon: LineChart, action: "Copy Layout", link: "#", external: true },
   { slug: "social-media", category: "links", title: "Official Social Media", type: "Collection", desc: "Connect with us across all our official platforms and channels.", icon: Share2, action: "View Collection", isCollection: true },
   { slug: "video-archives", category: "archives", title: "Video Archives", type: "Collection", desc: "Browse our full library of past live sessions and weekly breakdowns.", icon: FolderArchive, action: "View Collection", isCollection: true },
-  { slug: "bootcamp-archives", category: "archives", title: "Bootcamp Archives", type: "Premium Collection", desc: "Past intensive bootcamp recordings and workshops.", icon: FolderArchive, action: "View Collection", isCollection: true },
+  { slug: "bootcamp-archives", category: "archives", title: "Bootcamp Archives", type: "Premium Collection", desc: "Past intensive bootcamp recordings and workshops.", icon: FolderArchive, action: "View Collection", isCollection: true, isPremium: true },
 ];
 
 export default function ResourcesPage() {
@@ -32,12 +32,40 @@ export default function ResourcesPage() {
   const navigate = useNavigate();
 
   const [activeCategory, setActiveCategory] = useState("all");
+  
+  // Mock Premium User State
+  const [isPremiumUser, setIsPremiumUser] = useState(false);
+  const [showUpgradeModal, setShowUpgradeModal] = useState(false);
+  const [paymentState, setPaymentState] = useState<'idle' | 'loading' | 'success' | 'error'>('idle');
+  const [pendingResource, setPendingResource] = useState<any>(null);
+
+  const handleProcessPayment = () => {
+    setPaymentState('loading');
+    setTimeout(() => {
+      const isSuccess = Math.random() > 0.2; // 80% success rate
+      if (isSuccess) {
+        setPaymentState('success');
+        setTimeout(() => {
+          setIsPremiumUser(true);
+          setShowUpgradeModal(false);
+          setPaymentState('idle');
+          if (pendingResource) {
+            if (pendingResource.isCollection) navigate(`/dashboard/resources/${pendingResource.slug}`);
+            else if (!pendingResource.external && pendingResource.link !== "#") navigate(pendingResource.link);
+            else if (pendingResource.external) window.open(pendingResource.link, '_blank');
+          }
+        }, 2000);
+      } else {
+        setPaymentState('error');
+      }
+    }, 2000);
+  };
 
   const filteredResources = activeCategory === "all" 
     ? resources 
     : resources.filter(r => r.category === activeCategory);
 
-  const container = {
+  const container: Variants = {
     hidden: { opacity: 0 },
     show: { opacity: 1, transition: { staggerChildren: 0.1 } }
   };
@@ -104,10 +132,17 @@ export default function ResourcesPage() {
                 key={resource.title + idx}
                 href={resource.isCollection ? `/dashboard/resources/${resource.slug}` : resource.link}
                 onClick={(e) => {
+                  if (resource.isPremium && !isPremiumUser) {
+                    e.preventDefault();
+                    setPendingResource(resource);
+                    setShowUpgradeModal(true);
+                    setPaymentState('idle');
+                    return;
+                  }
                   if (resource.isCollection) {
                     e.preventDefault();
                     navigate(`/dashboard/resources/${resource.slug}`);
-                  } else if (!resource.external && resource.link !== "#") {
+                  } else if (!resource.external && resource.link && resource.link !== "#") {
                     e.preventDefault();
                     navigate(resource.link);
                   }
@@ -125,9 +160,12 @@ export default function ResourcesPage() {
                     <div className="inline-flex h-14 w-14 items-center justify-center rounded-2xl bg-mg-gold/10 text-mg-gold transition-transform duration-500 group-hover:scale-110 group-hover:bg-mg-gold group-hover:text-black">
                       <Icon size={24} />
                     </div>
-                    <span className={`text-xs font-bold uppercase tracking-wider px-3 py-1 rounded-full border ${isDark ? "border-white/10 text-white/50" : "border-black/10 text-gray-500"}`}>
-                      {resource.type}
-                    </span>
+                    <div className={`flex items-center gap-2 text-xs font-bold uppercase tracking-wider px-3 py-1 rounded-full border ${isDark ? "border-white/10 text-white/50" : "border-black/10 text-gray-500"}`}>
+                      {resource.isPremium && !isPremiumUser && (
+                         <Lock size={12} className="text-mg-gold" />
+                      )}
+                      <span>{resource.type}</span>
+                    </div>
                   </div>
                   
                   <h3 className={`mb-3 text-xl font-black tracking-tight ${isDark ? "text-white" : "text-gray-900"}`}>
@@ -159,6 +197,75 @@ export default function ResourcesPage() {
           })}
         </AnimatePresence>
       </motion.div>
+
+      {/* Premium Upgrade Modal */}
+      <AnimatePresence>
+        {showUpgradeModal && (
+          <motion.div
+            initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
+            className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4 backdrop-blur-sm"
+          >
+            <motion.div
+              initial={{ scale: 0.95, opacity: 0, y: 20 }} animate={{ scale: 1, opacity: 1, y: 0 }} exit={{ scale: 0.95, opacity: 0, y: 20 }}
+              className={`w-full max-w-md overflow-hidden rounded-3xl border shadow-2xl ${isDark ? "border-white/10 bg-[#111111]" : "border-black/10 bg-white"}`}
+            >
+              <AnimatePresence mode="wait">
+                {paymentState === 'idle' && (
+                  <motion.div key="idle" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 0.2 }}>
+                    <div className={`p-6 border-b ${isDark ? "bg-white/5 border-white/10" : "bg-black/5 border-black/10"}`}>
+                      <h3 className={`text-xl font-bold flex items-center gap-3 ${isDark ? "text-white" : "text-gray-900"}`}>
+                        <Crown size={24} className="text-mg-gold" />
+                        {isFrench ? "Accès VIP Requis" : "VIP Access Required"}
+                      </h3>
+                    </div>
+                    <div className="p-6">
+                      <p className={`text-sm mb-6 leading-relaxed ${isDark ? "text-white/60" : "text-gray-600"}`}>
+                        {isFrench 
+                          ? "Ce contenu est réservé aux membres VIP de MarketGod. Abonnez-vous à notre mentorat premium pour débloquer cet outil et tout autre contenu exclusif." 
+                          : "This material is reserved for MarketGod VIP members. Subscribe to our premium mentorship to unlock this and all other exclusive content."}
+                      </p>
+                      <div className="mb-8 flex justify-between items-center">
+                        <span className={`font-bold ${isDark ? "text-white" : "text-gray-900"}`}>{isFrench ? "Abonnement Annuel" : "Annual Subscription"}</span>
+                        <span className="text-xl font-black text-mg-gold">$499.00</span>
+                      </div>
+                      <div className="flex flex-col sm:flex-row gap-3">
+                        <button onClick={() => setShowUpgradeModal(false)} className={`flex-1 rounded-xl border px-4 py-3 text-sm font-semibold transition-colors ${isDark ? "border-white/10 text-white hover:bg-white/5" : "border-black/10 text-gray-900 hover:bg-black/5"}`}>
+                          {isFrench ? "Annuler" : "Cancel"}
+                        </button>
+                        <button onClick={handleProcessPayment} className="flex-1 rounded-xl bg-mg-gold px-4 py-3 text-sm font-black uppercase tracking-wider text-black transition-transform hover:scale-[1.02] hover:shadow-[0_0_15px_rgba(212,175,55,0.4)]">
+                          {isFrench ? "Payer" : "Pay Now"}
+                        </button>
+                      </div>
+                    </div>
+                  </motion.div>
+                )}
+                {paymentState === 'loading' && (
+                  <motion.div key="loading" initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0 }} transition={{ duration: 0.2 }} className="flex flex-col items-center justify-center p-10 text-center">
+                    <Loader2 size={48} className="mb-6 animate-spin text-mg-gold" />
+                    <h3 className={`text-xl font-bold ${isDark ? "text-white" : "text-gray-900"}`}>{isFrench ? "Traitement..." : "Processing..."}</h3>
+                  </motion.div>
+                )}
+                {paymentState === 'success' && (
+                  <motion.div key="success" initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0 }} transition={{ duration: 0.3 }} className="flex flex-col items-center justify-center p-10 text-center">
+                    <CheckCircle2 size={56} className="mb-6 text-green-500" />
+                    <h3 className={`text-xl font-bold ${isDark ? "text-white" : "text-gray-900"}`}>{isFrench ? "Paiement Réussi !" : "Payment Successful!"}</h3>
+                  </motion.div>
+                )}
+                {paymentState === 'error' && (
+                  <motion.div key="error" initial={{ opacity: 0, x: 10 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0 }} transition={{ duration: 0.3 }} className="flex flex-col items-center justify-center p-10 text-center">
+                    <XCircle size={56} className="mb-6 text-red-500" />
+                    <h3 className={`text-xl font-bold ${isDark ? "text-white" : "text-gray-900"}`}>{isFrench ? "Échec du paiement" : "Payment Failed"}</h3>
+                    <div className="mt-6 flex w-full gap-3">
+                      <button onClick={() => setShowUpgradeModal(false)} className={`flex-1 rounded-xl border px-4 py-3 text-sm font-semibold transition-colors ${isDark ? "border-white/10 text-white hover:bg-white/5" : "border-black/10 text-gray-900 hover:bg-black/5"}`}>{isFrench ? "Annuler" : "Cancel"}</button>
+                      <button onClick={() => setPaymentState('idle')} className="flex-1 rounded-xl bg-mg-gold px-4 py-3 text-sm font-black uppercase tracking-wider text-black transition-transform hover:scale-[1.02]">{isFrench ? "Réessayer" : "Try Again"}</button>
+                    </div>
+                  </motion.div>
+                )}
+              </AnimatePresence>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 }

@@ -1,6 +1,6 @@
 import { useState } from "react";
-import { ArrowRight, BookOpen, Calendar, CheckCircle2, Crown, MessageCircle, PlayCircle, ShieldCheck, Star, Target, TrendingUp, UsersRound, Video, Loader2, XCircle } from "lucide-react";
-import { motion, AnimatePresence } from "framer-motion";
+import { ArrowRight, BookOpen, Calendar, CheckCircle2, Crown, MessageCircle, PlayCircle, ShieldCheck, Star, Target, TrendingUp, UsersRound, Video, Loader2, XCircle, HelpCircle, AlertTriangle } from "lucide-react";
+import { motion, AnimatePresence, Variants } from "framer-motion";
 import { Link } from "react-router-dom";
 import { useTheme } from "../../context/ThemeContext";
 import { useLanguage } from "../../context/LanguageContext";
@@ -62,7 +62,7 @@ export default function MentorshipPage() {
   // MOCK STATE: This will come from your user auth/subscription context later.
   // Set to `false` to see the sales page.
   // Set to `true` to see the active mentorship hub.
-  const [isEnrolled, setIsEnrolled] = useState(true);
+  const [isEnrolled, setIsEnrolled] = useState(false);
 
   // Payment Modal State
   const [showPaymentModal, setShowPaymentModal] = useState(false);
@@ -95,7 +95,7 @@ export default function MentorshipPage() {
     }, 2000);
   };
 
-  const sectionVariant = {
+  const sectionVariant: Variants = {
     hidden: { opacity: 0, y: 30 },
     visible: { 
       opacity: 1, 
@@ -104,12 +104,12 @@ export default function MentorshipPage() {
     }
   };
   
-  const gridContainerVariant = {
+  const gridContainerVariant: Variants = {
     hidden: { },
     visible: { transition: { staggerChildren: 0.1 } }
   };
 
-  const gridItemVariant = {
+  const gridItemVariant: Variants = {
     hidden: { y: 20, opacity: 0 },
     visible: { y: 0, opacity: 1, transition: { duration: 0.5 } }
   };
@@ -361,6 +361,46 @@ export default function MentorshipPage() {
               <ArrowRight size={22} className="relative z-10 transition-transform group-hover:translate-x-2" />
               <div className="absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/50 to-transparent group-hover:animate-shimmer" />
             </button>
+          </div>
+        </div>
+      </motion.div>
+
+      {/* Support Section */}
+      <motion.div initial="hidden" whileInView="visible" viewport={{ once: true, amount: 0.5 }} variants={sectionVariant} className={`overflow-hidden rounded-[3rem] border ${isDark ? "border-white/5 bg-[#111111]" : "border-black/5 bg-[#faf7f0]"}`}>
+        <div className="p-8 md:p-12 flex flex-col md:flex-row items-center justify-between gap-6">
+          <div className="flex flex-col md:flex-row items-center text-center md:text-left gap-6">
+            <div className="h-16 w-16 shrink-0 rounded-full bg-mg-gold/10 text-mg-gold flex items-center justify-center">
+              <HelpCircle size={32} />
+            </div>
+            <div>
+              <h3 className={`text-2xl font-black mb-2 ${isDark ? "text-white" : "text-gray-900"}`}>
+                {isFrench ? "Vous avez des questions ?" : "Have Questions?"}
+              </h3>
+              <p className={`font-medium ${isDark ? "text-white/60" : "text-gray-600"}`}>
+                {isFrench ? "Vous n'êtes pas sûr que le mentorat soit fait pour vous ? Notre équipe peut répondre à toutes vos questions." : "Unsure if the mentorship is right for you? Our support team can help answer any questions you have."}
+              </p>
+            </div>
+          </div>
+          <Link to="/dashboard/support" className="shrink-0 whitespace-nowrap rounded-xl border-2 border-mg-gold px-8 py-4 text-sm font-black uppercase tracking-wider text-mg-gold transition-colors hover:bg-mg-gold/10">
+            {isFrench ? "Contacter le Support" : "Contact Support"}
+          </Link>
+        </div>
+      </motion.div>
+
+      {/* Page-Level Risk Disclaimer */}
+      <motion.div initial="hidden" whileInView="visible" viewport={{ once: true, amount: 0.5 }} variants={sectionVariant} className={`mt-16 pt-12 border-t ${isDark ? "border-white/10" : "border-black/10"}`}>
+        <div className="max-w-4xl mx-auto">
+          <h3 className={`flex items-center gap-3 text-xl font-black mb-4 ${isDark ? "text-white/40" : "text-gray-400"}`}>
+            <AlertTriangle size={24} />
+            {isFrench ? "Avertissement sur les Risques" : "High Risk Warning"}
+          </h3>
+          <div className={`space-y-4 text-sm leading-relaxed text-justify ${isDark ? "text-white/40" : "text-gray-500"}`}>
+            <p>
+              {isFrench ? "Le trading de devises (Forex) sur marge comporte un niveau de risque élevé et peut ne pas convenir à tous les investisseurs. Le degré élevé d'effet de levier peut jouer contre vous comme en votre faveur." : "Trading foreign exchange (Forex) on margin carries a high level of risk, and may not be suitable for all investors. The high degree of leverage can work against you as well as for you."}
+            </p>
+            <p>
+              {isFrench ? "Avant de décider de trader sur le marché des changes, vous devez examiner attentivement vos objectifs d'investissement, votre niveau d'expérience et votre appétit pour le risque. Nos signaux et nos services de retournement de compte sont fournis à des fins éducatives et exécutives, mais les performances passées ne garantissent pas les résultats futurs. Vous ne devez pas investir de l'argent que vous ne pouvez pas vous permettre de perdre." : "Before deciding to trade foreign exchange you should carefully consider your investment objectives, level of experience, and risk appetite. Our signals and account flipping services are provided for educational and executive purposes, but past performance does not guarantee future results. You should not invest money that you cannot afford to lose."}
+            </p>
           </div>
         </div>
       </motion.div>

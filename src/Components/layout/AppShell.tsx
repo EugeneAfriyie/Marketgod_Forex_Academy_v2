@@ -29,6 +29,8 @@ export default function AppShell({ title, description, area }: AppShellProps) {
   const { theme, setTheme } = useTheme();
   const { language, setLanguage } = useLanguage();
   const isDark = theme === "dark";
+  const isFrench = language === "fr";
+  const currentYear = new Date().getFullYear();
   const location = useLocation();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
@@ -68,12 +70,24 @@ export default function AppShell({ title, description, area }: AppShellProps) {
 
   return (
     <div
-      className={`h-screen overflow-hidden p-4 transition-all duration-500 ease-in-out sm:p-5 ${
+      className={`relative isolate h-screen overflow-hidden p-4 transition-all duration-500 ease-in-out sm:p-5 ${
         isDark
           ? "bg-[radial-gradient(circle_at_top_left,rgba(212,175,55,0.08),transparent_20%),#050505] text-mg-white"
           : "bg-[radial-gradient(circle_at_top_left,rgba(212,175,55,0.12),transparent_24%),#f6f2e9] text-mg-light-text"
       }`}
     >
+      {/* Subtle Background Watermark Logo */}
+      <div 
+        className={`pointer-events-none absolute inset-0 -z-10 flex items-center justify-center overflow-hidden transition-opacity duration-500 ${isDark ? 'opacity-[0.02]' : 'opacity-[0.04]'}`}
+      >
+        <img 
+          src="/logo.png" 
+          alt="" 
+          aria-hidden="true"
+          className="h-auto w-[min(90vw,850px)] object-contain grayscale"
+        />
+      </div>
+
       <AnimatePresence>
         {isMobileMenuOpen && (
           <motion.div
@@ -125,7 +139,7 @@ export default function AppShell({ title, description, area }: AppShellProps) {
             onToggleTheme={toggleTheme}
           />
 
-          <div className="px-1 pb-1">
+          <div className="px-1 pb-1 flex-1">
             <AnimatePresence mode="wait">
               <motion.div
                 key={location.pathname}
@@ -137,6 +151,16 @@ export default function AppShell({ title, description, area }: AppShellProps) {
                 <Outlet />
               </motion.div>
             </AnimatePresence>
+          </div>
+
+          {/* Dashboard Footer */}
+          <div className="mt-auto px-4 py-6 text-center opacity-80 border-t border-black/5 dark:border-white/5">
+            <p className={`text-xs font-medium ${isDark ? "text-white/40" : "text-gray-500"}`}>
+              &copy; {currentYear} Marketgod Academy. {isFrench ? "Tous droits réservés." : "All rights reserved."}
+            </p>
+            <p className={`mt-2 text-xs font-medium ${isDark ? "text-white/30" : "text-gray-400"}`}>
+              {isFrench ? "Le trading comporte des risques. Assurez-vous de comprendre ces risques avant d'investir." : "Trading involves high risk. Ensure you fully understand these risks before investing."}
+            </p>
           </div>
         </main>
       </div>
