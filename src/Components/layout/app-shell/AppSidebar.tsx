@@ -80,7 +80,7 @@ export default function AppSidebar({
     setOpenMenus((prev) => ({ ...prev, [key]: !prev[key] }));
   };
 
-  const tooltipClass = `fixed left-full ml-4 px-3 py-1.5 text-xs font-semibold whitespace-nowrap rounded-lg shadow-xl opacity-0 pointer-events-none group-hover:opacity-100 transition-opacity z-50 ${
+  const tooltipClass = `absolute left-1/2 -translate-x-1/2 top-full mt-2 px-3 py-1.5 text-xs font-semibold whitespace-nowrap rounded-lg shadow-xl opacity-0 scale-95 origin-top pointer-events-none group-hover:opacity-100 group-hover:scale-100 transition-all duration-300 z-50 ${
     isDark ? "bg-white text-black" : "bg-black text-white"
   }`;
   
@@ -96,7 +96,7 @@ export default function AppSidebar({
           isDark ? "border-white/10 bg-[#111111]/95 backdrop-blur-2xl" : "border-black/10 bg-white/95 backdrop-blur-2xl"
         } ${isMobileMenuOpen ? "translate-x-0" : "-translate-x-[150%]"} ${isSidebarCollapsed ? "xl:w-[92px]" : "xl:w-[280px]"}`}
       >
-        <Link to="/" className={`group relative mb-8 flex items-center ${isSidebarCollapsed ? "xl:justify-center" : "gap-3"}`}>
+        <Link to="/" className={`group relative z-40 mb-8 flex items-center ${isSidebarCollapsed ? "xl:justify-center" : "gap-3"}`}>
           <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-mg-gold text-black">
             <BookOpen size={16} />
           </span>
@@ -117,7 +117,7 @@ export default function AppSidebar({
         </button>
 
         <nav
-          className={`flex-1 flex flex-col gap-6 overflow-y-auto overflow-x-hidden pr-1 [&::-webkit-scrollbar]:w-1.5 [&::-webkit-scrollbar-track]:bg-transparent [&::-webkit-scrollbar-thumb]:rounded-full ${
+          className={`relative z-10 flex-1 flex flex-col gap-6 overflow-y-auto overflow-x-hidden pr-1 [&::-webkit-scrollbar]:w-1.5 [&::-webkit-scrollbar-track]:bg-transparent [&::-webkit-scrollbar-thumb]:rounded-full ${
             isDark ? "[&::-webkit-scrollbar-thumb]:bg-white/10 hover:[&::-webkit-scrollbar-thumb]:bg-white/20" : "[&::-webkit-scrollbar-thumb]:bg-black/10 hover:[&::-webkit-scrollbar-thumb]:bg-black/20"
           }`}
         >
@@ -139,7 +139,7 @@ export default function AppSidebar({
                 <div className={`hidden xl:block mx-4 mb-2 mt-1 border-t ${isDark ? "border-white/10" : "border-black/5"}`} />
               )}
               {group.items.map((item) => (
-                <div key={item.to} className="flex flex-col">
+                <div key={item.to} className="relative z-20 flex flex-col hover:z-30">
                   <NavLink
                     to={item.to}
                     end={isRootArea(item.to)}
@@ -228,8 +228,8 @@ export default function AppSidebar({
 
         <div className={`mt-auto pt-5 flex ${isSidebarCollapsed ? "xl:flex-col xl:items-center xl:gap-3" : "flex-col"}`}>
           <div
-            className={`flex items-center ${isSidebarCollapsed ? "xl:justify-center" : "gap-3"} rounded-xl p-2 transition-colors duration-500 ease-in-out ${
-              isDark ? "bg-black/20" : "bg-black/5"
+            className={`relative z-20 flex items-center hover:z-30 ${isSidebarCollapsed ? "xl:justify-center" : "gap-3"} rounded-xl p-2 transition-colors duration-500 ease-in-out ${
+              isDark ? "bg-black/20" : "bg-black/5" // Note: group class is not needed here for hover
             }`}
           >
             <Link to={profilePath} className="group relative flex flex-1 items-center gap-3 min-w-0 rounded-lg focus:outline-none focus-visible:ring-2 focus-visible:ring-mg-gold">
@@ -258,7 +258,7 @@ export default function AppSidebar({
           <button
             onClick={handleLogout}
             aria-label="Log out"
-            className={`group relative hidden ${isSidebarCollapsed ? "xl:flex" : ""} justify-center rounded-xl p-2.5 transition-colors ${
+            className={`group relative z-20 hidden ${isSidebarCollapsed ? "xl:flex" : ""} justify-center rounded-xl p-2.5 transition-colors hover:z-30 ${
               isDark ? "text-white/60 hover:bg-red-500/20 hover:text-red-400" : "text-mg-light-textSecondary hover:bg-red-50 hover:text-red-600"
             }`}
           >

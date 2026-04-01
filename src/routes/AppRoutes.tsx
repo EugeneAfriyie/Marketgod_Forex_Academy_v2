@@ -40,6 +40,7 @@ import AdminCourseDetailsPage from "../Pages/admin/AdminCourseDetailsPage";
 import AdminSubscriptionsPage from "../Pages/admin/AdminSubscriptionsPage";
 import AdminBookingsPage from "../Pages/admin/AdminBookingsPage";
 import AdminSupportPage from "../Pages/admin/AdminSupportPage";
+import EnrolledCourseOverviewPage from "../Pages/student/EnrolledCourseOverviewPage";
 
 function RouteSEO() {
   const location = useLocation();
@@ -84,6 +85,7 @@ export default function AppRoutes() {
           <Route path="courses/all" element={<CoursesPage />} />
           <Route path="courses/enrolled" element={<EnrolledCoursesPage />} />
           <Route path="courses/:courseId" element={<CourseDetailsPage />} />
+          <Route path="/dashboard/courses/:courseId/overview" element={<EnrolledCourseOverviewPage />} />
           <Route path="courses/:courseId/lessons/:lessonId" element={<LessonPlayerPage />} />
           <Route path="resources" element={<ResourcesPage />} />
           <Route path="events" element={<EventsPage />} />
