@@ -22,7 +22,7 @@ export default function AppHeaderCarousel({
   const isDark = theme === "dark";
   const [carouselIndex, setCarouselIndex] = useState(0);
   const [direction, setDirection] = useState(0);
-  const intervalRef = useRef<NodeJS.Timeout | null>(null);
+  const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
   useEffect(() => {
     setCarouselIndex(0);

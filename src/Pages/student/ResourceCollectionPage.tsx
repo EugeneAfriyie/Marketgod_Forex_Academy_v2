@@ -160,7 +160,7 @@ export default function ResourceCollectionPage() {
         transition={{ delay: 0.2 }}
         className="space-y-4"
       >
-        {collection.items.map((resource, idx) => {
+        {collection.items.map((resource: any, idx: number) => {
           const Icon = resource.icon;
           return (
             <motion.a

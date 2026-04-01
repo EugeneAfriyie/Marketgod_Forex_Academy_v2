@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { ArrowRight, Calculator, Download, ExternalLink, FileText, FolderArchive, LineChart, Link2, PlayCircle, Share2, Crown, Loader2, CheckCircle2, XCircle, Lock } from "lucide-react";
-import { motion, AnimatePresence, Variants } from "framer-motion";
+import { ArrowRight, Calculator, Download, ExternalLink, FileText, FolderArchive, LineChart, Link2, Share2, Crown, Loader2, CheckCircle2, XCircle, Lock } from "lucide-react";
+import { motion, AnimatePresence, type Variants } from "framer-motion";
 import { useTheme } from "../../context/ThemeContext";
 import { useLanguage } from "../../context/LanguageContext";
 
@@ -13,7 +13,7 @@ const categories = [
   { id: "archives", label: { en: "Archives", fr: "Archives" } },
 ];
 
-const resources = [
+const resources: any[] = [
   { slug: "pdf-guides", category: "downloads", title: "PDF Cheat Sheets", type: "Collection", desc: "A library of our most valuable, printable PDF guides and checklists.", icon: FileText, action: "View Collection", isCollection: true },
   { category: "tools", title: "Risk & Lot Size Calculator", type: "Internal Tool", desc: "Calculate your position size, lot size, and account exposure instantly.", icon: Calculator, action: "Open Tool", link: "/dashboard/tools" },
   { category: "tools", title: "Trading Journal Template", type: "Notion Template", desc: "Track your wins, losses, and psychological state for every trade.", icon: FileText, action: "Duplicate", link: "#" },
@@ -68,10 +68,6 @@ export default function ResourcesPage() {
   const container: Variants = {
     hidden: { opacity: 0 },
     show: { opacity: 1, transition: { staggerChildren: 0.1 } }
-  };
-  const item = {
-    hidden: { opacity: 0, y: 20 },
-    show: { opacity: 1, y: 0, transition: { type: "spring", stiffness: 300, damping: 24 } }
   };
 
   return (

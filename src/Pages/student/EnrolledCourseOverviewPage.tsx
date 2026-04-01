@@ -1,6 +1,6 @@
 import { useNavigate, Link, useParams } from "react-router-dom";
 import { ArrowLeft, PlayCircle, CheckCircle2, Lock, Clock3, ArrowRight, Play } from "lucide-react";
-import { motion, Variants } from "framer-motion";
+import { motion, type Variants } from "framer-motion";
 import { useTheme } from "../../context/ThemeContext";
 import { useLanguage } from "../../context/LanguageContext";
 import StudentSectionCard from "../../Components/student/StudentSectionCard";

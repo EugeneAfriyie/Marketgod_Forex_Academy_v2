@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { motion, AnimatePresence, Variants } from "framer-motion";
+import { motion, AnimatePresence, type Variants } from "framer-motion";
 import { BellRing, Target, ShieldAlert, LineChart, Smartphone, Zap, CheckCircle2, Loader2, XCircle, Send, AlertTriangle, ExternalLink, HelpCircle } from "lucide-react";
 import { useTheme } from "../../context/ThemeContext";
 import { useLanguage } from "../../context/LanguageContext";
@@ -71,8 +71,7 @@ export default function SignalsPage() {
   const isFrench = language === "fr";
 
   // MOCK STATE: Toggle this to `true` to view the active subscriber dashboard!
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const [isSubscribed, setIsSubscribed] = useState(false);
+  const [isSubscribed] = useState(false);
 
   // Payment Modal State
   const [showPaymentModal, setShowPaymentModal] = useState(false);
@@ -275,7 +274,7 @@ export default function SignalsPage() {
           <div className="relative w-48 h-96 rounded-[3rem] border-8 border-gray-900 bg-black shadow-2xl flex flex-col p-4">
             <div className="w-1/2 h-1 bg-gray-800 mx-auto rounded-full mb-6"></div>
             <div className="flex-1 space-y-3">
-               <div className="w-full bg-green-500/20 text-green-400 text-[10px] font-bold p-3 rounded-xl border border-green-500/30">BUY XAUUSD @ 2045.50</div>
+               <div className="w-full bg-green-500/20 text-green-400 text-[10px] font-bold p-3 rounded-xl border border-green-500/30">BUY XAUUSD @ 5045.50</div>
                <div className="w-3/4 h-2 bg-white/20 rounded-full"></div>
                <div className="w-1/2 h-2 bg-white/20 rounded-full mb-4"></div>
                <div className="w-full aspect-video bg-mg-gold/20 rounded-lg flex items-center justify-center"><LineChart size={24} className="text-mg-gold" /></div>

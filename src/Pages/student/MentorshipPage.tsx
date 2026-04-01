@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { ArrowRight, BookOpen, Calendar, CheckCircle2, Crown, MessageCircle, PlayCircle, ShieldCheck, Star, Target, TrendingUp, UsersRound, Video, Loader2, XCircle, HelpCircle, AlertTriangle } from "lucide-react";
-import { motion, AnimatePresence, Variants } from "framer-motion";
+import { motion, AnimatePresence, type Variants } from "framer-motion";
 import { Link } from "react-router-dom";
 import { useTheme } from "../../context/ThemeContext";
 import { useLanguage } from "../../context/LanguageContext";

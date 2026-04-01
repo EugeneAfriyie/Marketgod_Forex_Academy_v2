@@ -1,6 +1,6 @@
 import { Award, BookOpen, CalendarDays, CreditCard, LibraryBig, UserCircle2 } from "lucide-react";
 import { Link } from "react-router-dom";
-import { motion, Variants } from "framer-motion";
+import { motion, type Variants } from "framer-motion";
 import { useTheme } from "../../context/ThemeContext";
 import { useLanguage } from "../../context/LanguageContext";
 import StudentSectionCard from "../../Components/student/StudentSectionCard";

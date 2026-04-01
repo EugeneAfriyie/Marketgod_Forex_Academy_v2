@@ -1,5 +1,5 @@
 import { Award, BarChart3, CheckCircle, Crown, Footprints, Star } from "lucide-react";
-import { motion, Variants } from "framer-motion";
+import { motion, type Variants } from "framer-motion";
 import { useTheme } from "../../context/ThemeContext";
 import { useLanguage } from "../../context/LanguageContext";
 import StudentSectionCard from "../../Components/student/StudentSectionCard";
