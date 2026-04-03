@@ -1,8 +1,8 @@
 // Eugene Afriyie UEB3502023
 
 import { useState } from "react";
-import { motion, type Variants } from "framer-motion";
-import { Calculator, DollarSign, Percent, ShieldCheck, Copy, Check, Info, CalendarDays } from "lucide-react";
+import { motion, AnimatePresence, type Variants } from "framer-motion";
+import { Calculator, DollarSign, Percent, ShieldCheck, Copy, Check, Info, CalendarDays, LineChart, Activity } from "lucide-react";
 import { useTheme } from "../../context/ThemeContext";
 import { useLanguage } from "../../context/LanguageContext";
 
@@ -20,15 +20,63 @@ const TooltipInfo = ({ text }: { text: string }) => (
   </div>
 );
 
-export default function ToolsPage() {
-  const { theme } = useTheme();
-  const { language } = useLanguage();
+// Highly Reliable Iframe Component for MQL5 (Tradays)
+const EconomicCalendarWidget = ({ isDark, isFrench }: { isDark: boolean; isFrench: boolean }) => {
+  const lang = isFrench ? "fr" : "en";
+  const mode = isDark ? "2" : "1";
 
-  const isDark = theme === "dark";
-  const isFrench = language === "fr";
+  return (
+    <div className="flex flex-col h-full w-full">
+      <iframe 
+        src={`https://www.tradays.com/${lang}/economic-calendar/widget?mode=${mode}&utm_source=marketgod`}
+        className="w-full flex-1 border-none rounded-xl"
+        title="Economic Calendar"
+      />
+      <div className="text-center pt-3 text-[10px] opacity-50">
+        <a href="https://www.mql5.com/" target="_blank" rel="noreferrer" className="hover:text-mg-gold transition-colors">
+          Powered by MQL5 Algo Trading Community
+        </a>
+      </div>
+    </div>
+  );
+};
 
-  // State
-  const [activeTab, setActiveTab] = useState<"calculator" | "calendar">("calendar");
+// Highly Reliable Iframe Component for TradingView Advanced Chart
+const AdvancedChartWidget = ({ isDark, isFrench }: { isDark: boolean; isFrench: boolean }) => {
+  const theme = isDark ? "dark" : "light";
+  const lang = isFrench ? "fr" : "en";
+  const src = `https://s.tradingview.com/widgetembed/?symbol=FX%3AEURUSD&interval=D&symboledit=1&saveimage=1&toolbarbg=f1f3f6&theme=${theme}&style=1&timezone=Etc%2FUTC&locale=${lang}&hide_side_toolbar=0&allow_symbol_change=1`;
+
+  return (
+    <div className="flex flex-col h-full w-full">
+      <iframe src={src} className="w-full flex-1 border-none rounded-xl" title="Advanced Chart" />
+    </div>
+  );
+};
+
+// Highly Reliable Iframe Component for TradingView Market Heatmap
+const MarketHeatmapWidget = ({ isDark, isFrench }: { isDark: boolean; isFrench: boolean }) => {
+  const config = {
+    width: "100%",
+    height: "100%",
+    currencies: ["EUR", "USD", "JPY", "GBP", "CHF", "AUD", "CAD", "NZD"],
+    isTransparent: true,
+    colorTheme: isDark ? "dark" : "light",
+    locale: isFrench ? "fr" : "en"
+  };
+  const encodedConfig = encodeURIComponent(JSON.stringify(config));
+  const src = `https://s.tradingview.com/embed-widget/forex-cross-rates/?locale=${isFrench ? "fr" : "en"}#${encodedConfig}`;
+
+  return (
+    <div className="flex flex-col h-full w-full">
+      <iframe src={src} className="w-full flex-1 border-none rounded-xl" title="Market Heatmap" />
+    </div>
+  );
+};
+
+// Extracted Risk Calculator Component
+const RiskCalculator = ({ isDark, isFrench, item }: { isDark: boolean; isFrench: boolean; item: Variants }) => {
+  // Calculator State
   const [accountBalance, setAccountBalance] = useState<number | "">(10000);
   const [riskMode, setRiskMode] = useState<"percent" | "amount">("percent");
   const [riskPercent, setRiskPercent] = useState<number | "">(1);
@@ -43,7 +91,7 @@ export default function ToolsPage() {
   
   const [copiedField, setCopiedField] = useState<string | null>(null);
 
-  // Values
+  // Calculated Values
   const balance = Number(accountBalance) || 0;
   const risk = Number(riskPercent) || 0;
   const riskAmtVal = Number(riskAmountInput) || 0;
@@ -118,51 +166,9 @@ export default function ToolsPage() {
     setTimeout(() => setCopiedField(null), 2000);
   };
 
-  const container: Variants = {
-    hidden: { opacity: 0 },
-    show: { opacity: 1, transition: { staggerChildren: 0.1 } }
-  };
-
-  const item: Variants = {
-    hidden: { opacity: 0, y: 20 },
-    show: { opacity: 1, y: 0 }
-  };
-
   const riskColor = isDark ? "text-white/60" : "text-gray-500";
 
-  // TradingView Economic Calendar Widget URL - dynamically switches theme and language!
-  const calendarWidgetUrl = `https://s.tradingview.com/embed-widget/events/?locale=${isFrench ? 'fr' : 'en'}#%7B%22colorTheme%22%3A%22${isDark ? 'dark' : 'light'}%22%2C%22isTransparent%22%3Atrue%2C%22width%22%3A%22100%25%22%2C%22height%22%3A%22100%25%22%2C%22importanceFilter%22%3A%22-1%2C0%2C1%22%2C%22currencyFilter%22%3A%22USD%2CEUR%2CGBP%2CJPY%2CCAD%2CAUD%2CNZD%2CCHF%22%7D`;
-
   return (
-    <div className={`relative min-h-screen p-6 ${isDark ? "bg-[#0b0f14]" : "bg-[#f7f9fc]"}`}>
-      
-      {/* Background grid */}
-      <div className="absolute inset-0 bg-[linear-gradient(to_right,#ffffff05_1px,transparent_1px),linear-gradient(to_bottom,#ffffff05_1px,transparent_1px)] bg-[size:40px_40px] pointer-events-none" />
-
-      <motion.div initial="hidden" animate="show" variants={container} className="relative z-10 space-y-6">
-
-        {/* TOOL TABS */}
-        <motion.div variants={item} className="flex justify-center mb-2">
-          <div className={`flex rounded-xl p-1 border shadow-inner ${isDark ? "bg-[#0f141b] border-white/10" : "bg-white border-black/10"}`}>
-            <button 
-              onClick={() => setActiveTab('calculator')} 
-              className={`flex items-center gap-2 px-6 py-3 rounded-lg font-bold text-sm transition-all ${activeTab === 'calculator' ? 'bg-mg-gold text-black shadow-md' : isDark ? 'text-white/60 hover:text-white hover:bg-white/5' : 'text-gray-500 hover:text-black hover:bg-black/5'}`}
-            >
-              <Calculator size={18} />
-              {isFrench ? "Calculateur" : "Risk Calculator"}
-            </button>
-            <button 
-              onClick={() => setActiveTab('calendar')} 
-              className={`flex items-center gap-2 px-6 py-3 rounded-lg font-bold text-sm transition-all ${activeTab === 'calendar' ? 'bg-mg-gold text-black shadow-md' : isDark ? 'text-white/60 hover:text-white hover:bg-white/5' : 'text-gray-500 hover:text-black hover:bg-black/5'}`}
-            >
-              <CalendarDays size={18} />
-              {isFrench ? "Calendrier Économique" : "Economic Calendar"}
-            </button>
-          </div>
-        </motion.div>
-
-        {/* CALCULATOR TOOL */}
-        {activeTab === 'calculator' && (
           <div className="space-y-6">
             {/* HEADER */}
             <motion.div variants={item} className={`flex items-center justify-between p-4 rounded-xl border backdrop-blur-xl ${isDark ? "bg-white/5 border-white/10" : "bg-white/50 border-black/10"}`}>
@@ -463,21 +469,85 @@ export default function ToolsPage() {
           </motion.div>
         </div>
           </div>
-        )}
+  );
+};
 
-        {/* ECONOMIC CALENDAR TOOL */}
-        {activeTab === 'calendar' && (
-          <motion.div variants={item} className={`h-[800px] w-full rounded-2xl overflow-hidden border p-4 backdrop-blur-xl ${isDark ? "bg-white/[0.03] border-white/10" : "bg-white border-black/10"}`}>
-            <iframe 
-              scrolling="no" 
-              allowTransparency={true} 
-              frameBorder="0" 
-              src={calendarWidgetUrl} 
-              style={{ boxSizing: "border-box", height: "100%", width: "100%" }}
-              title="Economic Calendar"
-            ></iframe>
-          </motion.div>
-        )}
+export default function ToolsPage() {
+  const { theme } = useTheme();
+  const { language } = useLanguage();
+
+  const isDark = theme === "dark";
+  const isFrench = language === "fr";
+
+  const [activeTab, setActiveTab] = useState<"calculator" | "calendar" | "chart" | "heatmap">("calculator");
+
+  const container: Variants = {
+    hidden: { opacity: 0 },
+    show: { opacity: 1, transition: { staggerChildren: 0.1 } }
+  };
+
+  const item: Variants = {
+    hidden: { opacity: 0, y: 20 },
+    show: { opacity: 1, y: 0 }
+  };
+
+  return (
+    <div className={`relative min-h-screen p-6 ${isDark ? "bg-[#0b0f14]" : "bg-[#f7f9fc]"}`}>
+      {/* Background grid */}
+      <div className="absolute inset-0 bg-[linear-gradient(to_right,#ffffff05_1px,transparent_1px),linear-gradient(to_bottom,#ffffff05_1px,transparent_1px)] bg-[size:40px_40px] pointer-events-none" />
+
+      <motion.div initial="hidden" animate="show" variants={container} className="relative z-10 space-y-6">
+        {/* TOOL TABS */}
+        <motion.div variants={item} className="flex justify-center mb-2">
+          <div className={`flex flex-wrap justify-center rounded-xl p-1 border shadow-inner ${isDark ? "bg-[#0f141b] border-white/10" : "bg-white border-black/10"}`}>
+            <button onClick={() => setActiveTab('calculator')} className={`flex items-center gap-2 px-6 py-3 rounded-lg font-bold text-sm transition-all ${activeTab === 'calculator' ? 'bg-mg-gold text-black shadow-md' : isDark ? 'text-white/60 hover:text-white hover:bg-white/5' : 'text-gray-500 hover:text-black hover:bg-black/5'}`}>
+              <Calculator size={18} />
+              {isFrench ? "Calculateur" : "Risk Calculator"}
+            </button>
+            <button onClick={() => setActiveTab('calendar')} className={`flex items-center gap-2 px-6 py-3 rounded-lg font-bold text-sm transition-all ${activeTab === 'calendar' ? 'bg-mg-gold text-black shadow-md' : isDark ? 'text-white/60 hover:text-white hover:bg-white/5' : 'text-gray-500 hover:text-black hover:bg-black/5'}`}>
+              <CalendarDays size={18} />
+              {isFrench ? "Calendrier Économique" : "Economic Calendar"}
+            </button>
+            <button onClick={() => setActiveTab('chart')} className={`flex items-center gap-2 px-6 py-3 rounded-lg font-bold text-sm transition-all ${activeTab === 'chart' ? 'bg-mg-gold text-black shadow-md' : isDark ? 'text-white/60 hover:text-white hover:bg-white/5' : 'text-gray-500 hover:text-black hover:bg-black/5'}`}>
+              <LineChart size={18} />
+              {isFrench ? "Graphique" : "Advanced Chart"}
+            </button>
+            <button onClick={() => setActiveTab('heatmap')} className={`flex items-center gap-2 px-6 py-3 rounded-lg font-bold text-sm transition-all ${activeTab === 'heatmap' ? 'bg-mg-gold text-black shadow-md' : isDark ? 'text-white/60 hover:text-white hover:bg-white/5' : 'text-gray-500 hover:text-black hover:bg-black/5'}`}>
+              <Activity size={18} />
+              {isFrench ? "Heatmap" : "Market Heatmap"}
+            </button>
+          </div>
+        </motion.div>
+
+        <AnimatePresence mode="wait">
+          {/* ACTIVE TOOL VIEW */}
+          {activeTab === 'calculator' && (
+            <motion.div key="calculator" initial="hidden" animate="show" exit={{ opacity: 0, y: -20, transition: { duration: 0.2 } }} variants={container} className="w-full">
+              <RiskCalculator isDark={isDark} isFrench={isFrench} item={item} />
+            </motion.div>
+          )}
+
+          {/* ECONOMIC CALENDAR TOOL */}
+          {activeTab === 'calendar' && (
+            <motion.div key="calendar" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -20, transition: { duration: 0.2 } }} className={`h-[calc(100vh-140px)] min-h-[600px] w-full rounded-2xl overflow-hidden border p-4 backdrop-blur-xl ${isDark ? "bg-white/[0.03] border-white/10" : "bg-white border-black/10"}`}>
+              <EconomicCalendarWidget isDark={isDark} isFrench={isFrench} />
+            </motion.div>
+          )}
+
+          {/* ADVANCED CHART TOOL */}
+          {activeTab === 'chart' && (
+            <motion.div key="chart" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -20, transition: { duration: 0.2 } }} className={`h-[calc(100vh-140px)] min-h-[600px] w-full rounded-2xl overflow-hidden border p-4 backdrop-blur-xl ${isDark ? "bg-white/[0.03] border-white/10" : "bg-white border-black/10"}`}>
+              <AdvancedChartWidget isDark={isDark} isFrench={isFrench} />
+            </motion.div>
+          )}
+
+          {/* MARKET HEATMAP TOOL */}
+          {activeTab === 'heatmap' && (
+            <motion.div key="heatmap" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -20, transition: { duration: 0.2 } }} className={`h-[calc(100vh-140px)] min-h-[600px] w-full rounded-2xl overflow-hidden border p-4 backdrop-blur-xl ${isDark ? "bg-white/[0.03] border-white/10" : "bg-white border-black/10"}`}>
+              <MarketHeatmapWidget isDark={isDark} isFrench={isFrench} />
+            </motion.div>
+          )}
+        </AnimatePresence>
       </motion.div>
     </div>
   );
