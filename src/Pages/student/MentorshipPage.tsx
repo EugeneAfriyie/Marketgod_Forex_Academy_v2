@@ -127,10 +127,10 @@ export default function MentorshipPage() {
           
           <div className="relative z-10 p-10 md:p-16 flex flex-col md:flex-row md:items-center justify-between gap-8">
             <div>
-              <div className="inline-flex items-center gap-2 rounded-full bg-green-500/20 border border-green-500/30 px-4 py-1.5 text-xs font-black uppercase tracking-[0.2em] text-green-500 mb-6 shadow-[0_0_15px_rgba(34,197,94,0.2)]">
+              <div className="inline-flex items-center gap-2 rounded-full bg-mg-gold/10 border border-mg-gold/30 px-4 py-1.5 text-xs font-black uppercase tracking-[0.2em] text-mg-gold mb-6 shadow-[0_0_15px_rgba(212,175,55,0.2)]">
                 <span className="relative flex h-2 w-2">
-                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
-                  <span className="relative inline-flex rounded-full h-2 w-2 bg-green-500"></span>
+                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-mg-gold opacity-75"></span>
+                  <span className="relative inline-flex rounded-full h-2 w-2 bg-mg-gold"></span>
                 </span>
                 {isFrench ? "Abonnement Actif" : "Active Subscription"}
               </div>
@@ -170,14 +170,14 @@ export default function MentorshipPage() {
           
           {/* VIP Community Card */}
           <motion.div variants={gridItemVariant} className={`group relative overflow-hidden rounded-[2rem] border p-8 transition-all hover:-translate-y-1 hover:shadow-xl ${isDark ? "border-white/10 bg-black/20 hover:border-mg-gold/50" : "border-black/10 bg-[#faf7f0] hover:border-mg-gold/50"}`}>
-            <div className="mb-6 inline-flex h-12 w-12 items-center justify-center rounded-2xl bg-blue-500/20 text-blue-500">
+            <div className={`mb-6 inline-flex h-12 w-12 items-center justify-center rounded-2xl ${isDark ? "bg-white/10 text-white" : "bg-black/5 text-gray-900"}`}>
               <MessageCircle size={24} />
             </div>
             <h3 className={`mb-2 text-2xl font-bold ${isDark ? "text-white" : "text-gray-900"}`}>{isFrench ? "Communauté VIP" : "VIP Community"}</h3>
             <p className={`mb-6 text-sm leading-relaxed ${isDark ? "text-white/60" : "text-gray-600"}`}>
               {isFrench ? "Rejoignez le groupe Telegram exclusif pour des analyses quotidiennes, des discussions et des configurations de signaux." : "Join the exclusive Telegram group for daily analysis, discussions, and signal setups."}
             </p>
-            <a href="https://t.me/marketgodcommunity" target="_blank" rel="noreferrer" className={`inline-flex items-center gap-2 text-sm font-bold text-blue-500 transition-transform group-hover:translate-x-1`}>
+            <a href="https://t.me/marketgodcommunity" target="_blank" rel="noreferrer" className={`inline-flex items-center gap-2 text-sm font-bold transition-transform group-hover:translate-x-1 ${isDark ? "text-white" : "text-gray-900"}`}>
               {isFrench ? "Ouvrir Telegram" : "Open Telegram"} <ArrowRight size={16} />
             </a>
           </motion.div>
@@ -198,28 +198,28 @@ export default function MentorshipPage() {
 
           {/* VIP Signals Card */}
           <motion.div variants={gridItemVariant} className={`group relative overflow-hidden rounded-[2rem] border p-8 transition-all hover:-translate-y-1 hover:shadow-xl ${isDark ? "border-white/10 bg-black/20 hover:border-mg-gold/50" : "border-black/10 bg-[#faf7f0] hover:border-mg-gold/50"}`}>
-            <div className="mb-6 inline-flex h-12 w-12 items-center justify-center rounded-2xl bg-red-500/20 text-red-500">
+            <div className={`mb-6 inline-flex h-12 w-12 items-center justify-center rounded-2xl ${isDark ? "bg-white/10 text-white" : "bg-black/5 text-gray-900"}`}>
               <Target size={24} />
             </div>
             <h3 className={`mb-2 text-2xl font-bold ${isDark ? "text-white" : "text-gray-900"}`}>{isFrench ? "Signaux & Alertes" : "VIP Signals"}</h3>
             <p className={`mb-6 text-sm leading-relaxed ${isDark ? "text-white/60" : "text-gray-600"}`}>
               {isFrench ? "Consultez les dernières configurations de trading à haute probabilité et les zones d'entrée de nos tireurs d'élite." : "View the latest high-probability trade setups and entry zones from our snipers."}
             </p>
-            <Link to="/dashboard/signals" className={`inline-flex items-center gap-2 text-sm font-bold text-red-500 transition-transform group-hover:translate-x-1`}>
+            <Link to="/dashboard/signals" className={`inline-flex items-center gap-2 text-sm font-bold transition-transform group-hover:translate-x-1 ${isDark ? "text-white" : "text-gray-900"}`}>
               {isFrench ? "Voir les Signaux" : "View Signals Dashboard"} <ArrowRight size={16} />
             </Link>
           </motion.div>
 
           {/* Premium Vault / Courses Card */}
           <motion.div variants={gridItemVariant} className={`group relative overflow-hidden rounded-[2rem] border p-8 transition-all hover:-translate-y-1 hover:shadow-xl ${isDark ? "border-white/10 bg-black/20 hover:border-mg-gold/50" : "border-black/10 bg-[#faf7f0] hover:border-mg-gold/50"}`}>
-            <div className="mb-6 inline-flex h-12 w-12 items-center justify-center rounded-2xl bg-purple-500/20 text-purple-500">
+            <div className={`mb-6 inline-flex h-12 w-12 items-center justify-center rounded-2xl ${isDark ? "bg-white/10 text-white" : "bg-black/5 text-gray-900"}`}>
               <BookOpen size={24} />
             </div>
             <h3 className={`mb-2 text-2xl font-bold ${isDark ? "text-white" : "text-gray-900"}`}>{isFrench ? "L'Arsenal Premium" : "The Premium Vault"}</h3>
             <p className={`mb-6 text-sm leading-relaxed ${isDark ? "text-white/60" : "text-gray-600"}`}>
               {isFrench ? "Accédez instantanément à tous nos cours avancés, y compris les stratégies de bascule de compte." : "Get instant access to all our advanced courses, including account flipping strategies."}
             </p>
-            <Link to="/dashboard/courses/enrolled" className={`inline-flex items-center gap-2 text-sm font-bold text-purple-500 transition-transform group-hover:translate-x-1`}>
+            <Link to="/dashboard/courses/enrolled" className={`inline-flex items-center gap-2 text-sm font-bold transition-transform group-hover:translate-x-1 ${isDark ? "text-white" : "text-gray-900"}`}>
               {isFrench ? "Reprendre l'apprentissage" : "Resume Learning"} <ArrowRight size={16} />
             </Link>
           </motion.div>

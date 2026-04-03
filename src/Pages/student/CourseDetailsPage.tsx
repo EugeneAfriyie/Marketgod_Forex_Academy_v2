@@ -97,8 +97,8 @@ export default function CourseDetailsPage() {
               </span>
               <span className={`rounded-full px-3 py-1 text-xs font-bold tracking-wider ${
                 courseData.price === "Free" 
-                  ? isDark ? "bg-green-500/20 text-green-400" : "bg-green-100 text-green-600"
-                  : isDark ? "bg-blue-500/20 text-blue-400" : "bg-blue-100 text-blue-600"
+                  ? isDark ? "bg-white/10 text-white" : "bg-black/5 text-gray-900"
+                  : isDark ? "bg-mg-gold/20 text-mg-gold" : "bg-mg-gold/20 text-mg-gold"
               }`}>
                 {courseData.price === "Free" ? (isFrench ? "Gratuit" : "Free") : "Premium"}
               </span>
@@ -230,7 +230,7 @@ export default function CourseDetailsPage() {
 
             {enrollmentState === 'success' && (
               <motion.div key="success" initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0 }} transition={{ duration: 0.3 }} className="flex flex-col items-center justify-center p-10 text-center">
-                <CheckCircle2 size={56} className="mb-6 text-green-500" />
+                <CheckCircle2 size={56} className="mb-6 text-mg-gold" />
                 <h3 className={`text-xl font-bold ${isDark ? "text-white" : "text-mg-light-text"}`}>
                   {isFrench ? "Inscription réussie !" : "Successfully Enrolled!"}
                 </h3>
@@ -242,7 +242,7 @@ export default function CourseDetailsPage() {
 
             {enrollmentState === 'error' && (
               <motion.div key="error" initial={{ opacity: 0, x: 10 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0 }} transition={{ duration: 0.3 }} className="flex flex-col items-center justify-center p-10 text-center">
-                <XCircle size={56} className="mb-6 text-red-500" />
+                <XCircle size={56} className={`mb-6 ${isDark ? "text-white" : "text-gray-900"}`} />
                 <h3 className={`text-xl font-bold ${isDark ? "text-white" : "text-mg-light-text"}`}>
                   {isFrench ? "Échec de l'inscription" : "Enrollment Failed"}
                 </h3>

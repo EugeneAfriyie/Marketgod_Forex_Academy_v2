@@ -299,7 +299,7 @@ export default function LessonPlayerPage() {
 
                 {quizState === 'passed' && (
                   <motion.div key="passed" initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.9 }} className="flex flex-col items-center text-center">
-                     <CheckCircle2 size={56} className="text-green-500 mb-4" />
+                     <CheckCircle2 size={56} className="text-mg-gold mb-4" />
                      <h3 className={`text-2xl font-bold ${isDark ? "text-white" : "text-mg-light-text"}`}>
                         {isFrench ? "Quiz Réussi !" : "Quiz Passed!"}
                      </h3>
@@ -315,7 +315,7 @@ export default function LessonPlayerPage() {
 
                 {quizState === 'failed' && (
                   <motion.div key="failed" initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.9 }} className="flex flex-col items-center text-center">
-                     <XCircle size={56} className="text-red-500 mb-4" />
+                     <XCircle size={56} className={`mb-4 ${isDark ? "text-white" : "text-gray-900"}`} />
                      <h3 className={`text-2xl font-bold ${isDark ? "text-white" : "text-mg-light-text"}`}>
                         {isFrench ? "Quiz Échoué" : "Quiz Failed"}
                      </h3>
@@ -388,7 +388,7 @@ export default function LessonPlayerPage() {
                         >
                           <div className="mt-0.5 shrink-0">
                             {lesson.completed ? (
-                              <CheckCircle2 size={18} className="text-green-500" />
+                              <CheckCircle2 size={18} className="text-mg-gold" />
                             ) : lesson.isCurrent ? (
                               <PlayCircle size={18} className="text-mg-gold" />
                             ) : (

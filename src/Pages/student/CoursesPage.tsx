@@ -78,8 +78,8 @@ export default function CoursesPage() {
                   </span>
                   <span className={`rounded-full px-3 py-1 text-xs font-bold tracking-wider ${
                     course.price === "Free" 
-                      ? isDark ? "bg-green-500/20 text-green-400" : "bg-green-100 text-green-600"
-                      : isDark ? "bg-blue-500/20 text-blue-400" : "bg-blue-100 text-blue-600"
+                      ? isDark ? "bg-white/10 text-white" : "bg-black/5 text-gray-900"
+                      : isDark ? "bg-mg-gold/20 text-mg-gold" : "bg-mg-gold/20 text-mg-gold"
                   }`}>
                     {course.price === "Free" ? (isFrench ? "Gratuit" : "Free") : "Premium"}
                   </span>

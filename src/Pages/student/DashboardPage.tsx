@@ -141,7 +141,7 @@ export default function DashboardPage() {
                 <motion.div variants={item} key={lesson.title}>
                   <div className="flex items-baseline justify-between">
                     <p className={`text-sm font-semibold ${isDark ? 'text-white' : 'text-mg-light-text'}`}>{lesson.title}</p>
-                    <p className={`text-xs font-bold ${lesson.progress === 100 ? 'text-green-400' : 'text-mg-gold'}`}>{lesson.progress}%</p>
+                    <p className={`text-xs font-bold ${lesson.progress === 100 ? (isDark ? 'text-white' : 'text-gray-900') : 'text-mg-gold'}`}>{lesson.progress}%</p>
                   </div>
                   <div className={`mt-2 h-2 w-full overflow-hidden rounded-full ${isDark ? "bg-white/10" : "bg-black/10"}`}>
                     <div className="h-full rounded-full bg-mg-gold" style={{ width: `${lesson.progress}%` }} />

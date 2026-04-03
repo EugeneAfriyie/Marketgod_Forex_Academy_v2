@@ -126,12 +126,12 @@ export default function EnrolledCourseOverviewPage() {
                             ? isDark ? "border-white/5 bg-white/[0.01] cursor-not-allowed opacity-50" : "border-black/5 bg-black/[0.01] cursor-not-allowed opacity-50"
                             : isCurrent
                               ? isDark ? "border-mg-gold/50 bg-mg-gold/10 hover:-translate-y-1 hover:shadow-lg" : "border-mg-gold/50 bg-mg-gold/10 hover:-translate-y-1 hover:shadow-lg"
-                              : isDark ? "border-white/10 bg-black/20 hover:border-white/20 hover:-translate-y-1 hover:bg-white/5" : "border-black/10 bg-[#faf7f0] hover:border-black/20 hover:-translate-y-1 hover:bg-white"
+                              : isDark ? "border-white/10 bg-black/20 hover:border-white/20 hover:-translate-y-1 hover:bg-white/5" : "border-black/10 bg-[#faf7f0] hover:border-black/20 hover:-translate-y-1 hover:bg-black/5"
                         }`}
                       >
                         <div>
                         <div className="mb-4 flex items-center justify-between">
-                          <div className={`flex h-10 w-10 items-center justify-center rounded-full ${isCurrent ? "bg-mg-gold text-black shadow-[0_0_15px_rgba(212,175,55,0.4)]" : isCompleted ? "bg-green-500/20 text-green-500" : isDark ? "bg-white/10 text-white/40" : "bg-black/10 text-black/40"}`}>
+                          <div className={`flex h-10 w-10 items-center justify-center rounded-full ${isCurrent ? "bg-mg-gold text-black shadow-[0_0_15px_rgba(212,175,55,0.4)]" : isCompleted ? (isDark ? "bg-white/10 text-white" : "bg-black/5 text-gray-900") : isDark ? "bg-white/5 text-white/40" : "bg-black/5 text-black/40"}`}>
                             {isCompleted ? <CheckCircle2 size={20} /> : isLocked ? <Lock size={20} /> : <PlayCircle size={20} />}
                           </div>
                           <div className={`flex items-center gap-1.5 text-xs font-semibold ${isDark ? "text-white/40" : "text-mg-light-textSecondary/60"}`}>

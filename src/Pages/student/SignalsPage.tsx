@@ -135,10 +135,10 @@ export default function SignalsPage() {
           <div className="absolute inset-0 bg-gradient-to-br from-mg-gold/10 via-transparent to-transparent pointer-events-none" />
           
           <div className="relative z-10 p-10 md:p-16 flex flex-col items-center text-center">
-            <div className="inline-flex items-center gap-2 rounded-full bg-green-500/20 border border-green-500/30 px-4 py-1.5 text-xs font-black uppercase tracking-[0.2em] text-green-500 mb-6 shadow-[0_0_15px_rgba(34,197,94,0.2)]">
+            <div className="inline-flex items-center gap-2 rounded-full bg-mg-gold/10 border border-mg-gold/30 px-4 py-1.5 text-xs font-black uppercase tracking-[0.2em] text-mg-gold mb-6 shadow-[0_0_15px_rgba(212,175,55,0.2)]">
               <span className="relative flex h-2 w-2">
-                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
-                <span className="relative inline-flex rounded-full h-2 w-2 bg-green-500"></span>
+                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-mg-gold opacity-75"></span>
+                <span className="relative inline-flex rounded-full h-2 w-2 bg-mg-gold"></span>
               </span>
               {isFrench ? "Signaux Actifs" : "Signals Active"}
             </div>
@@ -274,7 +274,7 @@ export default function SignalsPage() {
           <div className="relative w-48 h-96 rounded-[3rem] border-8 border-gray-900 bg-black shadow-2xl flex flex-col p-4">
             <div className="w-1/2 h-1 bg-gray-800 mx-auto rounded-full mb-6"></div>
             <div className="flex-1 space-y-3">
-               <div className="w-full bg-green-500/20 text-green-400 text-[10px] font-bold p-3 rounded-xl border border-green-500/30">BUY XAUUSD @ 5045.50</div>
+               <div className="w-full bg-white/10 text-white text-[10px] font-bold p-3 rounded-xl border border-white/20">BUY XAUUSD @ 5045.50</div>
                <div className="w-3/4 h-2 bg-white/20 rounded-full"></div>
                <div className="w-1/2 h-2 bg-white/20 rounded-full mb-4"></div>
                <div className="w-full aspect-video bg-mg-gold/20 rounded-lg flex items-center justify-center"><LineChart size={24} className="text-mg-gold" /></div>
@@ -405,10 +405,10 @@ export default function SignalsPage() {
           >
             <motion.div
               initial={{ scale: 0.95, opacity: 0, y: 20 }} animate={{ scale: 1, opacity: 1, y: 0 }} exit={{ scale: 0.95, opacity: 0, y: 20 }}
-              className={`w-full max-w-lg overflow-hidden rounded-[2rem] border shadow-2xl ${isDark ? "border-red-500/30 bg-[#111111]" : "border-red-500/30 bg-white"}`}
+              className={`w-full max-w-lg overflow-hidden rounded-[2rem] border shadow-2xl ${isDark ? "border-white/10 bg-[#111111]" : "border-black/10 bg-white"}`}
             >
-              <div className="bg-red-500/10 p-6 flex flex-col items-center text-center border-b border-red-500/20">
-                <div className="h-16 w-16 bg-red-500/20 text-red-500 flex items-center justify-center rounded-full mb-4">
+              <div className={`p-6 flex flex-col items-center text-center border-b ${isDark ? "bg-white/5 border-white/10" : "bg-black/5 border-black/10"}`}>
+                <div className={`h-16 w-16 flex items-center justify-center rounded-full mb-4 ${isDark ? "bg-white/10 text-white" : "bg-black/10 text-gray-900"}`}>
                   <ShieldAlert size={32} />
                 </div>
                 <h3 className={`text-2xl font-black ${isDark ? "text-white" : "text-gray-900"}`}>
@@ -425,7 +425,7 @@ export default function SignalsPage() {
                   <button onClick={() => setShowDisclaimer(false)} className={`flex-1 rounded-xl border px-4 py-3 text-sm font-bold uppercase tracking-wider transition-colors ${isDark ? "border-white/10 text-white hover:bg-white/5" : "border-black/10 text-gray-900 hover:bg-black/5"}`}>
                     {isFrench ? "Je refuse" : "Cancel"}
                   </button>
-                  <button onClick={handleAcceptDisclaimer} className="flex-1 rounded-xl bg-red-500 text-white px-4 py-3 text-sm font-black uppercase tracking-wider transition-transform hover:scale-[1.02] shadow-[0_0_15px_rgba(239,68,68,0.4)]">
+                  <button onClick={handleAcceptDisclaimer} className={`flex-1 rounded-xl px-4 py-3 text-sm font-black uppercase tracking-wider transition-transform hover:scale-[1.02] shadow-lg ${isDark ? "bg-white text-black" : "bg-black text-white"}`}>
                     {isFrench ? "J'accepte les risques" : "I Accept the Risks"}
                   </button>
                 </div>
@@ -491,20 +491,20 @@ export default function SignalsPage() {
                 )}
                 {paymentState === 'redirecting' && (
                   <motion.div key="redirecting" initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0 }} transition={{ duration: 0.2 }} className="flex flex-col items-center justify-center p-12 text-center">
-                    <Send size={48} className="mb-6 text-blue-500 drop-shadow-[0_0_15px_rgba(59,130,246,0.4)] animate-bounce" />
+                    <Send size={48} className="mb-6 text-mg-gold drop-shadow-[0_0_15px_rgba(212,175,55,0.4)] animate-bounce" />
                     <h3 className={`text-xl font-bold mb-2 ${isDark ? "text-white" : "text-gray-900"}`}>{isFrench ? "Redirection vers Telegram..." : "Redirecting to Telegram..."}</h3>
                     <p className={`text-sm ${isDark ? "text-white/60" : "text-gray-600"}`}>{isFrench ? "Vous allez finaliser votre paiement via notre bot sécurisé." : "You will finalize your payment via our secure bot."}</p>
                   </motion.div>
                 )}
                 {paymentState === 'success' && (
                   <motion.div key="success" initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0 }} transition={{ duration: 0.3 }} className="flex flex-col items-center justify-center p-12 text-center">
-                    <CheckCircle2 size={64} className="mb-6 text-green-500 drop-shadow-[0_0_15px_rgba(34,197,94,0.4)]" />
+                    <CheckCircle2 size={64} className="mb-6 text-mg-gold drop-shadow-[0_0_15px_rgba(212,175,55,0.4)]" />
                     <h3 className={`text-2xl font-black ${isDark ? "text-white" : "text-gray-900"}`}>{isFrench ? "Accès Accordé !" : "Access Granted!"}</h3>
                   </motion.div>
                 )}
                 {paymentState === 'error' && (
                   <motion.div key="error" initial={{ opacity: 0, x: 10 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0 }} transition={{ duration: 0.3 }} className="flex flex-col items-center justify-center p-12 text-center">
-                    <XCircle size={64} className="mb-6 text-red-500" />
+                    <XCircle size={64} className={`mb-6 ${isDark ? "text-white" : "text-gray-900"}`} />
                     <h3 className={`text-xl font-bold ${isDark ? "text-white" : "text-gray-900"}`}>{isFrench ? "Échec de la transaction" : "Transaction Failed"}</h3>
                     <div className="mt-8 flex w-full gap-3">
                       <button onClick={() => setShowPaymentModal(false)} className={`flex-1 rounded-xl border px-4 py-3 text-sm font-bold uppercase tracking-wider transition-colors ${isDark ? "border-white/10 text-white hover:bg-white/5" : "border-black/10 text-gray-900 hover:bg-black/5"}`}>{isFrench ? "Fermer" : "Close"}</button>

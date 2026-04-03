@@ -81,7 +81,7 @@ export default function EnrolledCoursesPage() {
                   <span className="rounded-full bg-mg-gold/12 px-3 py-1 text-xs font-semibold uppercase tracking-[0.2em] text-mg-gold">
                     {course.level}
                   </span>
-                  <span className={`text-sm font-bold ${isCompleted ? "text-green-400" : isDark ? "text-white/60" : "text-mg-light-textSecondary/80"}`}>
+                  <span className={`text-sm font-bold ${isCompleted ? "text-mg-gold" : isDark ? "text-white/60" : "text-mg-light-textSecondary/80"}`}>
                     {isCompleted ? (isFrench ? "Terminé" : "Completed") : `${course.progress}%`}
                   </span>
                 </div>
@@ -109,7 +109,7 @@ export default function EnrolledCoursesPage() {
                 {isCompleted ? (
                   <Link
                     to={`/dashboard/courses/${slug}/overview`}
-                    className={`group mt-5 flex w-full items-center justify-center gap-2 rounded-xl border-2 border-dashed py-3 text-sm font-bold uppercase tracking-wider transition-all hover:bg-green-500/10 ${isDark ? "border-green-500/30 text-green-400" : "border-green-500/30 text-green-600"}`}
+                    className={`group mt-5 flex w-full items-center justify-center gap-2 rounded-xl border-2 border-dashed py-3 text-sm font-bold uppercase tracking-wider transition-all ${isDark ? "border-white/20 text-white hover:bg-white/5" : "border-black/20 text-black hover:bg-black/5"}`}
                   >
                     <CheckCircle size={16} className="transition-transform group-hover:scale-110" />
                     <span>{isFrench ? "Revoir le cours" : "Review Course"}</span>

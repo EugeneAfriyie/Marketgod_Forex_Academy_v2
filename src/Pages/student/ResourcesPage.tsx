@@ -243,13 +243,13 @@ export default function ResourcesPage() {
                 )}
                 {paymentState === 'success' && (
                   <motion.div key="success" initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0 }} transition={{ duration: 0.3 }} className="flex flex-col items-center justify-center p-10 text-center">
-                    <CheckCircle2 size={56} className="mb-6 text-green-500" />
+                    <CheckCircle2 size={56} className="mb-6 text-mg-gold" />
                     <h3 className={`text-xl font-bold ${isDark ? "text-white" : "text-gray-900"}`}>{isFrench ? "Paiement Réussi !" : "Payment Successful!"}</h3>
                   </motion.div>
                 )}
                 {paymentState === 'error' && (
                   <motion.div key="error" initial={{ opacity: 0, x: 10 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0 }} transition={{ duration: 0.3 }} className="flex flex-col items-center justify-center p-10 text-center">
-                    <XCircle size={56} className="mb-6 text-red-500" />
+                    <XCircle size={56} className={`mb-6 ${isDark ? "text-white" : "text-gray-900"}`} />
                     <h3 className={`text-xl font-bold ${isDark ? "text-white" : "text-gray-900"}`}>{isFrench ? "Échec du paiement" : "Payment Failed"}</h3>
                     <div className="mt-6 flex w-full gap-3">
                       <button onClick={() => setShowUpgradeModal(false)} className={`flex-1 rounded-xl border px-4 py-3 text-sm font-semibold transition-colors ${isDark ? "border-white/10 text-white hover:bg-white/5" : "border-black/10 text-gray-900 hover:bg-black/5"}`}>{isFrench ? "Annuler" : "Cancel"}</button>
