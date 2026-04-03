@@ -1,0 +1,1973 @@
+
+import { useMemo, useState } from "react";
+import { motion, type Variants } from "framer-motion";
+import {
+  Calculator,
+  CalendarDays,
+  Check,
+  Copy,
+  DollarSign,
+  Info,
+  Percent,
+  ShieldCheck,
+} from "lucide-react";
+import { useTheme } from "../../context/ThemeContext";
+import { useLanguage } from "../../context/LanguageContext";
+
+type SupportedLanguage = "en" | "fr" | "es" | "ar";
+
+const content = {
+  en: {
+    riskCalculator: "Risk Calculator",
+    economicCalendar: "Economic Calendar",
+    loadingCalendar: "Loading calendar...",
+    calendarFallback: "If the calendar does not load, check your connection or try refreshing this tab.",
+    accountBalance: "Account Balance",
+    accountBalanceTip: "Your total trading capital.",
+    risk: "Risk",
+    riskTip: "The amount you are willing to lose on this trade.",
+    percent: "Percent",
+    amount: "Amount",
+    tradeDirection: "Trade Direction",
+    tradeDirectionTip: "Choose whether this is a buy or sell setup.",
+    buy: "Buy",
+    sell: "Sell",
+    entryPrice: "Entry Price",
+    entryPriceTip: "Your planned market entry price.",
+    stopLoss: "Stop Loss",
+    stopLossTip: "Your invalidation level in pips or as a direct exit price.",
+    inPips: "In Pips",
+    exitPrice: "Exit Price",
+    contractSize: "Contract Size",
+    contractSizeTip: "Standard contract size used by many MT4 and MT5 brokers.",
+    contractDisclaimer:
+      "Disclaimer: Contract sizes may vary by broker. Verify your broker's exact instrument specification before placing a live trade.",
+    amountAtRisk: "Amount at Risk",
+    safeRisk: "Safe Risk",
+    moderateRisk: "Moderate Risk",
+    highRisk: "High Risk",
+    executionDetails: "Execution Details",
+    direction: "Direction",
+    exitPriceLabel: "Exit Price (SL)",
+    stopLossPips: "Stop Loss (Pips)",
+    lotSizeStandard: "Lot Size (Standard)",
+    standard: "Standard",
+    mini: "Mini",
+    micro: "Micro",
+    selectAsset: "Select Asset",
+    reset: "Reset",
+    validation: "Validation",
+    hintBalance: "Account balance should be greater than 0.",
+    hintRiskPercent: "Risk percent should stay between 0.1% and 10%.",
+    hintRiskAmount: "Risk amount should be greater than 0 and below your account balance.",
+    hintEntry: "Add an entry price to calculate a valid stop loss and position size.",
+    hintStopLoss: "Stop loss should be greater than 0.",
+    widgetStatusLoading: "Widget is loading.",
+    widgetStatusReady: "Widget connected.",
+    widgetStatusError: "Widget blocked. Fallback message is shown below.",
+    entryErrorBuy: "Stop loss must be lower than the entry price for a buy trade.",
+    entryErrorSell: "Stop loss must be higher than the entry price for a sell trade.",
+    copied: "Copied",
+  },
+  fr: {
+    riskCalculator: "Calculateur de risque",
+    economicCalendar: "Calendrier economique",
+    loadingCalendar: "Chargement du calendrier...",
+    calendarFallback:
+      "Si le calendrier ne se charge pas, verifiez votre connexion ou actualisez cet onglet.",
+    accountBalance: "Solde du compte",
+    accountBalanceTip: "Votre capital total de trading.",
+    risk: "Risque",
+    riskTip: "Le montant que vous acceptez de perdre sur ce trade.",
+    percent: "Pourcentage",
+    amount: "Montant",
+    tradeDirection: "Direction du trade",
+    tradeDirectionTip: "Choisissez un achat ou une vente.",
+    buy: "Achat",
+    sell: "Vente",
+    entryPrice: "Prix d'entree",
+    entryPriceTip: "Votre prix d'entree prevu sur le marche.",
+    stopLoss: "Stop loss",
+    stopLossTip: "Votre niveau d'invalidation en pips ou en prix de sortie.",
+    inPips: "En pips",
+    exitPrice: "Prix de sortie",
+    contractSize: "Taille du contrat",
+    contractSizeTip: "Taille standard du contrat chez de nombreux brokers MT4 et MT5.",
+    contractDisclaimer:
+      "Avertissement : les tailles de contrat peuvent varier selon le broker. Verifiez les specifications exactes de votre instrument avant de prendre une position reelle.",
+    amountAtRisk: "Montant a risque",
+    safeRisk: "Risque faible",
+    moderateRisk: "Risque modere",
+    highRisk: "Risque eleve",
+    executionDetails: "Details d'execution",
+    direction: "Direction",
+    exitPriceLabel: "Prix de sortie (SL)",
+    stopLossPips: "Stop loss (pips)",
+    lotSizeStandard: "Taille du lot (standard)",
+    standard: "Standard",
+    mini: "Mini",
+    micro: "Micro",
+    selectAsset: "Choisir l'actif",
+    reset: "Reinitialiser",
+    validation: "Validation",
+    hintBalance: "Le solde du compte doit etre superieur a 0.",
+    hintRiskPercent: "Le pourcentage de risque doit rester entre 0,1 % et 10 %.",
+    hintRiskAmount: "Le montant de risque doit etre superieur a 0 et inferieur au solde du compte.",
+    hintEntry: "Ajoutez un prix d'entree pour calculer un stop loss et une taille de position valides.",
+    hintStopLoss: "Le stop loss doit etre superieur a 0.",
+    widgetStatusLoading: "Le widget est en cours de chargement.",
+    widgetStatusReady: "Le widget est connecte.",
+    widgetStatusError: "Le widget est bloque. Le message de secours est affiche ci-dessous.",
+    entryErrorBuy: "Le stop loss doit etre inferieur au prix d'entree pour un achat.",
+    entryErrorSell: "Le stop loss doit etre superieur au prix d'entree pour une vente.",
+    copied: "Copie",
+  },
+  es: {
+    riskCalculator: "Calculadora de riesgo",
+    economicCalendar: "Calendario economico",
+    loadingCalendar: "Cargando calendario...",
+    calendarFallback:
+      "Si el calendario no carga, revisa tu conexion o vuelve a abrir esta pestana.",
+    accountBalance: "Saldo de la cuenta",
+    accountBalanceTip: "Tu capital total de trading.",
+    risk: "Riesgo",
+    riskTip: "La cantidad que estas dispuesto a perder en esta operacion.",
+    percent: "Porcentaje",
+    amount: "Monto",
+    tradeDirection: "Direccion de la operacion",
+    tradeDirectionTip: "Elige si la operacion es compra o venta.",
+    buy: "Compra",
+    sell: "Venta",
+    entryPrice: "Precio de entrada",
+    entryPriceTip: "Tu precio planeado de entrada al mercado.",
+    stopLoss: "Stop loss",
+    stopLossTip: "Tu nivel de invalidacion en pips o como precio de salida.",
+    inPips: "En pips",
+    exitPrice: "Precio de salida",
+    contractSize: "Tamano del contrato",
+    contractSizeTip: "Tamano estandar del contrato usado por muchos brokers MT4 y MT5.",
+    contractDisclaimer:
+      "Aviso: los tamanos del contrato pueden variar segun el broker. Verifica las especificaciones exactas antes de abrir una operacion real.",
+    amountAtRisk: "Monto en riesgo",
+    safeRisk: "Riesgo bajo",
+    moderateRisk: "Riesgo moderado",
+    highRisk: "Riesgo alto",
+    executionDetails: "Detalles de ejecucion",
+    direction: "Direccion",
+    exitPriceLabel: "Precio de salida (SL)",
+    stopLossPips: "Stop loss (pips)",
+    lotSizeStandard: "Tamano del lote (standard)",
+    standard: "Standard",
+    mini: "Mini",
+    micro: "Micro",
+    selectAsset: "Seleccionar activo",
+    reset: "Restablecer",
+    validation: "Validacion",
+    hintBalance: "El saldo de la cuenta debe ser mayor que 0.",
+    hintRiskPercent: "El porcentaje de riesgo debe mantenerse entre 0.1 % y 10 %.",
+    hintRiskAmount: "El monto de riesgo debe ser mayor que 0 y menor que el saldo de la cuenta.",
+    hintEntry: "Agrega un precio de entrada para calcular un stop loss y un tamano de posicion validos.",
+    hintStopLoss: "El stop loss debe ser mayor que 0.",
+    widgetStatusLoading: "El widget se esta cargando.",
+    widgetStatusReady: "El widget esta conectado.",
+    widgetStatusError: "El widget esta bloqueado. El mensaje alternativo aparece abajo.",
+    entryErrorBuy: "El stop loss debe ser menor que el precio de entrada en una compra.",
+    entryErrorSell: "El stop loss debe ser mayor que el precio de entrada en una venta.",
+    copied: "Copiado",
+  },
+  ar: {
+    riskCalculator: "حاسبة المخاطرة",
+    economicCalendar: "التقويم الاقتصادي",
+    loadingCalendar: "جار تحميل التقويم...",
+    calendarFallback: "إذا لم يظهر التقويم، تحقق من الاتصال أو أعد تحميل هذا التبويب.",
+    accountBalance: "رصيد الحساب",
+    accountBalanceTip: "إجمالي رأس المال المتاح للتداول.",
+    risk: "المخاطرة",
+    riskTip: "القيمة التي تقبل خسارتها في هذه الصفقة.",
+    percent: "نسبة",
+    amount: "مبلغ",
+    tradeDirection: "اتجاه الصفقة",
+    tradeDirectionTip: "اختر ما إذا كانت الصفقة شراء أو بيع.",
+    buy: "شراء",
+    sell: "بيع",
+    entryPrice: "سعر الدخول",
+    entryPriceTip: "سعر الدخول المخطط له في السوق.",
+    stopLoss: "وقف الخسارة",
+    stopLossTip: "مستوى الإلغاء سواء بالنقاط أو بسعر خروج مباشر.",
+    inPips: "بالنقاط",
+    exitPrice: "سعر الخروج",
+    contractSize: "حجم العقد",
+    contractSizeTip: "حجم العقد القياسي المستخدم لدى كثير من وسطاء MT4 وMT5.",
+    contractDisclaimer:
+      "تنبيه: قد يختلف حجم العقد من وسيط لآخر. تأكد من مواصفات الأداة داخل منصتك قبل فتح صفقة حقيقية.",
+    amountAtRisk: "قيمة المخاطرة",
+    safeRisk: "مخاطرة منخفضة",
+    moderateRisk: "مخاطرة متوسطة",
+    highRisk: "مخاطرة مرتفعة",
+    executionDetails: "تفاصيل التنفيذ",
+    direction: "الاتجاه",
+    exitPriceLabel: "سعر الخروج (SL)",
+    stopLossPips: "وقف الخسارة (نقاط)",
+    lotSizeStandard: "حجم اللوت (قياسي)",
+    standard: "قياسي",
+    mini: "ميني",
+    micro: "مايكرو",
+    selectAsset: "اختر الأصل",
+    entryErrorBuy: "يجب أن يكون وقف الخسارة أقل من سعر الدخول في صفقة شراء.",
+    entryErrorSell: "يجب أن يكون وقف الخسارة أعلى من سعر الدخول في صفقة بيع.",
+    copied: "تم النسخ",
+  },
+} satisfies Record<SupportedLanguage, Record<string, string>>;
+
+const assetConfig = {
+  forex: { contractSize: "100,000", pipValuePerLot: 10 },
+  gold: { contractSize: "100", pipValuePerLot: 1 },
+  silver: { contractSize: "500", pipValuePerLot: 5 },
+  btc: { contractSize: "1", pipValuePerLot: 0.001 },
+  eth: { contractSize: "1", pipValuePerLot: 0.1 },
+} as const;
+
+const assetLabels: Record<keyof typeof assetConfig, string> = {
+  forex: "FOREX",
+  gold: "XAUUSD",
+  silver: "XAGUSD",
+  btc: "BTCUSD",
+  eth: "ETHUSD",
+};
+
+const economicEvents = [
+  { time: "08:30", currency: "USD", impact: "High", title: "Non-Farm Payrolls", period: "Apr 2026", previous: "228K", forecast: "214K" },
+  { time: "10:00", currency: "EUR", impact: "Medium", title: "ECB Press Conference", period: "Apr 2026", previous: "-", forecast: "-" },
+  { time: "12:30", currency: "GBP", impact: "High", title: "BoE Monetary Policy Report", period: "Apr 2026", previous: "4.50%", forecast: "4.50%" },
+  { time: "14:00", currency: "CAD", impact: "Low", title: "Ivey PMI", period: "Apr 2026", previous: "56.2", forecast: "55.4" },
+  { time: "16:00", currency: "USD", impact: "Medium", title: "Fed Chair Remarks", period: "Apr 2026", previous: "-", forecast: "-" },
+];
+
+const getPipDivider = (pairType: keyof typeof assetConfig, entry: number) => {
+  if (pairType === "forex") return entry > 20 ? 100 : 100000;
+  if (pairType === "gold") return 100;
+  if (pairType === "silver") return 1000;
+  if (pairType === "btc") return 1000;
+  return 100000;
+};
+
+function TooltipInfo({
+  text,
+  isDark,
+}: {
+  text: string;
+  isDark: boolean;
+}) {
+  return (
+    <div className="group relative flex items-center justify-center outline-none" tabIndex={0}>
+      <Info
+        size={14}
+        className={`cursor-help transition-colors ${
+          isDark ? "text-white/40 group-hover:text-mg-gold group-focus:text-mg-gold" : "text-black/35 group-hover:text-mg-gold group-focus:text-mg-gold"
+        }`}
+      />
+      <div className="pointer-events-none absolute bottom-full left-1/2 z-50 mb-2 w-max max-w-[220px] -translate-x-1/2 opacity-0 transition-opacity group-hover:opacity-100 group-focus:opacity-100">
+        <div
+          className={`rounded-lg border px-3 py-2 text-center text-xs font-medium shadow-2xl ${
+            isDark ? "border-white/15 bg-black text-white" : "border-black/10 bg-white text-mg-light-text"
+          }`}
+        >
+          {text}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function EconomicCalendarWidget({
+  isDark,
+  labels,
+}: {
+  isDark: boolean;
+  labels: typeof content.en;
+}) {
+  return (
+    <div className="flex h-full flex-col gap-4 overflow-y-auto p-2">
+      <div
+        className={`rounded-full border px-3 py-1 text-xs font-semibold self-start ${
+          isDark ? "border-white/10 bg-black/50 text-white/80" : "border-black/10 bg-white/85 text-mg-light-text"
+        }`}
+      >
+        {labels.widgetStatusReady}
+      </div>
+
+      <div className="grid gap-4 lg:grid-cols-2">
+        {economicEvents.map((event) => (
+          <article
+            key={`${event.time}-${event.currency}-${event.title}`}
+            className={`rounded-2xl border p-5 ${
+              isDark ? "border-white/10 bg-white/[0.03]" : "border-black/10 bg-[#faf7f0]"
+            }`}
+          >
+            <div className="flex items-start justify-between gap-4">
+              <div>
+                <p className={`text-xs uppercase tracking-[0.2em] ${isDark ? "text-white/45" : "text-mg-light-textSecondary/75"}`}>
+                  {event.period}
+                </p>
+                <h3 className={`mt-2 text-lg font-bold ${isDark ? "text-white" : "text-mg-light-text"}`}>{event.title}</h3>
+              </div>
+              <span className="rounded-full bg-mg-gold/12 px-3 py-1 text-xs font-semibold text-mg-gold">
+                {event.impact}
+              </span>
+            </div>
+
+            <div className="mt-4 grid grid-cols-2 gap-3 text-sm">
+              <div className={`rounded-xl border p-3 ${isDark ? "border-white/10 bg-black/25 text-white/75" : "border-black/10 bg-white text-mg-light-textSecondary"}`}>
+                <p className="text-xs uppercase tracking-[0.18em]">Time</p>
+                <p className="mt-2 font-semibold">{event.time}</p>
+              </div>
+              <div className={`rounded-xl border p-3 ${isDark ? "border-white/10 bg-black/25 text-white/75" : "border-black/10 bg-white text-mg-light-textSecondary"}`}>
+                <p className="text-xs uppercase tracking-[0.18em]">Currency</p>
+                <p className="mt-2 font-semibold">{event.currency}</p>
+              </div>
+              <div className={`rounded-xl border p-3 ${isDark ? "border-white/10 bg-black/25 text-white/75" : "border-black/10 bg-white text-mg-light-textSecondary"}`}>
+                <p className="text-xs uppercase tracking-[0.18em]">Previous</p>
+                <p className="mt-2 font-semibold">{event.previous}</p>
+              </div>
+              <div className={`rounded-xl border p-3 ${isDark ? "border-white/10 bg-black/25 text-white/75" : "border-black/10 bg-white text-mg-light-textSecondary"}`}>
+                <p className="text-xs uppercase tracking-[0.18em]">Forecast</p>
+                <p className="mt-2 font-semibold">{event.forecast}</p>
+              </div>
+            </div>
+          </article>
+        ))}
+      </div>
+
+      <div className={`rounded-2xl border border-dashed p-4 text-sm ${isDark ? "border-white/10 text-white/60" : "border-black/10 text-mg-light-textSecondary/80"}`}>
+        {labels.calendarFallback}
+      </div>
+    </div>
+  );
+}
+
+function CopyRow({
+  label,
+  value,
+  field,
+  copiedField,
+  onCopy,
+  isDark,
+  copiedLabel,
+  highlight = false,
+}: {
+  label: string;
+  value: string;
+  field: string;
+  copiedField: string | null;
+  onCopy: (text: string, field: string) => void;
+  isDark: boolean;
+  copiedLabel: string;
+  highlight?: boolean;
+}) {
+  return (
+    <div
+      className={`flex items-center justify-between rounded-xl border p-3 ${
+        isDark ? "border-white/5 bg-[#0f141b]" : "border-black/10 bg-[#faf7f0]"
+      }`}
+    >
+      <span className={`text-sm ${isDark ? "text-white/60" : "text-mg-light-textSecondary/80"}`}>{label}</span>
+      <div className="flex items-center gap-3">
+        <span className={`font-bold ${highlight ? "text-mg-gold" : isDark ? "text-white" : "text-mg-light-text"}`}>{value}</span>
+        <button
+          onClick={() => onCopy(value, field)}
+          className="text-mg-gold transition hover:text-white"
+          aria-label={`Copy ${label}`}
+          title={copiedField === field ? copiedLabel : `Copy ${label}`}
+        >
+          {copiedField === field ? <Check size={16} /> : <Copy size={16} />}
+        </button>
+      </div>
+    </div>
+  );
+}
+
+function RiskCalculator({
+  isDark,
+  labels,
+  item,
+}: {
+  isDark: boolean;
+  labels: typeof content.en;
+  item: Variants;
+}) {
+  const [accountBalance, setAccountBalance] = useState<number | "">(10000);
+  const [riskMode, setRiskMode] = useState<"percent" | "amount">("percent");
+  const [riskPercent, setRiskPercent] = useState<number | "">(1);
+  const [riskAmountInput, setRiskAmountInput] = useState<number | "">(100);
+  const [slMode, setSlMode] = useState<"pips" | "price">("pips");
+  const [stopLoss, setStopLoss] = useState<number | "">(20);
+  const [entryPrice, setEntryPrice] = useState<number | "">("");
+  const [exitPrice, setExitPrice] = useState<number | "">("");
+  const [pairType, setPairType] = useState<keyof typeof assetConfig>("forex");
+  const [tradeDirection, setTradeDirection] = useState<"buy" | "sell">("buy");
+  const [copiedField, setCopiedField] = useState<string | null>(null);
+
+  const resetCalculator = () => {
+    setAccountBalance(10000);
+    setRiskMode("percent");
+    setRiskPercent(1);
+    setRiskAmountInput(100);
+    setSlMode("pips");
+    setStopLoss(20);
+    setEntryPrice("");
+    setExitPrice("");
+    setPairType("forex");
+    setTradeDirection("buy");
+    setCopiedField(null);
+  };
+
+  const balance = Number(accountBalance) || 0;
+  const risk = Number(riskPercent) || 0;
+  const riskAmountValue = Number(riskAmountInput) || 0;
+  const actualRiskAmount = riskMode === "percent" ? balance * (risk / 100) : riskAmountValue;
+  const actualRiskPercent = balance > 0 ? (actualRiskAmount / balance) * 100 : 0;
+
+  let calculatedPips = 0;
+  let finalExitPrice: number | "" = exitPrice;
+  let slError: string | null = null;
+
+  if (slMode === "pips") {
+    calculatedPips = Number(stopLoss) || 0;
+    const entry = Number(entryPrice) || 0;
+
+    if (entry > 0 && calculatedPips > 0) {
+      const priceDiff = calculatedPips / getPipDivider(pairType, entry);
+      finalExitPrice = tradeDirection === "buy" ? entry - priceDiff : entry + priceDiff;
+    }
+  } else {
+    const entry = Number(entryPrice) || 0;
+    const exit = Number(exitPrice) || 0;
+
+    if (entry > 0 && exit > 0) {
+      if (tradeDirection === "buy" && exit >= entry) {
+        slError = labels.entryErrorBuy;
+      } else if (tradeDirection === "sell" && exit <= entry) {
+        slError = labels.entryErrorSell;
+      } else {
+        const diff = Math.abs(entry - exit);
+        calculatedPips = diff * (pairType === "forex" ? (entry > 20 ? 100 : 10000) : getPipDivider(pairType, entry));
+      }
+    }
+  }
+
+  let standardLots =
+    calculatedPips > 0 && actualRiskAmount > 0
+      ? actualRiskAmount / calculatedPips / assetConfig[pairType].pipValuePerLot
+      : 0;
+
+  if (standardLots > 0 && standardLots < 0.01) {
+    standardLots = 0.01;
+  }
+
+  const miniLots = standardLots * 10;
+  const microLots = standardLots * 100;
+
+  const handleCopy = async (text: string, field: string) => {
+    try {
+      await navigator.clipboard.writeText(text);
+      setCopiedField(field);
+      window.setTimeout(() => setCopiedField(null), 2000);
+    } catch {
+      setCopiedField(null);
+    }
+  };
+
+  const inputSurface = isDark
+    ? "border-white/10 bg-[#0f141b] text-white placeholder:text-white/25"
+    : "border-black/10 bg-white text-mg-light-text placeholder:text-mg-light-textSecondary/45";
+
+  const panelSurface = isDark ? "border-white/10 bg-white/[0.03]" : "border-black/10 bg-white";
+  const mutedText = isDark ? "text-white/60" : "text-mg-light-textSecondary/80";
+  const strongText = isDark ? "text-white" : "text-mg-light-text";
+  const validationHints = [
+    balance <= 0 ? labels.hintBalance : null,
+    riskMode === "percent" && (risk <= 0 || risk > 10) ? labels.hintRiskPercent : null,
+    riskMode === "amount" && (riskAmountValue <= 0 || riskAmountValue >= balance) ? labels.hintRiskAmount : null,
+    entryPrice === "" ? labels.hintEntry : null,
+    slMode === "pips" && (Number(stopLoss) || 0) <= 0 ? labels.hintStopLoss : null,
+  ].filter(Boolean) as string[];
+
+  return (
+    <div className="space-y-6">
+      <motion.div
+        variants={item}
+        className={`flex flex-col gap-5 rounded-2xl border p-4 backdrop-blur-xl lg:flex-row lg:items-center lg:justify-between ${panelSurface}`}
+      >
+        <div className="flex items-center gap-3">
+          <Calculator className="text-mg-gold" />
+          <h1 className={`text-lg font-bold ${strongText}`}>{labels.riskCalculator}</h1>
+        </div>
+
+        <div className="flex flex-col items-start gap-2 sm:flex-row sm:items-center sm:gap-4">
+          <button
+            type="button"
+            onClick={resetCalculator}
+            className={`rounded-lg border px-4 py-2 text-xs font-semibold uppercase tracking-[0.18em] transition ${
+              isDark
+                ? "border-white/10 bg-white/5 text-white/75 hover:bg-white/10 hover:text-white"
+                : "border-black/10 bg-black/[0.03] text-mg-light-textSecondary hover:bg-black/[0.06] hover:text-mg-light-text"
+            }`}
+          >
+            {labels.reset}
+          </button>
+          <div className="flex items-center gap-2">
+            <span className="flex h-6 w-6 items-center justify-center rounded-full border border-mg-gold/30 bg-mg-gold/20 text-xs font-bold text-mg-gold">
+              1
+            </span>
+            <span className={`text-xs font-bold uppercase tracking-widest ${mutedText}`}>{labels.selectAsset}</span>
+          </div>
+          <div className={`flex flex-wrap gap-1.5 rounded-xl border p-1 shadow-inner ${inputSurface}`}>
+            {Object.keys(assetConfig).map((type) => (
+              <button
+                key={type}
+                onClick={() => setPairType(type as keyof typeof assetConfig)}
+                className={`rounded-lg px-4 py-1.5 text-xs font-bold transition-all ${
+                  pairType === type
+                    ? "bg-mg-gold text-black shadow-md"
+                    : isDark
+                      ? "text-white/60 hover:bg-white/5 hover:text-white"
+                      : "text-mg-light-textSecondary hover:bg-black/5 hover:text-mg-light-text"
+                }`}
+              >
+                {assetLabels[type as keyof typeof assetConfig]}
+              </button>
+            ))}
+          </div>
+        </div>
+      </motion.div>
+
+      <div className="grid gap-6 lg:grid-cols-2">
+        <motion.div variants={item} className={`space-y-6 rounded-2xl border p-6 backdrop-blur-xl ${panelSurface}`}>
+          <div>
+            <label className={`flex items-center gap-2 text-sm ${mutedText}`}>
+              {labels.accountBalance}
+              <TooltipInfo text={labels.accountBalanceTip} isDark={isDark} />
+            </label>
+            <div className="relative mt-2">
+              <DollarSign className="absolute left-3 top-3 text-mg-gold" size={18} />
+              <input
+                type="number"
+                value={accountBalance}
+                onChange={(e) => setAccountBalance(e.target.value === "" ? "" : Number(e.target.value))}
+                className={`w-full rounded-lg border py-3 pl-10 pr-4 font-bold focus:border-mg-gold focus:outline-none ${inputSurface}`}
+              />
+            </div>
+          </div>
+
+          <div>
+            <div className="mb-2 flex items-center justify-between">
+              <label className={`flex items-center gap-2 text-sm ${mutedText}`}>
+                {labels.risk}
+                <TooltipInfo text={labels.riskTip} isDark={isDark} />
+              </label>
+              <div className={`flex rounded-lg border p-1 ${inputSurface}`}>
+                <button
+                  onClick={() => setRiskMode("percent")}
+                  className={`rounded px-2 py-1 text-[10px] font-bold uppercase ${
+                    riskMode === "percent" ? "bg-mg-gold text-black" : mutedText
+                  }`}
+                >
+                  {labels.percent}
+                </button>
+                <button
+                  onClick={() => setRiskMode("amount")}
+                  className={`rounded px-2 py-1 text-[10px] font-bold uppercase ${
+                    riskMode === "amount" ? "bg-mg-gold text-black" : mutedText
+                  }`}
+                >
+                  {labels.amount}
+                </button>
+              </div>
+            </div>
+
+            {riskMode === "percent" ? (
+              <div>
+                <div className="relative">
+                  <Percent className="absolute left-3 top-3 text-mg-gold" size={18} />
+                  <input
+                    type="number"
+                    value={riskPercent}
+                    onChange={(e) => setRiskPercent(e.target.value === "" ? "" : Number(e.target.value))}
+                    className={`w-full rounded-lg border py-3 pl-10 pr-4 font-bold focus:border-mg-gold focus:outline-none ${inputSurface}`}
+                  />
+                </div>
+                <div className="mt-3 flex gap-2">
+                  {[0.5, 1, 2].map((preset) => (
+                    <button
+                      key={preset}
+                      onClick={() => setRiskPercent(preset)}
+                      className="rounded bg-mg-gold/10 px-3 py-1 text-sm text-mg-gold transition hover:bg-mg-gold/20"
+                    >
+                      {preset}%
+                    </button>
+                  ))}
+                </div>
+              </div>
+            ) : (
+              <div className="relative">
+                <DollarSign className="absolute left-3 top-3 text-mg-gold" size={18} />
+                <input
+                  type="number"
+                  value={riskAmountInput}
+                  onChange={(e) => setRiskAmountInput(e.target.value === "" ? "" : Number(e.target.value))}
+                  className={`w-full rounded-lg border py-3 pl-10 pr-4 font-bold focus:border-mg-gold focus:outline-none ${inputSurface}`}
+                />
+              </div>
+            )}
+          </div>
+
+          <div>
+            <label className={`flex items-center gap-2 text-sm ${mutedText}`}>
+              {labels.tradeDirection}
+              <TooltipInfo text={labels.tradeDirectionTip} isDark={isDark} />
+            </label>
+            <div className={`mt-2 flex rounded-lg border p-1 ${inputSurface}`}>
+              <button
+                onClick={() => setTradeDirection("buy")}
+                className={`flex-1 rounded-md py-3 text-xs font-bold uppercase transition-colors ${
+                  tradeDirection === "buy"
+                    ? isDark
+                      ? "bg-white text-black shadow-sm"
+                      : "bg-mg-light-text text-white shadow-sm"
+                    : mutedText
+                }`}
+              >
+                {labels.buy}
+              </button>
+              <button
+                onClick={() => setTradeDirection("sell")}
+                className={`flex-1 rounded-md py-3 text-xs font-bold uppercase transition-colors ${
+                  tradeDirection === "sell"
+                    ? isDark
+                      ? "bg-white text-black shadow-sm"
+                      : "bg-mg-light-text text-white shadow-sm"
+                    : mutedText
+                }`}
+              >
+                {labels.sell}
+              </button>
+            </div>
+          </div>
+
+          <div>
+            <label className={`flex items-center gap-2 text-sm ${mutedText}`}>
+              {labels.entryPrice}
+              {slMode === "price" && <span className="text-mg-gold">*</span>}
+              <TooltipInfo text={labels.entryPriceTip} isDark={isDark} />
+            </label>
+            <div className="relative mt-2">
+              <DollarSign className="absolute left-3 top-3 text-mg-gold" size={18} />
+              <input
+                type="number"
+                value={entryPrice}
+                onChange={(e) => setEntryPrice(e.target.value === "" ? "" : Number(e.target.value))}
+                placeholder="e.g. 2000.50"
+                className={`w-full rounded-lg border py-3 pl-10 pr-4 font-bold focus:border-mg-gold focus:outline-none ${inputSurface}`}
+              />
+            </div>
+          </div>
+
+          <div>
+            <div className="mb-2 flex items-center justify-between">
+              <label className={`flex items-center gap-2 text-sm ${mutedText}`}>
+                {labels.stopLoss}
+                <TooltipInfo text={labels.stopLossTip} isDark={isDark} />
+              </label>
+              <div className={`flex rounded-lg border p-1 ${inputSurface}`}>
+                <button
+                  onClick={() => setSlMode("pips")}
+                  className={`rounded px-2 py-1 text-[10px] font-bold uppercase ${
+                    slMode === "pips" ? "bg-mg-gold text-black" : mutedText
+                  }`}
+                >
+                  {labels.inPips}
+                </button>
+                <button
+                  onClick={() => setSlMode("price")}
+                  className={`rounded px-2 py-1 text-[10px] font-bold uppercase ${
+                    slMode === "price" ? "bg-mg-gold text-black" : mutedText
+                  }`}
+                >
+                  {labels.exitPrice}
+                </button>
+              </div>
+            </div>
+
+            {slMode === "pips" ? (
+              <div className="relative">
+                <ShieldCheck className="absolute left-3 top-3 text-mg-gold" size={18} />
+                <input
+                  type="number"
+                  value={stopLoss}
+                  onChange={(e) => setStopLoss(e.target.value === "" ? "" : Number(e.target.value))}
+                  placeholder="e.g. 20"
+                  className={`w-full rounded-lg border py-3 pl-10 pr-4 font-bold focus:border-mg-gold focus:outline-none ${inputSurface}`}
+                />
+              </div>
+            ) : (
+              <div>
+                <div className="relative">
+                  <ShieldCheck
+                    className={`absolute left-3 top-3 ${slError ? "text-red-500" : "text-mg-gold"}`}
+                    size={18}
+                  />
+                  <input
+                    type="number"
+                    value={exitPrice}
+                    onChange={(e) => setExitPrice(e.target.value === "" ? "" : Number(e.target.value))}
+                    placeholder="e.g. 1998.50"
+                    className={`w-full rounded-lg border py-3 pl-10 pr-4 font-bold focus:outline-none ${
+                      slError
+                        ? isDark
+                          ? "border-red-500/50 bg-[#0f141b] text-white focus:border-red-500"
+                          : "border-red-500/40 bg-white text-mg-light-text focus:border-red-500"
+                        : `${inputSurface} focus:border-mg-gold`
+                    }`}
+                  />
+                </div>
+                {slError && <p className="mt-2 text-xs font-medium text-red-500">{slError}</p>}
+              </div>
+            )}
+          </div>
+
+          <div className={`rounded-xl border p-4 ${inputSurface}`}>
+            <div className="flex items-center justify-between">
+              <span className={`flex items-center gap-2 text-sm ${mutedText}`}>
+                {labels.contractSize}
+                <TooltipInfo text={labels.contractSizeTip} isDark={isDark} />
+              </span>
+              <span className="font-bold text-mg-gold">{assetConfig[pairType].contractSize}</span>
+            </div>
+            <p className={`mt-3 text-[10px] italic leading-relaxed ${mutedText}`}>{labels.contractDisclaimer}</p>
+          </div>
+
+          <div className={`rounded-xl border p-4 ${panelSurface}`}>
+            <p className={`text-xs font-semibold uppercase tracking-[0.2em] ${mutedText}`}>{labels.validation}</p>
+            <div className="mt-3 space-y-2">
+              {validationHints.length > 0 ? (
+                validationHints.map((hint) => (
+                  <p key={hint} className={`text-sm ${mutedText}`}>
+                    - {hint}
+                  </p>
+                ))
+              ) : (
+                <p className={`text-sm ${mutedText}`}>- OK</p>
+              )}
+            </div>
+          </div>
+        </motion.div>
+
+        <motion.div variants={item} className="flex flex-col gap-6">
+          <div className="relative rounded-2xl border border-mg-gold/20 bg-gradient-to-br from-mg-gold/10 to-transparent p-6 backdrop-blur-xl">
+            <p className={`text-xs uppercase ${mutedText}`}>
+              {labels.amountAtRisk}
+              {riskMode === "amount" && balance > 0 && (
+                <span className={`ml-2 font-bold tracking-wider ${isDark ? "text-white/70" : "text-mg-light-text"}`}>
+                  ({actualRiskPercent.toFixed(2)}%)
+                </span>
+              )}
+            </p>
+
+            <motion.h1
+              key={actualRiskAmount}
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="text-5xl font-black text-mg-gold drop-shadow-[0_0_10px_rgba(255,215,0,0.4)]"
+            >
+              ${actualRiskAmount.toFixed(2)}
+            </motion.h1>
+
+            <p className={`mt-2 text-sm ${mutedText}`}>
+              {actualRiskPercent <= 2
+                ? labels.safeRisk
+                : actualRiskPercent <= 5
+                  ? labels.moderateRisk
+                  : labels.highRisk}
+              {slMode === "price" && calculatedPips > 0 && (
+                <span className={`ml-2 font-bold ${isDark ? "text-white/70" : "text-mg-light-text"}`}>
+                  - {calculatedPips.toFixed(1)} {labels.stopLossPips}
+                </span>
+              )}
+            </p>
+          </div>
+
+          <div className="grid grid-cols-3 gap-4">
+            {[
+              { label: labels.standard, value: standardLots, info: "Volume: 1.00 (100,000 units)" },
+              { label: labels.mini, value: miniLots, info: "Volume: 0.10 (10,000 units)" },
+              { label: labels.micro, value: microLots, info: "Volume: 0.01 (1,000 units)" },
+            ].map((lot) => (
+              <div
+                key={lot.label}
+                className={`relative rounded-xl border p-4 text-center transition hover:scale-[1.02] ${panelSurface}`}
+              >
+                <div className="absolute right-2 top-2">
+                  <TooltipInfo text={lot.info} isDark={isDark} />
+                </div>
+                <p className={`text-xs ${mutedText}`}>{lot.label}</p>
+                <p className="text-2xl font-black text-mg-gold">{lot.value.toFixed(2)}</p>
+              </div>
+            ))}
+          </div>
+
+          <div className={`rounded-2xl border p-6 backdrop-blur-xl ${panelSurface}`}>
+            <h3 className={`mb-4 text-sm font-bold uppercase tracking-wider ${mutedText}`}>{labels.executionDetails}</h3>
+            <div className="space-y-3">
+              <div className={`flex items-center justify-between rounded-xl border p-3 ${inputSurface}`}>
+                <span className={`text-sm ${mutedText}`}>{labels.direction}</span>
+                <span className={`font-bold uppercase ${strongText}`}>{tradeDirection}</span>
+              </div>
+
+              {entryPrice !== "" && (
+                <CopyRow
+                  label={labels.entryPrice}
+                  value={String(entryPrice)}
+                  field="entry"
+                  copiedField={copiedField}
+                  onCopy={handleCopy}
+                  isDark={isDark}
+                  copiedLabel={labels.copied}
+                />
+              )}
+
+              {finalExitPrice !== "" && (
+                <CopyRow
+                  label={labels.exitPriceLabel}
+                  value={typeof finalExitPrice === "number" ? String(Number(finalExitPrice.toFixed(5))) : finalExitPrice}
+                  field="exit"
+                  copiedField={copiedField}
+                  onCopy={handleCopy}
+                  isDark={isDark}
+                  copiedLabel={labels.copied}
+                />
+              )}
+
+              {calculatedPips > 0 && (
+                <CopyRow
+                  label={labels.stopLossPips}
+                  value={calculatedPips.toFixed(1)}
+                  field="pips"
+                  copiedField={copiedField}
+                  onCopy={handleCopy}
+                  isDark={isDark}
+                  copiedLabel={labels.copied}
+                />
+              )}
+
+              {standardLots > 0 && (
+                <CopyRow
+                  label={labels.lotSizeStandard}
+                  value={standardLots.toFixed(2)}
+                  field="lot"
+                  copiedField={copiedField}
+                  onCopy={handleCopy}
+                  isDark={isDark}
+                  copiedLabel={labels.copied}
+                  highlight
+                />
+              )}
+            </div>
+          </div>
+        </motion.div>
+      </div>
+    </div>
+  );
+}
+
+export default function ToolsPage() {
+  const { theme } = useTheme();
+  const { language } = useLanguage();
+  const isDark = theme === "dark";
+  const activeLanguage: SupportedLanguage = language;
+  const labels = useMemo(() => ({ ...content.en, ...content[activeLanguage] }), [activeLanguage]);
+  const [activeTab, setActiveTab] = useState<"calculator" | "calendar">("calendar");
+
+  const container: Variants = {
+    hidden: { opacity: 0 },
+    show: { opacity: 1, transition: { staggerChildren: 0.1 } },
+  };
+
+  const item: Variants = {
+    hidden: { opacity: 0, y: 20 },
+    show: { opacity: 1, y: 0 },
+  };
+
+  const pageBackground = isDark ? "bg-[#0b0f14]" : "bg-[#f7f9fc]";
+  const surface = isDark ? "border-white/10 bg-[#0f141b]" : "border-black/10 bg-white";
+  const mutedText = isDark ? "text-white/60" : "text-mg-light-textSecondary";
+
+  return (
+    <div className={`relative min-h-screen p-6 ${pageBackground}`}>
+      <div
+        className={`pointer-events-none absolute inset-0 bg-[size:40px_40px] ${
+          isDark
+            ? "bg-[linear-gradient(to_right,#ffffff05_1px,transparent_1px),linear-gradient(to_bottom,#ffffff05_1px,transparent_1px)]"
+            : "bg-[linear-gradient(to_right,#00000008_1px,transparent_1px),linear-gradient(to_bottom,#00000008_1px,transparent_1px)]"
+        }`}
+      />
+
+      <motion.div initial="hidden" animate="show" variants={container} className="relative z-10 space-y-6">
+        <motion.div variants={item} className="mb-2 flex justify-center">
+          <div className={`flex rounded-xl border p-1 shadow-inner ${surface}`}>
+            <button
+              onClick={() => setActiveTab("calculator")}
+              className={`flex items-center gap-2 rounded-lg px-6 py-3 text-sm font-bold transition-all ${
+                activeTab === "calculator"
+                  ? "bg-mg-gold text-black shadow-md"
+                  : isDark
+                    ? "text-white/60 hover:bg-white/5 hover:text-white"
+                    : "text-mg-light-textSecondary hover:bg-black/5 hover:text-mg-light-text"
+              }`}
+            >
+              <Calculator size={18} />
+              {labels.riskCalculator}
+            </button>
+            <button
+              onClick={() => setActiveTab("calendar")}
+              className={`flex items-center gap-2 rounded-lg px-6 py-3 text-sm font-bold transition-all ${
+                activeTab === "calendar"
+                  ? "bg-mg-gold text-black shadow-md"
+                  : isDark
+                    ? "text-white/60 hover:bg-white/5 hover:text-white"
+                    : "text-mg-light-textSecondary hover:bg-black/5 hover:text-mg-light-text"
+              }`}
+            >
+              <CalendarDays size={18} />
+              {labels.economicCalendar}
+            </button>
+          </div>
+        </motion.div>
+
+        {activeTab === "calculator" && <RiskCalculator isDark={isDark} labels={labels} item={item} />}
+
+        {activeTab === "calendar" && (
+          <motion.div
+            variants={item}
+            className={`h-[800px] w-full overflow-hidden rounded-2xl border p-4 backdrop-blur-xl ${surface}`}
+          >
+            <div className="mb-4">
+              <h2 className={`text-xl font-bold ${isDark ? "text-white" : "text-mg-light-text"}`}>
+                {labels.economicCalendar}
+              </h2>
+              <p className={`mt-1 text-sm ${mutedText}`}>{labels.calendarFallback}</p>
+            </div>
+            <div className="h-[calc(100%-4rem)] overflow-hidden rounded-2xl border border-mg-gold/10">
+              <EconomicCalendarWidget isDark={isDark} labels={labels} />
+            </div>
+          </motion.div>
+        )}
+      </motion.div>
+    </div>
+  );
+}
+
+
+
+
+
+
+
+
+// Eugene Afriyie UEB3502023
+
+import { useState, useEffect, useRef } from "react";
+import { motion, type Variants } from "framer-motion";
+import { Calculator, DollarSign, Percent, ShieldCheck, Copy, Check, Info, CalendarDays } from "lucide-react";
+import { useTheme } from "../../context/ThemeContext";
+import { useLanguage } from "../../context/LanguageContext";
+
+// Custom Tooltip for Mobile (Tap) & Desktop (Hover)
+const TooltipInfo = ({ text }: { text: string }) => (
+  <div className="group relative flex items-center justify-center outline-none" tabIndex={0}>
+    <Info size={14} className="text-white/40 cursor-help transition-colors group-hover:text-mg-gold group-focus:text-mg-gold" />
+    <div className="pointer-events-none absolute bottom-full left-1/2 z-50 mb-2 w-max max-w-[200px] -translate-x-1/2 opacity-0 transition-opacity group-hover:opacity-100 group-focus:opacity-100">
+      <div className="rounded-lg bg-black border border-white/20 px-3 py-2 text-xs font-medium text-white shadow-2xl text-center">
+        {text}
+      </div>
+      {/* Little triangle pointer */}
+      <div className="mx-auto h-0 w-0 border-x-[5px] border-t-[5px] border-x-transparent border-t-white/20" />
+    </div>
+  </div>
+);
+
+// Official TradingView Script Injection Component
+const EconomicCalendarWidget = ({ isDark, isFrench }: { isDark: boolean; isFrench: boolean }) => {
+  const containerRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (!containerRef.current) return;
+    
+    // Clean up previous widget instance
+    containerRef.current.innerHTML = '';
+    
+    // Create inner container required by TradingView
+    const innerDiv = document.createElement('div');
+    innerDiv.className = 'tradingview-widget-container__widget';
+    innerDiv.style.height = '100%';
+    innerDiv.style.width = '100%';
+    containerRef.current.appendChild(innerDiv);
+
+    // Inject script
+    const script = document.createElement('script');
+    script.src = 'https://s.tradingview.com/external-embedding/embed-widget-events.js';
+    script.type = 'text/javascript';
+    script.async = true;
+    script.innerHTML = JSON.stringify({
+      colorTheme: isDark ? "dark" : "light",
+      isTransparent: true,
+      width: "100%",
+      height: "100%",
+      locale: isFrench ? "fr" : "en",
+      importanceFilter: "-1,0,1",
+      currencyFilter: "USD,EUR,GBP,JPY,CAD,AUD,NZD,CHF"
+    });
+    containerRef.current.appendChild(script);
+  }, [isDark, isFrench]);
+
+  return (
+    <div 
+      className="tradingview-widget-container" 
+      ref={containerRef} 
+      style={{ height: '100%', width: '100%' }}
+    />
+  );
+};
+
+// Extracted Risk Calculator Component
+const RiskCalculator = ({ isDark, isFrench, item }: { isDark: boolean; isFrench: boolean; item: Variants }) => {
+  // Calculator State
+  const [accountBalance, setAccountBalance] = useState<number | "">(10000);
+  const [riskMode, setRiskMode] = useState<"percent" | "amount">("percent");
+  const [riskPercent, setRiskPercent] = useState<number | "">(1);
+  const [riskAmountInput, setRiskAmountInput] = useState<number | "">(100);
+
+  const [slMode, setSlMode] = useState<"pips" | "price">("pips");
+  const [stopLoss, setStopLoss] = useState<number | "">(20);
+  const [entryPrice, setEntryPrice] = useState<number | "">("");
+  const [exitPrice, setExitPrice] = useState<number | "">("");
+  const [pairType, setPairType] = useState("forex");
+  const [tradeDirection, setTradeDirection] = useState<"buy" | "sell">("buy");
+  
+  const [copiedField, setCopiedField] = useState<string | null>(null);
+
+  // Calculated Values
+  const balance = Number(accountBalance) || 0;
+  const risk = Number(riskPercent) || 0;
+  const riskAmtVal = Number(riskAmountInput) || 0;
+
+  const actualRiskAmount = riskMode === "percent" ? balance * (risk / 100) : riskAmtVal;
+  const actualRiskPercent = balance > 0 ? (actualRiskAmount / balance) * 100 : 0;
+
+  let calculatedPips = 0;
+  let finalExitPrice: number | "" = exitPrice;
+  let slError: string | null = null;
+
+  if (slMode === "pips") {
+    calculatedPips = Number(stopLoss) || 0;
+    const entry = Number(entryPrice) || 0;
+    if (entry > 0 && calculatedPips > 0) {
+      let pipDivider = 1;
+      if (pairType === "forex") pipDivider = entry > 20 ? 100 : 100000;
+      else if (pairType === "gold") pipDivider = 100;
+      else if (pairType === "silver") pipDivider = 1000;
+      else if (pairType === "btc") pipDivider = 1000;
+      else if (pairType === "eth") pipDivider = 100000;
+
+      const priceDiff = calculatedPips / pipDivider;
+      finalExitPrice = tradeDirection === "buy" ? entry - priceDiff : entry + priceDiff;
+    }
+  } else {
+    const entry = Number(entryPrice) || 0;
+    const exit = Number(exitPrice) || 0;
+    if (entry > 0 && exit > 0) {
+      if (tradeDirection === "buy" && exit >= entry) {
+        slError = isFrench ? "Le SL doit être inférieur à l'entrée pour un Achat." : "SL must be lower than Entry for a Buy.";
+      } else if (tradeDirection === "sell" && exit <= entry) {
+        slError = isFrench ? "Le SL doit être supérieur à l'entrée pour une Vente." : "SL must be higher than Entry for a Sell.";
+      } else {
+        const diff = Math.abs(entry - exit);
+        if (pairType === "forex") {
+          calculatedPips = diff * (entry > 20 ? 100 : 10000);
+        } else if (pairType === "gold") {
+          calculatedPips = diff * 100;
+        } else if (pairType === "silver") {
+          calculatedPips = diff * 1000;
+        } else if (pairType === "btc") {
+          calculatedPips = diff * 1000;
+        } else if (pairType === "eth") {
+          calculatedPips = diff * 100000;
+        }
+      }
+    }
+  }
+
+  // Pip value logic based on specific MT5 contract scaling
+  let pipValuePerLot = 10; // Forex
+  if (pairType === "gold") pipValuePerLot = 1;
+  if (pairType === "silver") pipValuePerLot = 5;
+  if (pairType === "btc") pipValuePerLot = 0.001;
+  if (pairType === "eth") pipValuePerLot = 0.1;
+
+  let standardLots =
+    calculatedPips > 0 && actualRiskAmount > 0 ? (actualRiskAmount / calculatedPips) / pipValuePerLot : 0;
+    
+  // The absolute minimum standard lot size allowed on MT4/MT5 is 0.01
+  if (standardLots > 0 && standardLots < 0.01) {
+    standardLots = 0.01;
+  }
+
+  const miniLots = standardLots * 10;
+  const microLots = standardLots * 100;
+
+  const handleCopy = (text: string, field: string) => {
+    navigator.clipboard.writeText(text);
+    setCopiedField(field);
+    setTimeout(() => setCopiedField(null), 2000);
+  };
+
+  const riskColor = isDark ? "text-white/60" : "text-gray-500";
+
+  return (
+          <div className="space-y-6">
+            {/* HEADER */}
+            <motion.div variants={item} className={`flex items-center justify-between p-4 rounded-xl border backdrop-blur-xl ${isDark ? "bg-white/5 border-white/10" : "bg-white/50 border-black/10"}`}>
+          <div className="flex items-center gap-3">
+            <Calculator className="text-mg-gold" />
+            <h1 className="font-bold text-white text-lg">
+              {isFrench ? "Calculateur" : "Risk Calculator"}
+            </h1>
+          </div>
+
+          <div className="flex flex-col items-end gap-2 sm:flex-row sm:items-center sm:gap-4">
+            <div className="flex items-center gap-2">
+              <span className="flex h-6 w-6 items-center justify-center rounded-full bg-mg-gold/20 text-mg-gold text-xs font-bold border border-mg-gold/30">1</span>
+              <span className="text-xs font-bold uppercase tracking-widest text-white/70">{isFrench ? "Choisir l'Actif" : "Select Asset"}</span>
+            </div>
+            <div className="flex flex-wrap justify-end gap-1.5 rounded-xl bg-[#0f141b] p-1 border border-white/10 shadow-inner">
+              {["forex", "gold", "silver", "btc", "eth"].map((type) => (
+                <button
+                  key={type}
+                  onClick={() => setPairType(type)}
+                  className={`px-4 py-1.5 text-xs font-bold rounded-lg transition-all ${
+                    pairType === type
+                      ? "bg-mg-gold text-black shadow-md"
+                      : "text-white/60 hover:text-white hover:bg-white/5"
+                  }`}
+                >
+                  {type.toUpperCase()}
+                </button>
+              ))}
+            </div>
+          </div>
+            </motion.div>
+
+            <div className="grid lg:grid-cols-2 gap-6">
+
+          {/* INPUT PANEL */}
+              <motion.div variants={item} className={`p-6 rounded-2xl border backdrop-blur-xl space-y-6 ${isDark ? "bg-white/[0.03] border-white/10" : "bg-white border-black/10"}`}>
+
+            {/* Balance */}
+            <div>
+              <label className="flex items-center gap-2 text-sm text-white/70">Account Balance <TooltipInfo text={isFrench ? "Votre capital total de trading" : "Your total trading capital"} /></label>
+              <div className="relative mt-2">
+                <DollarSign className="absolute left-3 top-3 text-mg-gold" size={18} />
+                <input
+                  type="number"
+                  value={accountBalance}
+                  onChange={(e) => setAccountBalance(e.target.value === "" ? "" : Number(e.target.value))}
+                  className="w-full pl-10 pr-4 py-3 rounded-lg bg-[#0f141b] border border-white/10 text-white font-bold"
+                />
+              </div>
+            </div>
+
+            {/* Risk */}
+            <div>
+              <div className="flex items-center justify-between mb-2">
+                <label className="flex items-center gap-2 text-sm text-white/70">Risk <TooltipInfo text={isFrench ? "Le montant que vous êtes prêt à perdre" : "The amount you are willing to lose"} /></label>
+                <div className="flex bg-[#0f141b] rounded-lg p-1 border border-white/10">
+                  <button onClick={() => setRiskMode("percent")} className={`px-2 py-1 text-[10px] uppercase font-bold rounded ${riskMode === 'percent' ? 'bg-mg-gold text-black' : 'text-white/50'}`}>Percent</button>
+                  <button onClick={() => setRiskMode("amount")} className={`px-2 py-1 text-[10px] uppercase font-bold rounded ${riskMode === 'amount' ? 'bg-mg-gold text-black' : 'text-white/50'}`}>Amount</button>
+                </div>
+              </div>
+              
+              {riskMode === "percent" ? (
+                <div>
+                  <div className="relative">
+                    <Percent className="absolute left-3 top-3 text-mg-gold" size={18} />
+                    <input
+                      type="number"
+                      value={riskPercent}
+                      onChange={(e) => setRiskPercent(e.target.value === "" ? "" : Number(e.target.value))}
+                      className="w-full pl-10 pr-4 py-3 rounded-lg bg-[#0f141b] border border-white/10 text-white font-bold"
+                    />
+                  </div>
+                  <div className="flex gap-2 mt-3">
+                    {[0.5, 1, 2].map((r) => (
+                      <button key={r} onClick={() => setRiskPercent(r)} className="px-3 py-1 rounded bg-mg-gold/10 text-mg-gold text-sm hover:bg-mg-gold/20 transition">
+                        {r}%
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              ) : (
+                <div className="relative">
+                  <DollarSign className="absolute left-3 top-3 text-mg-gold" size={18} />
+                  <input
+                    type="number"
+                    value={riskAmountInput}
+                    onChange={(e) => setRiskAmountInput(e.target.value === "" ? "" : Number(e.target.value))}
+                    className="w-full pl-10 pr-4 py-3 rounded-lg bg-[#0f141b] border border-white/10 text-white font-bold"
+                  />
+                </div>
+              )}
+            </div>
+
+            {/* Trade Direction */}
+            <div>
+              <label className="flex items-center gap-2 text-sm text-white/70">{isFrench ? "Direction du Trade" : "Trade Direction"} <TooltipInfo text={isFrench ? "Acheter (Long) ou Vendre (Short)" : "Buy (Long) or Sell (Short)"} /></label>
+              <div className="flex bg-[#0f141b] rounded-lg p-1 border border-white/10 mt-2">
+                <button onClick={() => setTradeDirection("buy")} className={`flex-1 py-3 text-xs uppercase font-bold rounded-md transition-colors ${tradeDirection === 'buy' ? 'bg-white text-black shadow-sm' : 'text-white/50 hover:text-white'}`}>Buy</button>
+                <button onClick={() => setTradeDirection("sell")} className={`flex-1 py-3 text-xs uppercase font-bold rounded-md transition-colors ${tradeDirection === 'sell' ? 'bg-white text-black shadow-sm' : 'text-white/50 hover:text-white'}`}>Sell</button>
+              </div>
+            </div>
+
+            {/* Entry Price */}
+            <div>
+              <label className="flex items-center gap-2 text-sm text-white/70">Entry Price {slMode === "price" && <span className="text-mg-gold">*</span>} <TooltipInfo text={isFrench ? "Votre prix d'entrée sur le marché" : "Your market entry price"} /></label>
+              <div className="relative mt-2">
+                <DollarSign className="absolute left-3 top-3 text-mg-gold" size={18} />
+                <input
+                  type="number"
+                  value={entryPrice}
+                  onChange={(e) => setEntryPrice(e.target.value === "" ? "" : Number(e.target.value))}
+                  placeholder="e.g. 2000.50"
+                  className="w-full pl-10 pr-4 py-3 rounded-lg bg-[#0f141b] border border-white/10 text-white font-bold focus:outline-none focus:border-mg-gold transition-colors"
+                />
+              </div>
+            </div>
+
+            {/* Stop Loss */}
+            <div>
+              <div className="flex items-center justify-between mb-2">
+                <label className="flex items-center gap-2 text-sm text-white/70">Stop Loss <TooltipInfo text={isFrench ? "Votre niveau d'invalidation (en Pips ou Prix)" : "Your invalidation level (in Pips or Price)"} /></label>
+                <div className="flex bg-[#0f141b] rounded-lg p-1 border border-white/10">
+                  <button onClick={() => setSlMode("pips")} className={`px-2 py-1 text-[10px] uppercase font-bold rounded ${slMode === 'pips' ? 'bg-mg-gold text-black' : 'text-white/50'}`}>In Pips</button>
+                  <button onClick={() => setSlMode("price")} className={`px-2 py-1 text-[10px] uppercase font-bold rounded ${slMode === 'price' ? 'bg-mg-gold text-black' : 'text-white/50'}`}>Exit Price</button>
+                </div>
+              </div>
+              
+              {slMode === "pips" ? (
+                <div className="relative">
+                  <ShieldCheck className="absolute left-3 top-3 text-mg-gold" size={18} />
+                  <input
+                    type="number"
+                    value={stopLoss}
+                    onChange={(e) => setStopLoss(e.target.value === "" ? "" : Number(e.target.value))}
+                    placeholder="e.g. 20"
+                    className="w-full pl-10 pr-4 py-3 rounded-lg bg-[#0f141b] border border-white/10 text-white font-bold focus:outline-none focus:border-mg-gold transition-colors"
+                  />
+                </div>
+              ) : (
+                <div>
+                  <div className="relative">
+                    <ShieldCheck className={`absolute left-3 top-3 ${slError ? "text-red-500" : "text-mg-gold"}`} size={18} />
+                    <input
+                      type="number"
+                      value={exitPrice}
+                      onChange={(e) => setExitPrice(e.target.value === "" ? "" : Number(e.target.value))}
+                      placeholder="e.g. 1998.50"
+                      className={`w-full pl-10 pr-4 py-3 rounded-lg bg-[#0f141b] border ${slError ? "border-red-500/50 focus:border-red-500" : "border-white/10 focus:border-mg-gold"} text-white font-bold focus:outline-none transition-colors`}
+                    />
+                  </div>
+                  {slError && <p className="text-red-500 text-xs mt-2 font-medium">{slError}</p>}
+                </div>
+              )}
+            </div>
+
+            {/* Contract Size Info */}
+            <div className="flex flex-col gap-3 p-4 rounded-xl bg-[#0f141b] border border-white/10">
+              <div className="flex items-center justify-between">
+                <span className="text-sm text-white/70 flex items-center gap-2">
+                  {isFrench ? "Taille du Contrat" : "Contract Size"} 
+                  <TooltipInfo text={isFrench ? "Taille standard du contrat sur MT4/MT5" : "Standard contract size on MT4/MT5"} />
+                </span>
+                <span className="font-bold text-mg-gold">
+                  {pairType === "forex" ? "100,000" : pairType === "gold" ? "100" : pairType === "silver" ? "500" : "1"}
+                </span>
+              </div>
+              <p className="text-[10px] leading-relaxed text-white/40 italic">
+                {isFrench 
+                  ? "* Avertissement : Les tailles de contrat peuvent varier d'un courtier à l'autre. Veuillez vérifier les spécifications exactes sur votre plateforme de trading (MT4/MT5) avant d'exécuter des transactions réelles." 
+                  : "* Disclaimer: Contract sizes may vary by broker. Please verify the exact specifications on your trading platform (MT4/MT5) before executing live trades."}
+              </p>
+            </div>
+
+          </motion.div>
+
+          {/* OUTPUT PANEL */}
+          <motion.div variants={item} className="flex flex-col gap-6">
+
+            {/* Risk Amount */}
+            <div className="relative p-6 rounded-2xl border bg-gradient-to-br from-mg-gold/10 to-transparent border-mg-gold/20 backdrop-blur-xl">
+              
+              <p className="text-xs text-white/50 uppercase">
+                Amount at Risk {riskMode === "amount" && balance > 0 && <span className="font-bold text-white/70 tracking-wider">({actualRiskPercent.toFixed(2)}%)</span>}
+              </p>
+
+              <motion.h1
+                key={actualRiskAmount}
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                className="text-5xl font-black text-mg-gold drop-shadow-[0_0_10px_rgba(255,215,0,0.4)]"
+              >
+                ${actualRiskAmount.toFixed(2)}
+              </motion.h1>
+
+              <p className={`text-sm mt-2 ${riskColor}`}>
+                {actualRiskPercent <= 2 ? "Safe Risk" : actualRiskPercent <= 5 ? "Moderate Risk" : "High Risk"}
+                {slMode === "price" && calculatedPips > 0 && <span className="ml-2 font-bold text-white/70">• {calculatedPips.toFixed(1)} Pips SL</span>}
+              </p>
+
+              {/* live dot */}
+              <span className="absolute top-4 right-4 flex h-3 w-3">
+                <span className="animate-ping absolute h-full w-full rounded-full bg-mg-gold opacity-75"></span>
+                <span className="relative h-3 w-3 rounded-full bg-mg-gold"></span>
+              </span>
+            </div>
+
+            {/* LOT SIZES */}
+            <div className="grid grid-cols-3 gap-4">
+              {[
+                { label: "Standard", value: standardLots, info: "Volume: 1.00 (100,000 units)" },
+                { label: "Mini", value: miniLots, info: "Volume: 0.10 (10,000 units)" },
+                { label: "Micro", value: microLots, info: "Volume: 0.01 (1,000 units)" }
+              ].map((lot) => (
+                <div
+                  key={lot.label}
+                  className="relative p-4 rounded-xl bg-white/5 border border-white/10 text-center hover:scale-105 transition"
+                >
+                  <div className="absolute top-2 right-2">
+                    <TooltipInfo text={lot.info} />
+                  </div>
+                  <p className="text-xs text-white/50">{lot.label}</p>
+                  <p className="text-2xl font-black text-mg-gold">
+                    {lot.value.toFixed(2)}
+                  </p>
+                </div>
+              ))}
+            </div>
+
+            {/* EXECUTION DETAILS SUMMARY FOR COPYING */}
+            <div className={`p-6 rounded-2xl border backdrop-blur-xl ${isDark ? "bg-white/[0.03] border-white/10" : "bg-white border-black/10"}`}>
+              <h3 className="text-sm font-bold text-white/70 uppercase tracking-wider mb-4">
+                {isFrench ? "Détails d'Exécution" : "Execution Details"}
+              </h3>
+              <div className="space-y-3">
+                {/* Direction */}
+                <div className="flex items-center justify-between p-3 rounded-xl bg-[#0f141b] border border-white/5">
+                  <span className="text-sm text-white/60">{isFrench ? "Direction" : "Direction"}</span>
+                  <span className="font-bold text-white uppercase">{tradeDirection}</span>
+                </div>
+
+                {/* Entry Price */}
+                {entryPrice !== "" && (
+                  <div className="flex items-center justify-between p-3 rounded-xl bg-[#0f141b] border border-white/5">
+                    <span className="text-sm text-white/60">{isFrench ? "Prix d'Entrée" : "Entry Price"}</span>
+                    <div className="flex items-center gap-3">
+                      <span className="font-bold text-white">{entryPrice}</span>
+                      <button onClick={() => handleCopy(String(entryPrice), "entry")} className="text-mg-gold hover:text-white transition" aria-label="Copy Entry Price">
+                        {copiedField === "entry" ? <Check size={16} /> : <Copy size={16} />}
+                      </button>
+                    </div>
+                  </div>
+                )}
+
+                {/* Exit Price */}
+                {finalExitPrice !== "" && (
+                  <div className="flex items-center justify-between p-3 rounded-xl bg-[#0f141b] border border-white/5">
+                    <span className="text-sm text-white/60">{isFrench ? "Prix de Sortie (SL)" : "Exit Price (SL)"}</span>
+                    <div className="flex items-center gap-3">
+                      <span className="font-bold text-white">
+                        {typeof finalExitPrice === 'number' ? String(Number(finalExitPrice.toFixed(5))) : finalExitPrice}
+                      </span>
+                      <button onClick={() => handleCopy(String(typeof finalExitPrice === 'number' ? Number(finalExitPrice.toFixed(5)) : finalExitPrice), "exit")} className="text-mg-gold hover:text-white transition" aria-label="Copy Exit Price">
+                        {copiedField === "exit" ? <Check size={16} /> : <Copy size={16} />}
+                      </button>
+                    </div>
+                  </div>
+                )}
+
+                {/* Stop Loss (Pips) */}
+                {calculatedPips > 0 && (
+                  <div className="flex items-center justify-between p-3 rounded-xl bg-[#0f141b] border border-white/5">
+                    <span className="text-sm text-white/60">{isFrench ? "Stop Loss (Pips)" : "Stop Loss (Pips)"}</span>
+                    <div className="flex items-center gap-3">
+                      <span className="font-bold text-white">{calculatedPips.toFixed(1)}</span>
+                      <button onClick={() => handleCopy(calculatedPips.toFixed(1), "pips")} className="text-mg-gold hover:text-white transition" aria-label="Copy Pips">
+                        {copiedField === "pips" ? <Check size={16} /> : <Copy size={16} />}
+                      </button>
+                    </div>
+                  </div>
+                )}
+
+                {/* Standard Lot Size */}
+                {standardLots > 0 && (
+                  <div className="flex items-center justify-between p-3 rounded-xl bg-[#0f141b] border border-white/5">
+                    <span className="text-sm text-white/60">{isFrench ? "Taille de Lot (Standard)" : "Lot Size (Standard)"}</span>
+                    <div className="flex items-center gap-3">
+                      <span className="font-bold text-mg-gold">{standardLots.toFixed(2)}</span>
+                      <button onClick={() => handleCopy(standardLots.toFixed(2), "lot")} className="text-mg-gold hover:text-white transition" aria-label="Copy Lot Size">
+                        {copiedField === "lot" ? <Check size={16} /> : <Copy size={16} />}
+                      </button>
+                    </div>
+                  </div>
+                )}
+              </div>
+            </div>
+
+          </motion.div>
+        </div>
+          </div>
+  );
+};
+
+export default function ToolsPage() {
+  const { theme } = useTheme();
+  const { language } = useLanguage();
+
+  const isDark = theme === "dark";
+  const isFrench = language === "fr";
+
+  const [activeTab, setActiveTab] = useState<"calculator" | "calendar">("calendar");
+
+  const container: Variants = {
+    hidden: { opacity: 0 },
+    show: { opacity: 1, transition: { staggerChildren: 0.1 } }
+  };
+
+  const item: Variants = {
+    hidden: { opacity: 0, y: 20 },
+    show: { opacity: 1, y: 0 }
+  };
+
+  return (
+    <div className={`relative min-h-screen p-6 ${isDark ? "bg-[#0b0f14]" : "bg-[#f7f9fc]"}`}>
+      {/* Background grid */}
+      <div className="absolute inset-0 bg-[linear-gradient(to_right,#ffffff05_1px,transparent_1px),linear-gradient(to_bottom,#ffffff05_1px,transparent_1px)] bg-[size:40px_40px] pointer-events-none" />
+
+      <motion.div initial="hidden" animate="show" variants={container} className="relative z-10 space-y-6">
+        {/* TOOL TABS */}
+        <motion.div variants={item} className="flex justify-center mb-2">
+          <div className={`flex rounded-xl p-1 border shadow-inner ${isDark ? "bg-[#0f141b] border-white/10" : "bg-white border-black/10"}`}>
+            <button onClick={() => setActiveTab('calculator')} className={`flex items-center gap-2 px-6 py-3 rounded-lg font-bold text-sm transition-all ${activeTab === 'calculator' ? 'bg-mg-gold text-black shadow-md' : isDark ? 'text-white/60 hover:text-white hover:bg-white/5' : 'text-gray-500 hover:text-black hover:bg-black/5'}`}>
+              <Calculator size={18} />
+              {isFrench ? "Calculateur" : "Risk Calculator"}
+            </button>
+            <button onClick={() => setActiveTab('calendar')} className={`flex items-center gap-2 px-6 py-3 rounded-lg font-bold text-sm transition-all ${activeTab === 'calendar' ? 'bg-mg-gold text-black shadow-md' : isDark ? 'text-white/60 hover:text-white hover:bg-white/5' : 'text-gray-500 hover:text-black hover:bg-black/5'}`}>
+              <CalendarDays size={18} />
+              {isFrench ? "Calendrier Économique" : "Economic Calendar"}
+            </button>
+          </div>
+        </motion.div>
+
+        {/* ACTIVE TOOL VIEW */}
+        {activeTab === 'calculator' && <RiskCalculator isDark={isDark} isFrench={isFrench} item={item} />}
+
+        {/* ECONOMIC CALENDAR TOOL */}
+        {activeTab === 'calendar' && (
+          <motion.div variants={item} className={`h-[800px] w-full rounded-2xl overflow-hidden border p-4 backdrop-blur-xl ${isDark ? "bg-white/[0.03] border-white/10" : "bg-white border-black/10"}`}>
+            <EconomicCalendarWidget isDark={isDark} isFrench={isFrench} />
+          </motion.div>
+        )}
+      </motion.div>
+    </div>
+  );
+}// Eugene Afriyie UEB3502023
+
+import { useState } from "react";
+import { motion, type Variants } from "framer-motion";
+import { Calculator, DollarSign, Percent, ShieldCheck, Copy, Check, Info, CalendarDays } from "lucide-react";
+import { useTheme } from "../../context/ThemeContext";
+import { useLanguage } from "../../context/LanguageContext";
+
+// Custom Tooltip for Mobile (Tap) & Desktop (Hover)
+const TooltipInfo = ({ text }: { text: string }) => (
+  <div className="group relative flex items-center justify-center outline-none" tabIndex={0}>
+    <Info size={14} className="text-white/40 cursor-help transition-colors group-hover:text-mg-gold group-focus:text-mg-gold" />
+    <div className="pointer-events-none absolute bottom-full left-1/2 z-50 mb-2 w-max max-w-[200px] -translate-x-1/2 opacity-0 transition-opacity group-hover:opacity-100 group-focus:opacity-100">
+      <div className="rounded-lg bg-black border border-white/20 px-3 py-2 text-xs font-medium text-white shadow-2xl text-center">
+        {text}
+      </div>
+      {/* Little triangle pointer */}
+      <div className="mx-auto h-0 w-0 border-x-[5px] border-t-[5px] border-x-transparent border-t-white/20" />
+    </div>
+  </div>
+);
+
+export default function ToolsPage() {
+  const { theme } = useTheme();
+  const { language } = useLanguage();
+
+  const isDark = theme === "dark";
+  const isFrench = language === "fr";
+
+  // State
+  const [activeTab, setActiveTab] = useState<"calculator" | "calendar">("calendar");
+  const [accountBalance, setAccountBalance] = useState<number | "">(10000);
+  const [riskMode, setRiskMode] = useState<"percent" | "amount">("percent");
+  const [riskPercent, setRiskPercent] = useState<number | "">(1);
+  const [riskAmountInput, setRiskAmountInput] = useState<number | "">(100);
+
+  const [slMode, setSlMode] = useState<"pips" | "price">("pips");
+  const [stopLoss, setStopLoss] = useState<number | "">(20);
+  const [entryPrice, setEntryPrice] = useState<number | "">("");
+  const [exitPrice, setExitPrice] = useState<number | "">("");
+  const [pairType, setPairType] = useState("forex");
+  const [tradeDirection, setTradeDirection] = useState<"buy" | "sell">("buy");
+  
+  const [copiedField, setCopiedField] = useState<string | null>(null);
+
+  // Values
+  const balance = Number(accountBalance) || 0;
+  const risk = Number(riskPercent) || 0;
+  const riskAmtVal = Number(riskAmountInput) || 0;
+
+  const actualRiskAmount = riskMode === "percent" ? balance * (risk / 100) : riskAmtVal;
+  const actualRiskPercent = balance > 0 ? (actualRiskAmount / balance) * 100 : 0;
+
+  let calculatedPips = 0;
+  let finalExitPrice: number | "" = exitPrice;
+  let slError: string | null = null;
+
+  if (slMode === "pips") {
+    calculatedPips = Number(stopLoss) || 0;
+    const entry = Number(entryPrice) || 0;
+    if (entry > 0 && calculatedPips > 0) {
+      let pipDivider = 1;
+      if (pairType === "forex") pipDivider = entry > 20 ? 100 : 100000;
+      else if (pairType === "gold") pipDivider = 100;
+      else if (pairType === "silver") pipDivider = 1000;
+      else if (pairType === "btc") pipDivider = 1000;
+      else if (pairType === "eth") pipDivider = 100000;
+
+      const priceDiff = calculatedPips / pipDivider;
+      finalExitPrice = tradeDirection === "buy" ? entry - priceDiff : entry + priceDiff;
+    }
+  } else {
+    const entry = Number(entryPrice) || 0;
+    const exit = Number(exitPrice) || 0;
+    if (entry > 0 && exit > 0) {
+      if (tradeDirection === "buy" && exit >= entry) {
+        slError = isFrench ? "Le SL doit être inférieur à l'entrée pour un Achat." : "SL must be lower than Entry for a Buy.";
+      } else if (tradeDirection === "sell" && exit <= entry) {
+        slError = isFrench ? "Le SL doit être supérieur à l'entrée pour une Vente." : "SL must be higher than Entry for a Sell.";
+      } else {
+        const diff = Math.abs(entry - exit);
+        if (pairType === "forex") {
+          calculatedPips = diff * (entry > 20 ? 100 : 10000);
+        } else if (pairType === "gold") {
+          calculatedPips = diff * 100;
+        } else if (pairType === "silver") {
+          calculatedPips = diff * 1000;
+        } else if (pairType === "btc") {
+          calculatedPips = diff * 1000;
+        } else if (pairType === "eth") {
+          calculatedPips = diff * 100000;
+        }
+      }
+    }
+  }
+
+  // Pip value logic based on specific MT5 contract scaling
+  let pipValuePerLot = 10; // Forex
+  if (pairType === "gold") pipValuePerLot = 1;
+  if (pairType === "silver") pipValuePerLot = 5;
+  if (pairType === "btc") pipValuePerLot = 0.001;
+  if (pairType === "eth") pipValuePerLot = 0.1;
+
+  let standardLots =
+    calculatedPips > 0 && actualRiskAmount > 0 ? (actualRiskAmount / calculatedPips) / pipValuePerLot : 0;
+    
+  // The absolute minimum standard lot size allowed on MT4/MT5 is 0.01
+  if (standardLots > 0 && standardLots < 0.01) {
+    standardLots = 0.01;
+  }
+
+  const miniLots = standardLots * 10;
+  const microLots = standardLots * 100;
+
+  const handleCopy = (text: string, field: string) => {
+    navigator.clipboard.writeText(text);
+    setCopiedField(field);
+    setTimeout(() => setCopiedField(null), 2000);
+  };
+
+  const container: Variants = {
+    hidden: { opacity: 0 },
+    show: { opacity: 1, transition: { staggerChildren: 0.1 } }
+  };
+
+  const item: Variants = {
+    hidden: { opacity: 0, y: 20 },
+    show: { opacity: 1, y: 0 }
+  };
+
+  const riskColor = isDark ? "text-white/60" : "text-gray-500";
+
+  // TradingView Economic Calendar Widget URL - dynamically switches theme and language!
+  const calendarWidgetUrl = `https://s.tradingview.com/embed-widget/events/?locale=${isFrench ? 'fr' : 'en'}#%7B%22colorTheme%22%3A%22${isDark ? 'dark' : 'light'}%22%2C%22isTransparent%22%3Atrue%2C%22width%22%3A%22100%25%22%2C%22height%22%3A%22100%25%22%2C%22importanceFilter%22%3A%22-1%2C0%2C1%22%2C%22currencyFilter%22%3A%22USD%2CEUR%2CGBP%2CJPY%2CCAD%2CAUD%2CNZD%2CCHF%22%7D`;
+
+  return (
+    <div className={`relative min-h-screen p-6 ${isDark ? "bg-[#0b0f14]" : "bg-[#f7f9fc]"}`}>
+      
+      {/* Background grid */}
+      <div className="absolute inset-0 bg-[linear-gradient(to_right,#ffffff05_1px,transparent_1px),linear-gradient(to_bottom,#ffffff05_1px,transparent_1px)] bg-[size:40px_40px] pointer-events-none" />
+
+      <motion.div initial="hidden" animate="show" variants={container} className="relative z-10 space-y-6">
+
+        {/* TOOL TABS */}
+        <motion.div variants={item} className="flex justify-center mb-2">
+          <div className={`flex rounded-xl p-1 border shadow-inner ${isDark ? "bg-[#0f141b] border-white/10" : "bg-white border-black/10"}`}>
+            <button 
+              onClick={() => setActiveTab('calculator')} 
+              className={`flex items-center gap-2 px-6 py-3 rounded-lg font-bold text-sm transition-all ${activeTab === 'calculator' ? 'bg-mg-gold text-black shadow-md' : isDark ? 'text-white/60 hover:text-white hover:bg-white/5' : 'text-gray-500 hover:text-black hover:bg-black/5'}`}
+            >
+              <Calculator size={18} />
+              {isFrench ? "Calculateur" : "Risk Calculator"}
+            </button>
+            <button 
+              onClick={() => setActiveTab('calendar')} 
+              className={`flex items-center gap-2 px-6 py-3 rounded-lg font-bold text-sm transition-all ${activeTab === 'calendar' ? 'bg-mg-gold text-black shadow-md' : isDark ? 'text-white/60 hover:text-white hover:bg-white/5' : 'text-gray-500 hover:text-black hover:bg-black/5'}`}
+            >
+              <CalendarDays size={18} />
+              {isFrench ? "Calendrier Économique" : "Economic Calendar"}
+            </button>
+          </div>
+        </motion.div>
+
+        {/* CALCULATOR TOOL */}
+        {activeTab === 'calculator' && (
+          <div className="space-y-6">
+            {/* HEADER */}
+            <motion.div variants={item} className={`flex items-center justify-between p-4 rounded-xl border backdrop-blur-xl ${isDark ? "bg-white/5 border-white/10" : "bg-white/50 border-black/10"}`}>
+          <div className="flex items-center gap-3">
+            <Calculator className="text-mg-gold" />
+            <h1 className="font-bold text-white text-lg">
+              {isFrench ? "Calculateur" : "Risk Calculator"}
+            </h1>
+          </div>
+
+          <div className="flex flex-col items-end gap-2 sm:flex-row sm:items-center sm:gap-4">
+            <div className="flex items-center gap-2">
+              <span className="flex h-6 w-6 items-center justify-center rounded-full bg-mg-gold/20 text-mg-gold text-xs font-bold border border-mg-gold/30">1</span>
+              <span className="text-xs font-bold uppercase tracking-widest text-white/70">{isFrench ? "Choisir l'Actif" : "Select Asset"}</span>
+            </div>
+            <div className="flex flex-wrap justify-end gap-1.5 rounded-xl bg-[#0f141b] p-1 border border-white/10 shadow-inner">
+              {["forex", "gold", "silver", "btc", "eth"].map((type) => (
+                <button
+                  key={type}
+                  onClick={() => setPairType(type)}
+                  className={`px-4 py-1.5 text-xs font-bold rounded-lg transition-all ${
+                    pairType === type
+                      ? "bg-mg-gold text-black shadow-md"
+                      : "text-white/60 hover:text-white hover:bg-white/5"
+                  }`}
+                >
+                  {type.toUpperCase()}
+                </button>
+              ))}
+            </div>
+          </div>
+            </motion.div>
+
+            <div className="grid lg:grid-cols-2 gap-6">
+
+          {/* INPUT PANEL */}
+              <motion.div variants={item} className={`p-6 rounded-2xl border backdrop-blur-xl space-y-6 ${isDark ? "bg-white/[0.03] border-white/10" : "bg-white border-black/10"}`}>
+
+            {/* Balance */}
+            <div>
+              <label className="flex items-center gap-2 text-sm text-white/70">Account Balance <TooltipInfo text={isFrench ? "Votre capital total de trading" : "Your total trading capital"} /></label>
+              <div className="relative mt-2">
+                <DollarSign className="absolute left-3 top-3 text-mg-gold" size={18} />
+                <input
+                  type="number"
+                  value={accountBalance}
+                  onChange={(e) => setAccountBalance(e.target.value === "" ? "" : Number(e.target.value))}
+                  className="w-full pl-10 pr-4 py-3 rounded-lg bg-[#0f141b] border border-white/10 text-white font-bold"
+                />
+              </div>
+            </div>
+
+            {/* Risk */}
+            <div>
+              <div className="flex items-center justify-between mb-2">
+                <label className="flex items-center gap-2 text-sm text-white/70">Risk <TooltipInfo text={isFrench ? "Le montant que vous êtes prêt à perdre" : "The amount you are willing to lose"} /></label>
+                <div className="flex bg-[#0f141b] rounded-lg p-1 border border-white/10">
+                  <button onClick={() => setRiskMode("percent")} className={`px-2 py-1 text-[10px] uppercase font-bold rounded ${riskMode === 'percent' ? 'bg-mg-gold text-black' : 'text-white/50'}`}>Percent</button>
+                  <button onClick={() => setRiskMode("amount")} className={`px-2 py-1 text-[10px] uppercase font-bold rounded ${riskMode === 'amount' ? 'bg-mg-gold text-black' : 'text-white/50'}`}>Amount</button>
+                </div>
+              </div>
+              
+              {riskMode === "percent" ? (
+                <div>
+                  <div className="relative">
+                    <Percent className="absolute left-3 top-3 text-mg-gold" size={18} />
+                    <input
+                      type="number"
+                      value={riskPercent}
+                      onChange={(e) => setRiskPercent(e.target.value === "" ? "" : Number(e.target.value))}
+                      className="w-full pl-10 pr-4 py-3 rounded-lg bg-[#0f141b] border border-white/10 text-white font-bold"
+                    />
+                  </div>
+                  <div className="flex gap-2 mt-3">
+                    {[0.5, 1, 2].map((r) => (
+                      <button key={r} onClick={() => setRiskPercent(r)} className="px-3 py-1 rounded bg-mg-gold/10 text-mg-gold text-sm hover:bg-mg-gold/20 transition">
+                        {r}%
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              ) : (
+                <div className="relative">
+                  <DollarSign className="absolute left-3 top-3 text-mg-gold" size={18} />
+                  <input
+                    type="number"
+                    value={riskAmountInput}
+                    onChange={(e) => setRiskAmountInput(e.target.value === "" ? "" : Number(e.target.value))}
+                    className="w-full pl-10 pr-4 py-3 rounded-lg bg-[#0f141b] border border-white/10 text-white font-bold"
+                  />
+                </div>
+              )}
+            </div>
+
+            {/* Trade Direction */}
+            <div>
+              <label className="flex items-center gap-2 text-sm text-white/70">{isFrench ? "Direction du Trade" : "Trade Direction"} <TooltipInfo text={isFrench ? "Acheter (Long) ou Vendre (Short)" : "Buy (Long) or Sell (Short)"} /></label>
+              <div className="flex bg-[#0f141b] rounded-lg p-1 border border-white/10 mt-2">
+                <button onClick={() => setTradeDirection("buy")} className={`flex-1 py-3 text-xs uppercase font-bold rounded-md transition-colors ${tradeDirection === 'buy' ? 'bg-white text-black shadow-sm' : 'text-white/50 hover:text-white'}`}>Buy</button>
+                <button onClick={() => setTradeDirection("sell")} className={`flex-1 py-3 text-xs uppercase font-bold rounded-md transition-colors ${tradeDirection === 'sell' ? 'bg-white text-black shadow-sm' : 'text-white/50 hover:text-white'}`}>Sell</button>
+              </div>
+            </div>
+
+            {/* Entry Price */}
+            <div>
+              <label className="flex items-center gap-2 text-sm text-white/70">Entry Price {slMode === "price" && <span className="text-mg-gold">*</span>} <TooltipInfo text={isFrench ? "Votre prix d'entrée sur le marché" : "Your market entry price"} /></label>
+              <div className="relative mt-2">
+                <DollarSign className="absolute left-3 top-3 text-mg-gold" size={18} />
+                <input
+                  type="number"
+                  value={entryPrice}
+                  onChange={(e) => setEntryPrice(e.target.value === "" ? "" : Number(e.target.value))}
+                  placeholder="e.g. 2000.50"
+                  className="w-full pl-10 pr-4 py-3 rounded-lg bg-[#0f141b] border border-white/10 text-white font-bold focus:outline-none focus:border-mg-gold transition-colors"
+                />
+              </div>
+            </div>
+
+            {/* Stop Loss */}
+            <div>
+              <div className="flex items-center justify-between mb-2">
+                <label className="flex items-center gap-2 text-sm text-white/70">Stop Loss <TooltipInfo text={isFrench ? "Votre niveau d'invalidation (en Pips ou Prix)" : "Your invalidation level (in Pips or Price)"} /></label>
+                <div className="flex bg-[#0f141b] rounded-lg p-1 border border-white/10">
+                  <button onClick={() => setSlMode("pips")} className={`px-2 py-1 text-[10px] uppercase font-bold rounded ${slMode === 'pips' ? 'bg-mg-gold text-black' : 'text-white/50'}`}>In Pips</button>
+                  <button onClick={() => setSlMode("price")} className={`px-2 py-1 text-[10px] uppercase font-bold rounded ${slMode === 'price' ? 'bg-mg-gold text-black' : 'text-white/50'}`}>Exit Price</button>
+                </div>
+              </div>
+              
+              {slMode === "pips" ? (
+                <div className="relative">
+                  <ShieldCheck className="absolute left-3 top-3 text-mg-gold" size={18} />
+                  <input
+                    type="number"
+                    value={stopLoss}
+                    onChange={(e) => setStopLoss(e.target.value === "" ? "" : Number(e.target.value))}
+                    placeholder="e.g. 20"
+                    className="w-full pl-10 pr-4 py-3 rounded-lg bg-[#0f141b] border border-white/10 text-white font-bold focus:outline-none focus:border-mg-gold transition-colors"
+                  />
+                </div>
+              ) : (
+                <div>
+                  <div className="relative">
+                    <ShieldCheck className={`absolute left-3 top-3 ${slError ? "text-red-500" : "text-mg-gold"}`} size={18} />
+                    <input
+                      type="number"
+                      value={exitPrice}
+                      onChange={(e) => setExitPrice(e.target.value === "" ? "" : Number(e.target.value))}
+                      placeholder="e.g. 1998.50"
+                      className={`w-full pl-10 pr-4 py-3 rounded-lg bg-[#0f141b] border ${slError ? "border-red-500/50 focus:border-red-500" : "border-white/10 focus:border-mg-gold"} text-white font-bold focus:outline-none transition-colors`}
+                    />
+                  </div>
+                  {slError && <p className="text-red-500 text-xs mt-2 font-medium">{slError}</p>}
+                </div>
+              )}
+            </div>
+
+            {/* Contract Size Info */}
+            <div className="flex flex-col gap-3 p-4 rounded-xl bg-[#0f141b] border border-white/10">
+              <div className="flex items-center justify-between">
+                <span className="text-sm text-white/70 flex items-center gap-2">
+                  {isFrench ? "Taille du Contrat" : "Contract Size"} 
+                  <TooltipInfo text={isFrench ? "Taille standard du contrat sur MT4/MT5" : "Standard contract size on MT4/MT5"} />
+                </span>
+                <span className="font-bold text-mg-gold">
+                  {pairType === "forex" ? "100,000" : pairType === "gold" ? "100" : pairType === "silver" ? "500" : "1"}
+                </span>
+              </div>
+              <p className="text-[10px] leading-relaxed text-white/40 italic">
+                {isFrench 
+                  ? "* Avertissement : Les tailles de contrat peuvent varier d'un courtier à l'autre. Veuillez vérifier les spécifications exactes sur votre plateforme de trading (MT4/MT5) avant d'exécuter des transactions réelles." 
+                  : "* Disclaimer: Contract sizes may vary by broker. Please verify the exact specifications on your trading platform (MT4/MT5) before executing live trades."}
+              </p>
+            </div>
+
+          </motion.div>
+
+          {/* OUTPUT PANEL */}
+          <motion.div variants={item} className="flex flex-col gap-6">
+
+            {/* Risk Amount */}
+            <div className="relative p-6 rounded-2xl border bg-gradient-to-br from-mg-gold/10 to-transparent border-mg-gold/20 backdrop-blur-xl">
+              
+              <p className="text-xs text-white/50 uppercase">
+                Amount at Risk {riskMode === "amount" && balance > 0 && <span className="font-bold text-white/70 tracking-wider">({actualRiskPercent.toFixed(2)}%)</span>}
+              </p>
+
+              <motion.h1
+                key={actualRiskAmount}
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                className="text-5xl font-black text-mg-gold drop-shadow-[0_0_10px_rgba(255,215,0,0.4)]"
+              >
+                ${actualRiskAmount.toFixed(2)}
+              </motion.h1>
+
+              <p className={`text-sm mt-2 ${riskColor}`}>
+                {actualRiskPercent <= 2 ? "Safe Risk" : actualRiskPercent <= 5 ? "Moderate Risk" : "High Risk"}
+                {slMode === "price" && calculatedPips > 0 && <span className="ml-2 font-bold text-white/70">• {calculatedPips.toFixed(1)} Pips SL</span>}
+              </p>
+
+              {/* live dot */}
+              <span className="absolute top-4 right-4 flex h-3 w-3">
+                <span className="animate-ping absolute h-full w-full rounded-full bg-mg-gold opacity-75"></span>
+                <span className="relative h-3 w-3 rounded-full bg-mg-gold"></span>
+              </span>
+            </div>
+
+            {/* LOT SIZES */}
+            <div className="grid grid-cols-3 gap-4">
+              {[
+                { label: "Standard", value: standardLots, info: "Volume: 1.00 (100,000 units)" },
+                { label: "Mini", value: miniLots, info: "Volume: 0.10 (10,000 units)" },
+                { label: "Micro", value: microLots, info: "Volume: 0.01 (1,000 units)" }
+              ].map((lot) => (
+                <div
+                  key={lot.label}
+                  className="relative p-4 rounded-xl bg-white/5 border border-white/10 text-center hover:scale-105 transition"
+                >
+                  <div className="absolute top-2 right-2">
+                    <TooltipInfo text={lot.info} />
+                  </div>
+                  <p className="text-xs text-white/50">{lot.label}</p>
+                  <p className="text-2xl font-black text-mg-gold">
+                    {lot.value.toFixed(2)}
+                  </p>
+                </div>
+              ))}
+            </div>
+
+            {/* EXECUTION DETAILS SUMMARY FOR COPYING */}
+            <div className={`p-6 rounded-2xl border backdrop-blur-xl ${isDark ? "bg-white/[0.03] border-white/10" : "bg-white border-black/10"}`}>
+              <h3 className="text-sm font-bold text-white/70 uppercase tracking-wider mb-4">
+                {isFrench ? "Détails d'Exécution" : "Execution Details"}
+              </h3>
+              <div className="space-y-3">
+                {/* Direction */}
+                <div className="flex items-center justify-between p-3 rounded-xl bg-[#0f141b] border border-white/5">
+                  <span className="text-sm text-white/60">{isFrench ? "Direction" : "Direction"}</span>
+                  <span className="font-bold text-white uppercase">{tradeDirection}</span>
+                </div>
+
+                {/* Entry Price */}
+                {entryPrice !== "" && (
+                  <div className="flex items-center justify-between p-3 rounded-xl bg-[#0f141b] border border-white/5">
+                    <span className="text-sm text-white/60">{isFrench ? "Prix d'Entrée" : "Entry Price"}</span>
+                    <div className="flex items-center gap-3">
+                      <span className="font-bold text-white">{entryPrice}</span>
+                      <button onClick={() => handleCopy(String(entryPrice), "entry")} className="text-mg-gold hover:text-white transition" aria-label="Copy Entry Price">
+                        {copiedField === "entry" ? <Check size={16} /> : <Copy size={16} />}
+                      </button>
+                    </div>
+                  </div>
+                )}
+
+                {/* Exit Price */}
+                {finalExitPrice !== "" && (
+                  <div className="flex items-center justify-between p-3 rounded-xl bg-[#0f141b] border border-white/5">
+                    <span className="text-sm text-white/60">{isFrench ? "Prix de Sortie (SL)" : "Exit Price (SL)"}</span>
+                    <div className="flex items-center gap-3">
+                      <span className="font-bold text-white">
+                        {typeof finalExitPrice === 'number' ? String(Number(finalExitPrice.toFixed(5))) : finalExitPrice}
+                      </span>
+                      <button onClick={() => handleCopy(String(typeof finalExitPrice === 'number' ? Number(finalExitPrice.toFixed(5)) : finalExitPrice), "exit")} className="text-mg-gold hover:text-white transition" aria-label="Copy Exit Price">
+                        {copiedField === "exit" ? <Check size={16} /> : <Copy size={16} />}
+                      </button>
+                    </div>
+                  </div>
+                )}
+
+                {/* Stop Loss (Pips) */}
+                {calculatedPips > 0 && (
+                  <div className="flex items-center justify-between p-3 rounded-xl bg-[#0f141b] border border-white/5">
+                    <span className="text-sm text-white/60">{isFrench ? "Stop Loss (Pips)" : "Stop Loss (Pips)"}</span>
+                    <div className="flex items-center gap-3">
+                      <span className="font-bold text-white">{calculatedPips.toFixed(1)}</span>
+                      <button onClick={() => handleCopy(calculatedPips.toFixed(1), "pips")} className="text-mg-gold hover:text-white transition" aria-label="Copy Pips">
+                        {copiedField === "pips" ? <Check size={16} /> : <Copy size={16} />}
+                      </button>
+                    </div>
+                  </div>
+                )}
+
+                {/* Standard Lot Size */}
+                {standardLots > 0 && (
+                  <div className="flex items-center justify-between p-3 rounded-xl bg-[#0f141b] border border-white/5">
+                    <span className="text-sm text-white/60">{isFrench ? "Taille de Lot (Standard)" : "Lot Size (Standard)"}</span>
+                    <div className="flex items-center gap-3">
+                      <span className="font-bold text-mg-gold">{standardLots.toFixed(2)}</span>
+                      <button onClick={() => handleCopy(standardLots.toFixed(2), "lot")} className="text-mg-gold hover:text-white transition" aria-label="Copy Lot Size">
+                        {copiedField === "lot" ? <Check size={16} /> : <Copy size={16} />}
+                      </button>
+                    </div>
+                  </div>
+                )}
+              </div>
+            </div>
+
+          </motion.div>
+        </div>
+          </div>
+        )}
+
+        {/* ECONOMIC CALENDAR TOOL */}
+        {activeTab === 'calendar' && (
+          <motion.div variants={item} className={`h-[800px] w-full rounded-2xl overflow-hidden border p-4 backdrop-blur-xl ${isDark ? "bg-white/[0.03] border-white/10" : "bg-white border-black/10"}`}>
+            <iframe 
+              scrolling="no" 
+              allowTransparency={true} 
+              frameBorder="0" 
+              src={calendarWidgetUrl} 
+              style={{ boxSizing: "border-box", height: "100%", width: "100%" }}
+              title="Economic Calendar"
+            ></iframe>
+          </motion.div>
+        )}
+      </motion.div>
+    </div>
+  );
+}

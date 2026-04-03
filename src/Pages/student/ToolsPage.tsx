@@ -2,9 +2,23 @@
 
 import { useState } from "react";
 import { motion, type Variants } from "framer-motion";
-import { Calculator, DollarSign, Percent, ShieldCheck, Copy, Check, Info } from "lucide-react";
+import { Calculator, DollarSign, Percent, ShieldCheck, Copy, Check, Info, CalendarDays } from "lucide-react";
 import { useTheme } from "../../context/ThemeContext";
 import { useLanguage } from "../../context/LanguageContext";
+
+// Custom Tooltip for Mobile (Tap) & Desktop (Hover)
+const TooltipInfo = ({ text }: { text: string }) => (
+  <div className="group relative flex items-center justify-center outline-none" tabIndex={0}>
+    <Info size={14} className="text-white/40 cursor-help transition-colors group-hover:text-mg-gold group-focus:text-mg-gold" />
+    <div className="pointer-events-none absolute bottom-full left-1/2 z-50 mb-2 w-max max-w-[200px] -translate-x-1/2 opacity-0 transition-opacity group-hover:opacity-100 group-focus:opacity-100">
+      <div className="rounded-lg bg-black border border-white/20 px-3 py-2 text-xs font-medium text-white shadow-2xl text-center">
+        {text}
+      </div>
+      {/* Little triangle pointer */}
+      <div className="mx-auto h-0 w-0 border-x-[5px] border-t-[5px] border-x-transparent border-t-white/20" />
+    </div>
+  </div>
+);
 
 export default function ToolsPage() {
   const { theme } = useTheme();
@@ -14,6 +28,7 @@ export default function ToolsPage() {
   const isFrench = language === "fr";
 
   // State
+  const [activeTab, setActiveTab] = useState<"calculator" | "calendar">("calendar");
   const [accountBalance, setAccountBalance] = useState<number | "">(10000);
   const [riskMode, setRiskMode] = useState<"percent" | "amount">("percent");
   const [riskPercent, setRiskPercent] = useState<number | "">(1);
@@ -115,6 +130,9 @@ export default function ToolsPage() {
 
   const riskColor = isDark ? "text-white/60" : "text-gray-500";
 
+  // TradingView Economic Calendar Widget URL - dynamically switches theme and language!
+  const calendarWidgetUrl = `https://s.tradingview.com/embed-widget/events/?locale=${isFrench ? 'fr' : 'en'}#%7B%22colorTheme%22%3A%22${isDark ? 'dark' : 'light'}%22%2C%22isTransparent%22%3Atrue%2C%22width%22%3A%22100%25%22%2C%22height%22%3A%22100%25%22%2C%22importanceFilter%22%3A%22-1%2C0%2C1%22%2C%22currencyFilter%22%3A%22USD%2CEUR%2CGBP%2CJPY%2CCAD%2CAUD%2CNZD%2CCHF%22%7D`;
+
   return (
     <div className={`relative min-h-screen p-6 ${isDark ? "bg-[#0b0f14]" : "bg-[#f7f9fc]"}`}>
       
@@ -123,8 +141,31 @@ export default function ToolsPage() {
 
       <motion.div initial="hidden" animate="show" variants={container} className="relative z-10 space-y-6">
 
-        {/* HEADER */}
-        <motion.div variants={item} className="flex items-center justify-between p-4 rounded-xl bg-white/5 border border-white/10 backdrop-blur-xl">
+        {/* TOOL TABS */}
+        <motion.div variants={item} className="flex justify-center mb-2">
+          <div className={`flex rounded-xl p-1 border shadow-inner ${isDark ? "bg-[#0f141b] border-white/10" : "bg-white border-black/10"}`}>
+            <button 
+              onClick={() => setActiveTab('calculator')} 
+              className={`flex items-center gap-2 px-6 py-3 rounded-lg font-bold text-sm transition-all ${activeTab === 'calculator' ? 'bg-mg-gold text-black shadow-md' : isDark ? 'text-white/60 hover:text-white hover:bg-white/5' : 'text-gray-500 hover:text-black hover:bg-black/5'}`}
+            >
+              <Calculator size={18} />
+              {isFrench ? "Calculateur" : "Risk Calculator"}
+            </button>
+            <button 
+              onClick={() => setActiveTab('calendar')} 
+              className={`flex items-center gap-2 px-6 py-3 rounded-lg font-bold text-sm transition-all ${activeTab === 'calendar' ? 'bg-mg-gold text-black shadow-md' : isDark ? 'text-white/60 hover:text-white hover:bg-white/5' : 'text-gray-500 hover:text-black hover:bg-black/5'}`}
+            >
+              <CalendarDays size={18} />
+              {isFrench ? "Calendrier Économique" : "Economic Calendar"}
+            </button>
+          </div>
+        </motion.div>
+
+        {/* CALCULATOR TOOL */}
+        {activeTab === 'calculator' && (
+          <div className="space-y-6">
+            {/* HEADER */}
+            <motion.div variants={item} className={`flex items-center justify-between p-4 rounded-xl border backdrop-blur-xl ${isDark ? "bg-white/5 border-white/10" : "bg-white/50 border-black/10"}`}>
           <div className="flex items-center gap-3">
             <Calculator className="text-mg-gold" />
             <h1 className="font-bold text-white text-lg">
@@ -132,31 +173,37 @@ export default function ToolsPage() {
             </h1>
           </div>
 
-          <div className="flex flex-wrap gap-2">
-            {["forex", "gold", "silver", "btc", "eth"].map((type) => (
-              <button
-                key={type}
-                onClick={() => setPairType(type)}
-                className={`px-3 py-1 text-xs rounded-lg transition ${
-                  pairType === type
-                    ? "bg-mg-gold/20 text-mg-gold"
-                    : "bg-white/5 text-white/60"
-                }`}
-              >
-                {type.toUpperCase()}
-              </button>
-            ))}
+          <div className="flex flex-col items-end gap-2 sm:flex-row sm:items-center sm:gap-4">
+            <div className="flex items-center gap-2">
+              <span className="flex h-6 w-6 items-center justify-center rounded-full bg-mg-gold/20 text-mg-gold text-xs font-bold border border-mg-gold/30">1</span>
+              <span className="text-xs font-bold uppercase tracking-widest text-white/70">{isFrench ? "Choisir l'Actif" : "Select Asset"}</span>
+            </div>
+            <div className="flex flex-wrap justify-end gap-1.5 rounded-xl bg-[#0f141b] p-1 border border-white/10 shadow-inner">
+              {["forex", "gold", "silver", "btc", "eth"].map((type) => (
+                <button
+                  key={type}
+                  onClick={() => setPairType(type)}
+                  className={`px-4 py-1.5 text-xs font-bold rounded-lg transition-all ${
+                    pairType === type
+                      ? "bg-mg-gold text-black shadow-md"
+                      : "text-white/60 hover:text-white hover:bg-white/5"
+                  }`}
+                >
+                  {type.toUpperCase()}
+                </button>
+              ))}
+            </div>
           </div>
-        </motion.div>
+            </motion.div>
 
-        <div className="grid lg:grid-cols-2 gap-6">
+            <div className="grid lg:grid-cols-2 gap-6">
 
           {/* INPUT PANEL */}
-          <motion.div variants={item} className="p-6 rounded-2xl border bg-white/[0.03] border-white/10 backdrop-blur-xl space-y-6">
+              <motion.div variants={item} className={`p-6 rounded-2xl border backdrop-blur-xl space-y-6 ${isDark ? "bg-white/[0.03] border-white/10" : "bg-white border-black/10"}`}>
 
             {/* Balance */}
             <div>
-              <label className="flex items-center gap-2 text-sm text-white/70">Account Balance <Info size={14} className="text-white/40 cursor-help" title={isFrench ? "Votre capital total de trading" : "Your total trading capital"} /></label>
+              <label className="flex items-center gap-2 text-sm text-white/70">Account Balance <TooltipInfo text={isFrench ? "Votre capital total de trading" : "Your total trading capital"} /></label>
               <div className="relative mt-2">
                 <DollarSign className="absolute left-3 top-3 text-mg-gold" size={18} />
                 <input
@@ -171,7 +218,7 @@ export default function ToolsPage() {
             {/* Risk */}
             <div>
               <div className="flex items-center justify-between mb-2">
-                <label className="flex items-center gap-2 text-sm text-white/70">Risk <Info size={14} className="text-white/40 cursor-help" title={isFrench ? "Le montant que vous êtes prêt à perdre" : "The amount you are willing to lose"} /></label>
+                <label className="flex items-center gap-2 text-sm text-white/70">Risk <TooltipInfo text={isFrench ? "Le montant que vous êtes prêt à perdre" : "The amount you are willing to lose"} /></label>
                 <div className="flex bg-[#0f141b] rounded-lg p-1 border border-white/10">
                   <button onClick={() => setRiskMode("percent")} className={`px-2 py-1 text-[10px] uppercase font-bold rounded ${riskMode === 'percent' ? 'bg-mg-gold text-black' : 'text-white/50'}`}>Percent</button>
                   <button onClick={() => setRiskMode("amount")} className={`px-2 py-1 text-[10px] uppercase font-bold rounded ${riskMode === 'amount' ? 'bg-mg-gold text-black' : 'text-white/50'}`}>Amount</button>
@@ -212,7 +259,7 @@ export default function ToolsPage() {
 
             {/* Trade Direction */}
             <div>
-              <label className="flex items-center gap-2 text-sm text-white/70">{isFrench ? "Direction du Trade" : "Trade Direction"} <Info size={14} className="text-white/40 cursor-help" title={isFrench ? "Acheter (Long) ou Vendre (Short)" : "Buy (Long) or Sell (Short)"} /></label>
+              <label className="flex items-center gap-2 text-sm text-white/70">{isFrench ? "Direction du Trade" : "Trade Direction"} <TooltipInfo text={isFrench ? "Acheter (Long) ou Vendre (Short)" : "Buy (Long) or Sell (Short)"} /></label>
               <div className="flex bg-[#0f141b] rounded-lg p-1 border border-white/10 mt-2">
                 <button onClick={() => setTradeDirection("buy")} className={`flex-1 py-3 text-xs uppercase font-bold rounded-md transition-colors ${tradeDirection === 'buy' ? 'bg-white text-black shadow-sm' : 'text-white/50 hover:text-white'}`}>Buy</button>
                 <button onClick={() => setTradeDirection("sell")} className={`flex-1 py-3 text-xs uppercase font-bold rounded-md transition-colors ${tradeDirection === 'sell' ? 'bg-white text-black shadow-sm' : 'text-white/50 hover:text-white'}`}>Sell</button>
@@ -221,7 +268,7 @@ export default function ToolsPage() {
 
             {/* Entry Price */}
             <div>
-              <label className="flex items-center gap-2 text-sm text-white/70">Entry Price {slMode === "price" && <span className="text-mg-gold">*</span>} <Info size={14} className="text-white/40 cursor-help" title={isFrench ? "Votre prix d'entrée sur le marché" : "Your market entry price"} /></label>
+              <label className="flex items-center gap-2 text-sm text-white/70">Entry Price {slMode === "price" && <span className="text-mg-gold">*</span>} <TooltipInfo text={isFrench ? "Votre prix d'entrée sur le marché" : "Your market entry price"} /></label>
               <div className="relative mt-2">
                 <DollarSign className="absolute left-3 top-3 text-mg-gold" size={18} />
                 <input
@@ -237,7 +284,7 @@ export default function ToolsPage() {
             {/* Stop Loss */}
             <div>
               <div className="flex items-center justify-between mb-2">
-                <label className="flex items-center gap-2 text-sm text-white/70">Stop Loss <Info size={14} className="text-white/40 cursor-help" title={isFrench ? "Votre niveau d'invalidation (en Pips ou Prix)" : "Your invalidation level (in Pips or Price)"} /></label>
+                <label className="flex items-center gap-2 text-sm text-white/70">Stop Loss <TooltipInfo text={isFrench ? "Votre niveau d'invalidation (en Pips ou Prix)" : "Your invalidation level (in Pips or Price)"} /></label>
                 <div className="flex bg-[#0f141b] rounded-lg p-1 border border-white/10">
                   <button onClick={() => setSlMode("pips")} className={`px-2 py-1 text-[10px] uppercase font-bold rounded ${slMode === 'pips' ? 'bg-mg-gold text-black' : 'text-white/50'}`}>In Pips</button>
                   <button onClick={() => setSlMode("price")} className={`px-2 py-1 text-[10px] uppercase font-bold rounded ${slMode === 'price' ? 'bg-mg-gold text-black' : 'text-white/50'}`}>Exit Price</button>
@@ -270,6 +317,24 @@ export default function ToolsPage() {
                   {slError && <p className="text-red-500 text-xs mt-2 font-medium">{slError}</p>}
                 </div>
               )}
+            </div>
+
+            {/* Contract Size Info */}
+            <div className="flex flex-col gap-3 p-4 rounded-xl bg-[#0f141b] border border-white/10">
+              <div className="flex items-center justify-between">
+                <span className="text-sm text-white/70 flex items-center gap-2">
+                  {isFrench ? "Taille du Contrat" : "Contract Size"} 
+                  <TooltipInfo text={isFrench ? "Taille standard du contrat sur MT4/MT5" : "Standard contract size on MT4/MT5"} />
+                </span>
+                <span className="font-bold text-mg-gold">
+                  {pairType === "forex" ? "100,000" : pairType === "gold" ? "100" : pairType === "silver" ? "500" : "1"}
+                </span>
+              </div>
+              <p className="text-[10px] leading-relaxed text-white/40 italic">
+                {isFrench 
+                  ? "* Avertissement : Les tailles de contrat peuvent varier d'un courtier à l'autre. Veuillez vérifier les spécifications exactes sur votre plateforme de trading (MT4/MT5) avant d'exécuter des transactions réelles." 
+                  : "* Disclaimer: Contract sizes may vary by broker. Please verify the exact specifications on your trading platform (MT4/MT5) before executing live trades."}
+              </p>
             </div>
 
           </motion.div>
@@ -314,10 +379,11 @@ export default function ToolsPage() {
               ].map((lot) => (
                 <div
                   key={lot.label}
-                  className="relative p-4 rounded-xl bg-white/5 border border-white/10 text-center hover:scale-105 transition cursor-help"
-                  title={lot.info}
+                  className="relative p-4 rounded-xl bg-white/5 border border-white/10 text-center hover:scale-105 transition"
                 >
-                  <Info size={12} className="absolute top-2 right-2 text-white/30" />
+                  <div className="absolute top-2 right-2">
+                    <TooltipInfo text={lot.info} />
+                  </div>
                   <p className="text-xs text-white/50">{lot.label}</p>
                   <p className="text-2xl font-black text-mg-gold">
                     {lot.value.toFixed(2)}
@@ -327,7 +393,7 @@ export default function ToolsPage() {
             </div>
 
             {/* EXECUTION DETAILS SUMMARY FOR COPYING */}
-            <div className="p-6 rounded-2xl border bg-white/[0.03] border-white/10 backdrop-blur-xl">
+            <div className={`p-6 rounded-2xl border backdrop-blur-xl ${isDark ? "bg-white/[0.03] border-white/10" : "bg-white border-black/10"}`}>
               <h3 className="text-sm font-bold text-white/70 uppercase tracking-wider mb-4">
                 {isFrench ? "Détails d'Exécution" : "Execution Details"}
               </h3>
@@ -396,6 +462,22 @@ export default function ToolsPage() {
 
           </motion.div>
         </div>
+          </div>
+        )}
+
+        {/* ECONOMIC CALENDAR TOOL */}
+        {activeTab === 'calendar' && (
+          <motion.div variants={item} className={`h-[800px] w-full rounded-2xl overflow-hidden border p-4 backdrop-blur-xl ${isDark ? "bg-white/[0.03] border-white/10" : "bg-white border-black/10"}`}>
+            <iframe 
+              scrolling="no" 
+              allowTransparency={true} 
+              frameBorder="0" 
+              src={calendarWidgetUrl} 
+              style={{ boxSizing: "border-box", height: "100%", width: "100%" }}
+              title="Economic Calendar"
+            ></iframe>
+          </motion.div>
+        )}
       </motion.div>
     </div>
   );
