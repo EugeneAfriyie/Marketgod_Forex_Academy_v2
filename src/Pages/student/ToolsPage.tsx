@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { motion, type Variants } from "framer-motion";
-import { Calculator, DollarSign, Percent, ShieldCheck } from "lucide-react";
+import { Calculator, DollarSign, Percent, ShieldCheck, Copy, Check, Info } from "lucide-react";
 import { useTheme } from "../../context/ThemeContext";
 import { useLanguage } from "../../context/LanguageContext";
 
@@ -15,27 +15,93 @@ export default function ToolsPage() {
 
   // State
   const [accountBalance, setAccountBalance] = useState<number | "">(10000);
+  const [riskMode, setRiskMode] = useState<"percent" | "amount">("percent");
   const [riskPercent, setRiskPercent] = useState<number | "">(1);
+  const [riskAmountInput, setRiskAmountInput] = useState<number | "">(100);
+
+  const [slMode, setSlMode] = useState<"pips" | "price">("pips");
   const [stopLoss, setStopLoss] = useState<number | "">(20);
+  const [entryPrice, setEntryPrice] = useState<number | "">("");
+  const [exitPrice, setExitPrice] = useState<number | "">("");
   const [pairType, setPairType] = useState("forex");
+  const [tradeDirection, setTradeDirection] = useState<"buy" | "sell">("buy");
+  
+  const [copiedField, setCopiedField] = useState<string | null>(null);
 
   // Values
   const balance = Number(accountBalance) || 0;
   const risk = Number(riskPercent) || 0;
-  const sl = Number(stopLoss) || 0;
+  const riskAmtVal = Number(riskAmountInput) || 0;
 
-  const riskAmount = balance * (risk / 100);
+  const actualRiskAmount = riskMode === "percent" ? balance * (risk / 100) : riskAmtVal;
+  const actualRiskPercent = balance > 0 ? (actualRiskAmount / balance) * 100 : 0;
 
-  // Pip value logic
-  let pipValuePerLot = 10;
+  let calculatedPips = 0;
+  let finalExitPrice: number | "" = exitPrice;
+  let slError: string | null = null;
+
+  if (slMode === "pips") {
+    calculatedPips = Number(stopLoss) || 0;
+    const entry = Number(entryPrice) || 0;
+    if (entry > 0 && calculatedPips > 0) {
+      let pipDivider = 1;
+      if (pairType === "forex") pipDivider = entry > 20 ? 100 : 100000;
+      else if (pairType === "gold") pipDivider = 100;
+      else if (pairType === "silver") pipDivider = 1000;
+      else if (pairType === "btc") pipDivider = 1000;
+      else if (pairType === "eth") pipDivider = 100000;
+
+      const priceDiff = calculatedPips / pipDivider;
+      finalExitPrice = tradeDirection === "buy" ? entry - priceDiff : entry + priceDiff;
+    }
+  } else {
+    const entry = Number(entryPrice) || 0;
+    const exit = Number(exitPrice) || 0;
+    if (entry > 0 && exit > 0) {
+      if (tradeDirection === "buy" && exit >= entry) {
+        slError = isFrench ? "Le SL doit être inférieur à l'entrée pour un Achat." : "SL must be lower than Entry for a Buy.";
+      } else if (tradeDirection === "sell" && exit <= entry) {
+        slError = isFrench ? "Le SL doit être supérieur à l'entrée pour une Vente." : "SL must be higher than Entry for a Sell.";
+      } else {
+        const diff = Math.abs(entry - exit);
+        if (pairType === "forex") {
+          calculatedPips = diff * (entry > 20 ? 100 : 10000);
+        } else if (pairType === "gold") {
+          calculatedPips = diff * 100;
+        } else if (pairType === "silver") {
+          calculatedPips = diff * 1000;
+        } else if (pairType === "btc") {
+          calculatedPips = diff * 1000;
+        } else if (pairType === "eth") {
+          calculatedPips = diff * 100000;
+        }
+      }
+    }
+  }
+
+  // Pip value logic based on specific MT5 contract scaling
+  let pipValuePerLot = 10; // Forex
   if (pairType === "gold") pipValuePerLot = 1;
-  if (pairType === "crypto") pipValuePerLot = 0.1;
+  if (pairType === "silver") pipValuePerLot = 5;
+  if (pairType === "btc") pipValuePerLot = 0.001;
+  if (pairType === "eth") pipValuePerLot = 0.1;
 
-  const standardLots =
-    sl > 0 && risk > 0 ? (riskAmount / sl) / pipValuePerLot : 0;
+  let standardLots =
+    calculatedPips > 0 && actualRiskAmount > 0 ? (actualRiskAmount / calculatedPips) / pipValuePerLot : 0;
+    
+  // The absolute minimum standard lot size allowed on MT4/MT5 is 0.01
+  if (standardLots > 0 && standardLots < 0.01) {
+    standardLots = 0.01;
+  }
 
   const miniLots = standardLots * 10;
   const microLots = standardLots * 100;
+
+  const handleCopy = (text: string, field: string) => {
+    navigator.clipboard.writeText(text);
+    setCopiedField(field);
+    setTimeout(() => setCopiedField(null), 2000);
+  };
 
   const container: Variants = {
     hidden: { opacity: 0 },
@@ -66,8 +132,8 @@ export default function ToolsPage() {
             </h1>
           </div>
 
-          <div className="flex gap-2">
-            {["forex", "gold", "crypto"].map((type) => (
+          <div className="flex flex-wrap gap-2">
+            {["forex", "gold", "silver", "btc", "eth"].map((type) => (
               <button
                 key={type}
                 onClick={() => setPairType(type)}
@@ -90,7 +156,7 @@ export default function ToolsPage() {
 
             {/* Balance */}
             <div>
-              <label className="text-sm text-white/70">Account Balance</label>
+              <label className="flex items-center gap-2 text-sm text-white/70">Account Balance <Info size={14} className="text-white/40 cursor-help" title={isFrench ? "Votre capital total de trading" : "Your total trading capital"} /></label>
               <div className="relative mt-2">
                 <DollarSign className="absolute left-3 top-3 text-mg-gold" size={18} />
                 <input
@@ -104,43 +170,106 @@ export default function ToolsPage() {
 
             {/* Risk */}
             <div>
-              <label className="text-sm text-white/70">Risk %</label>
+              <div className="flex items-center justify-between mb-2">
+                <label className="flex items-center gap-2 text-sm text-white/70">Risk <Info size={14} className="text-white/40 cursor-help" title={isFrench ? "Le montant que vous êtes prêt à perdre" : "The amount you are willing to lose"} /></label>
+                <div className="flex bg-[#0f141b] rounded-lg p-1 border border-white/10">
+                  <button onClick={() => setRiskMode("percent")} className={`px-2 py-1 text-[10px] uppercase font-bold rounded ${riskMode === 'percent' ? 'bg-mg-gold text-black' : 'text-white/50'}`}>Percent</button>
+                  <button onClick={() => setRiskMode("amount")} className={`px-2 py-1 text-[10px] uppercase font-bold rounded ${riskMode === 'amount' ? 'bg-mg-gold text-black' : 'text-white/50'}`}>Amount</button>
+                </div>
+              </div>
+              
+              {riskMode === "percent" ? (
+                <div>
+                  <div className="relative">
+                    <Percent className="absolute left-3 top-3 text-mg-gold" size={18} />
+                    <input
+                      type="number"
+                      value={riskPercent}
+                      onChange={(e) => setRiskPercent(e.target.value === "" ? "" : Number(e.target.value))}
+                      className="w-full pl-10 pr-4 py-3 rounded-lg bg-[#0f141b] border border-white/10 text-white font-bold"
+                    />
+                  </div>
+                  <div className="flex gap-2 mt-3">
+                    {[0.5, 1, 2].map((r) => (
+                      <button key={r} onClick={() => setRiskPercent(r)} className="px-3 py-1 rounded bg-mg-gold/10 text-mg-gold text-sm hover:bg-mg-gold/20 transition">
+                        {r}%
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              ) : (
+                <div className="relative">
+                  <DollarSign className="absolute left-3 top-3 text-mg-gold" size={18} />
+                  <input
+                    type="number"
+                    value={riskAmountInput}
+                    onChange={(e) => setRiskAmountInput(e.target.value === "" ? "" : Number(e.target.value))}
+                    className="w-full pl-10 pr-4 py-3 rounded-lg bg-[#0f141b] border border-white/10 text-white font-bold"
+                  />
+                </div>
+              )}
+            </div>
+
+            {/* Trade Direction */}
+            <div>
+              <label className="flex items-center gap-2 text-sm text-white/70">{isFrench ? "Direction du Trade" : "Trade Direction"} <Info size={14} className="text-white/40 cursor-help" title={isFrench ? "Acheter (Long) ou Vendre (Short)" : "Buy (Long) or Sell (Short)"} /></label>
+              <div className="flex bg-[#0f141b] rounded-lg p-1 border border-white/10 mt-2">
+                <button onClick={() => setTradeDirection("buy")} className={`flex-1 py-3 text-xs uppercase font-bold rounded-md transition-colors ${tradeDirection === 'buy' ? 'bg-white text-black shadow-sm' : 'text-white/50 hover:text-white'}`}>Buy</button>
+                <button onClick={() => setTradeDirection("sell")} className={`flex-1 py-3 text-xs uppercase font-bold rounded-md transition-colors ${tradeDirection === 'sell' ? 'bg-white text-black shadow-sm' : 'text-white/50 hover:text-white'}`}>Sell</button>
+              </div>
+            </div>
+
+            {/* Entry Price */}
+            <div>
+              <label className="flex items-center gap-2 text-sm text-white/70">Entry Price {slMode === "price" && <span className="text-mg-gold">*</span>} <Info size={14} className="text-white/40 cursor-help" title={isFrench ? "Votre prix d'entrée sur le marché" : "Your market entry price"} /></label>
               <div className="relative mt-2">
-                <Percent className="absolute left-3 top-3 text-mg-gold" size={18} />
+                <DollarSign className="absolute left-3 top-3 text-mg-gold" size={18} />
                 <input
                   type="number"
-                  value={riskPercent}
-                  onChange={(e) => setRiskPercent(e.target.value === "" ? "" : Number(e.target.value))}
-                  className="w-full pl-10 pr-4 py-3 rounded-lg bg-[#0f141b] border border-white/10 text-white font-bold"
+                  value={entryPrice}
+                  onChange={(e) => setEntryPrice(e.target.value === "" ? "" : Number(e.target.value))}
+                  placeholder="e.g. 2000.50"
+                  className="w-full pl-10 pr-4 py-3 rounded-lg bg-[#0f141b] border border-white/10 text-white font-bold focus:outline-none focus:border-mg-gold transition-colors"
                 />
-              </div>
-
-              {/* Quick buttons */}
-              <div className="flex gap-2 mt-3">
-                {[0.5, 1, 2].map((r) => (
-                  <button
-                    key={r}
-                    onClick={() => setRiskPercent(r)}
-                    className="px-3 py-1 rounded bg-mg-gold/10 text-mg-gold text-sm"
-                  >
-                    {r}%
-                  </button>
-                ))}
               </div>
             </div>
 
             {/* Stop Loss */}
             <div>
-              <label className="text-sm text-white/70">Stop Loss (pips)</label>
-              <div className="relative mt-2">
-                <ShieldCheck className="absolute left-3 top-3 text-mg-gold" size={18} />
-                <input
-                  type="number"
-                  value={stopLoss}
-                  onChange={(e) => setStopLoss(e.target.value === "" ? "" : Number(e.target.value))}
-                  className="w-full pl-10 pr-4 py-3 rounded-lg bg-[#0f141b] border border-white/10 text-white font-bold"
-                />
+              <div className="flex items-center justify-between mb-2">
+                <label className="flex items-center gap-2 text-sm text-white/70">Stop Loss <Info size={14} className="text-white/40 cursor-help" title={isFrench ? "Votre niveau d'invalidation (en Pips ou Prix)" : "Your invalidation level (in Pips or Price)"} /></label>
+                <div className="flex bg-[#0f141b] rounded-lg p-1 border border-white/10">
+                  <button onClick={() => setSlMode("pips")} className={`px-2 py-1 text-[10px] uppercase font-bold rounded ${slMode === 'pips' ? 'bg-mg-gold text-black' : 'text-white/50'}`}>In Pips</button>
+                  <button onClick={() => setSlMode("price")} className={`px-2 py-1 text-[10px] uppercase font-bold rounded ${slMode === 'price' ? 'bg-mg-gold text-black' : 'text-white/50'}`}>Exit Price</button>
+                </div>
               </div>
+              
+              {slMode === "pips" ? (
+                <div className="relative">
+                  <ShieldCheck className="absolute left-3 top-3 text-mg-gold" size={18} />
+                  <input
+                    type="number"
+                    value={stopLoss}
+                    onChange={(e) => setStopLoss(e.target.value === "" ? "" : Number(e.target.value))}
+                    placeholder="e.g. 20"
+                    className="w-full pl-10 pr-4 py-3 rounded-lg bg-[#0f141b] border border-white/10 text-white font-bold focus:outline-none focus:border-mg-gold transition-colors"
+                  />
+                </div>
+              ) : (
+                <div>
+                  <div className="relative">
+                    <ShieldCheck className={`absolute left-3 top-3 ${slError ? "text-red-500" : "text-mg-gold"}`} size={18} />
+                    <input
+                      type="number"
+                      value={exitPrice}
+                      onChange={(e) => setExitPrice(e.target.value === "" ? "" : Number(e.target.value))}
+                      placeholder="e.g. 1998.50"
+                      className={`w-full pl-10 pr-4 py-3 rounded-lg bg-[#0f141b] border ${slError ? "border-red-500/50 focus:border-red-500" : "border-white/10 focus:border-mg-gold"} text-white font-bold focus:outline-none transition-colors`}
+                    />
+                  </div>
+                  {slError && <p className="text-red-500 text-xs mt-2 font-medium">{slError}</p>}
+                </div>
+              )}
             </div>
 
           </motion.div>
@@ -152,20 +281,21 @@ export default function ToolsPage() {
             <div className="relative p-6 rounded-2xl border bg-gradient-to-br from-mg-gold/10 to-transparent border-mg-gold/20 backdrop-blur-xl">
               
               <p className="text-xs text-white/50 uppercase">
-                Amount at Risk
+                Amount at Risk {riskMode === "amount" && balance > 0 && <span className="font-bold text-white/70 tracking-wider">({actualRiskPercent.toFixed(2)}%)</span>}
               </p>
 
               <motion.h1
-                key={riskAmount}
+                key={actualRiskAmount}
                 initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
                 className="text-5xl font-black text-mg-gold drop-shadow-[0_0_10px_rgba(255,215,0,0.4)]"
               >
-                ${riskAmount.toFixed(2)}
+                ${actualRiskAmount.toFixed(2)}
               </motion.h1>
 
               <p className={`text-sm mt-2 ${riskColor}`}>
-                {risk <= 2 ? "Safe Risk" : "High Risk"}
+                {actualRiskPercent <= 2 ? "Safe Risk" : actualRiskPercent <= 5 ? "Moderate Risk" : "High Risk"}
+                {slMode === "price" && calculatedPips > 0 && <span className="ml-2 font-bold text-white/70">• {calculatedPips.toFixed(1)} Pips SL</span>}
               </p>
 
               {/* live dot */}
@@ -178,20 +308,90 @@ export default function ToolsPage() {
             {/* LOT SIZES */}
             <div className="grid grid-cols-3 gap-4">
               {[
-                { label: "Standard", value: standardLots },
-                { label: "Mini", value: miniLots },
-                { label: "Micro", value: microLots }
+                { label: "Standard", value: standardLots, info: "Volume: 1.00 (100,000 units)" },
+                { label: "Mini", value: miniLots, info: "Volume: 0.10 (10,000 units)" },
+                { label: "Micro", value: microLots, info: "Volume: 0.01 (1,000 units)" }
               ].map((lot) => (
                 <div
                   key={lot.label}
-                  className="p-4 rounded-xl bg-white/5 border border-white/10 text-center hover:scale-105 transition"
+                  className="relative p-4 rounded-xl bg-white/5 border border-white/10 text-center hover:scale-105 transition cursor-help"
+                  title={lot.info}
                 >
+                  <Info size={12} className="absolute top-2 right-2 text-white/30" />
                   <p className="text-xs text-white/50">{lot.label}</p>
                   <p className="text-2xl font-black text-mg-gold">
                     {lot.value.toFixed(2)}
                   </p>
                 </div>
               ))}
+            </div>
+
+            {/* EXECUTION DETAILS SUMMARY FOR COPYING */}
+            <div className="p-6 rounded-2xl border bg-white/[0.03] border-white/10 backdrop-blur-xl">
+              <h3 className="text-sm font-bold text-white/70 uppercase tracking-wider mb-4">
+                {isFrench ? "Détails d'Exécution" : "Execution Details"}
+              </h3>
+              <div className="space-y-3">
+                {/* Direction */}
+                <div className="flex items-center justify-between p-3 rounded-xl bg-[#0f141b] border border-white/5">
+                  <span className="text-sm text-white/60">{isFrench ? "Direction" : "Direction"}</span>
+                  <span className="font-bold text-white uppercase">{tradeDirection}</span>
+                </div>
+
+                {/* Entry Price */}
+                {entryPrice !== "" && (
+                  <div className="flex items-center justify-between p-3 rounded-xl bg-[#0f141b] border border-white/5">
+                    <span className="text-sm text-white/60">{isFrench ? "Prix d'Entrée" : "Entry Price"}</span>
+                    <div className="flex items-center gap-3">
+                      <span className="font-bold text-white">{entryPrice}</span>
+                      <button onClick={() => handleCopy(String(entryPrice), "entry")} className="text-mg-gold hover:text-white transition" aria-label="Copy Entry Price">
+                        {copiedField === "entry" ? <Check size={16} /> : <Copy size={16} />}
+                      </button>
+                    </div>
+                  </div>
+                )}
+
+                {/* Exit Price */}
+                {finalExitPrice !== "" && (
+                  <div className="flex items-center justify-between p-3 rounded-xl bg-[#0f141b] border border-white/5">
+                    <span className="text-sm text-white/60">{isFrench ? "Prix de Sortie (SL)" : "Exit Price (SL)"}</span>
+                    <div className="flex items-center gap-3">
+                      <span className="font-bold text-white">
+                        {typeof finalExitPrice === 'number' ? String(Number(finalExitPrice.toFixed(5))) : finalExitPrice}
+                      </span>
+                      <button onClick={() => handleCopy(String(typeof finalExitPrice === 'number' ? Number(finalExitPrice.toFixed(5)) : finalExitPrice), "exit")} className="text-mg-gold hover:text-white transition" aria-label="Copy Exit Price">
+                        {copiedField === "exit" ? <Check size={16} /> : <Copy size={16} />}
+                      </button>
+                    </div>
+                  </div>
+                )}
+
+                {/* Stop Loss (Pips) */}
+                {calculatedPips > 0 && (
+                  <div className="flex items-center justify-between p-3 rounded-xl bg-[#0f141b] border border-white/5">
+                    <span className="text-sm text-white/60">{isFrench ? "Stop Loss (Pips)" : "Stop Loss (Pips)"}</span>
+                    <div className="flex items-center gap-3">
+                      <span className="font-bold text-white">{calculatedPips.toFixed(1)}</span>
+                      <button onClick={() => handleCopy(calculatedPips.toFixed(1), "pips")} className="text-mg-gold hover:text-white transition" aria-label="Copy Pips">
+                        {copiedField === "pips" ? <Check size={16} /> : <Copy size={16} />}
+                      </button>
+                    </div>
+                  </div>
+                )}
+
+                {/* Standard Lot Size */}
+                {standardLots > 0 && (
+                  <div className="flex items-center justify-between p-3 rounded-xl bg-[#0f141b] border border-white/5">
+                    <span className="text-sm text-white/60">{isFrench ? "Taille de Lot (Standard)" : "Lot Size (Standard)"}</span>
+                    <div className="flex items-center gap-3">
+                      <span className="font-bold text-mg-gold">{standardLots.toFixed(2)}</span>
+                      <button onClick={() => handleCopy(standardLots.toFixed(2), "lot")} className="text-mg-gold hover:text-white transition" aria-label="Copy Lot Size">
+                        {copiedField === "lot" ? <Check size={16} /> : <Copy size={16} />}
+                      </button>
+                    </div>
+                  </div>
+                )}
+              </div>
             </div>
 
           </motion.div>
