@@ -1,60 +1,60 @@
 import { useState } from "react";
-import { Gift, Trophy, CheckCircle2, Circle, ExternalLink, Star, ArrowRight, Sparkles } from "lucide-react";
-import { motion, type Variants } from "framer-motion";
-import { Gift, Trophy, CheckCircle2, Circle, ExternalLink, Star, ArrowRight, Sparkles, Lock, Loader2, CalendarRange } from "lucide-react";
+import { Trophy, CheckCircle2, ExternalLink, Star, Sparkles, Loader2, Clock, Coins, Target, Gift, AlertCircle, Check, X, Users, CalendarDays } from "lucide-react";
 import { motion, AnimatePresence, type Variants } from "framer-motion";
 import { useTheme } from "../../context/ThemeContext";
 import { useLanguage } from "../../context/LanguageContext";
 
 // --- MOCK DATA ---
-const activeGiveaways = [
-const giveawaysData = [
+const initialTasks = [
+  { id: "t1", title: { en: "Follow @eyram_dela on Instagram", fr: "Suivre @eyram_dela sur IG" }, points: 50, status: "open", link: "https://instagram.com/eyram_dela" },
+  { id: "t2", title: { en: "Retweet the Pinned Post on X", fr: "Retweeter le post épinglé sur X" }, points: 100, status: "open", link: "https://x.com/eyramdela" },
+  { id: "t3", title: { en: "Post a P&L Screenshot in VIP", fr: "Publier une capture P&L dans le VIP" }, points: 250, status: "pending", link: "#" },
+  { id: "t4", title: { en: "Complete Beginner Mastery Course", fr: "Terminer le cours Débutant" }, points: 1000, status: "completed", link: "#" },
+];
+
+const initialChallenges = [
   {
-    id: "g1",
-    status: "active",
-    title: { en: "$10,000 Funded Account Challenge", fr: "Défi Compte Financé 10 000 $" },
+    id: "c1",
+    title: { en: "$10,000 Prop Firm Challenge", fr: "Défi Prop Firm 10 000 $" },
     prize: "$10k Prop Firm Account",
-    deadline: { en: "Ends in 5 Days", fr: "Se termine dans 5 jours" },
+    cost: 1000,
+    startDate: "Nov 1, 2026",
+    endDate: "Nov 15, 2026",
     participants: 1240,
-    tasks: [
-      { id: "t1", desc: { en: "Follow @eyram_dela on Instagram", fr: "Suivre @eyram_dela sur Instagram" }, completed: true, link: "https://instagram.com/eyram_dela" },
-      { id: "t2", desc: { en: "Retweet the Pinned Post on X", fr: "Retweeter le post épinglé sur X" }, completed: false, link: "https://x.com/eyramdela" },
-      { id: "t3", desc: { en: "Attend Sunday Market Prep Live", fr: "Assister à la préparation du marché en direct" }, completed: false, link: "/dashboard/events" },
-    ]
+    entered: false
   },
   {
-    id: "g2",
-    status: "active",
-    title: { en: "Exclusive 1-on-1 Mentorship Call", fr: "Appel de Mentorat Exclusif 1-à-1" },
-    prize: "Free 1-Hour Chart Review",
-    deadline: { en: "Ends in 2 Weeks", fr: "Se termine dans 2 semaines" },
+    id: "c2",
+    title: { en: "1-on-1 Sniper Mentorship Call", fr: "Appel de Mentorat Sniper 1-à-1" },
+    prize: "1 Hour Private Session",
+    cost: 500,
+    startDate: "Nov 5, 2026",
+    endDate: "Nov 20, 2026",
     participants: 856,
-    tasks: [
-      { id: "t4", desc: { en: "Complete Beginner Mastery Course", fr: "Terminer le cours Maîtrise pour Débutants" }, completed: true, link: "/dashboard/courses/enrolled" },
-      { id: "t5", desc: { en: "Share your P&L in the VIP Telegram", fr: "Partager votre P&L dans le Telegram VIP" }, completed: true, link: "https://t.me/marketgodcommunity" },
-      { id: "t6", desc: { en: "Leave a Review on a Past Mentorship Call", fr: "Laisser un avis sur un appel de mentorat passé" }, completed: false, link: "/dashboard/meetings" },
-    ]
+    entered: true
+  }
+];
+
+const initialRewards = [
+  {
+    id: "r1",
+    title: { en: "50% Off Any Premium Course", fr: "50% de réduction sur un cours premium" },
+    cost: 1500,
+    claimed: false
   },
   {
-    id: "g3",
-    status: "past",
-    title: { en: "Summer Trading Bootcamp Giveaway", fr: "Cadeau du Bootcamp de Trading d'Été" },
-    prize: "MacBook Pro M3",
-    deadline: { en: "Ended Aug 2026", fr: "Terminé en Août 2026" },
-    participants: 3450,
-    tasks: []
+    id: "r2",
+    title: { en: "Official MarketGod Hoodie", fr: "Sweat à capuche officiel MarketGod" },
+    cost: 3000,
+    claimed: false
   }
 ];
 
 const pastWinners = [
-  { name: "Kwame A.", prize: "$500 Cash Prize", date: "Oct 2026", avatar: "KA" },
-  { name: "Sarah J.", prize: "$10k Funded Account", date: "Sep 2026", avatar: "SJ" },
-  { name: "Michael T.", prize: "1-on-1 Mentorship", date: "Aug 2026", avatar: "MT" },
-  { name: "Abigail D.", prize: "MarketGod Merch Box", date: "Jul 2026", avatar: "AD" },
-  { name: "Kwame A.", prize: "$500 Cash Prize", challenge: "Q3 Market Prep", date: "Oct 2026", avatar: "KA" },
-  { name: "Sarah J.", prize: "$10k Funded Account", challenge: "$10,000 Funded Account Challenge", date: "Sep 2026", avatar: "SJ" },
-  { name: "Michael T.", prize: "1-on-1 Mentorship", challenge: "Sniper Entry Workshop", date: "Aug 2026", avatar: "MT" },
-  { name: "Abigail D.", prize: "MarketGod Merch Box", challenge: "Summer Trading Bootcamp", date: "Jul 2026", avatar: "AD" },
+  { name: "Kwame A.", prize: "$500 Cash Prize", challenge: "Q3 Market Prep", date: "Oct 2026", avatar: "KA", participants: 1842 },
+  { name: "Sarah J.", prize: "$10k Funded Account", challenge: "$10,000 Funded Account Challenge", date: "Sep 2026", avatar: "SJ", participants: 3240 },
+  { name: "Michael T.", prize: "1-on-1 Mentorship", challenge: "Sniper Entry Workshop", date: "Aug 2026", avatar: "MT", participants: 850 },
+  { name: "Abigail D.", prize: "MarketGod Merch Box", challenge: "Summer Trading Bootcamp", date: "Jul 2026", avatar: "AD", participants: 4120 },
 ];
 
 export default function GiveawaysPage() {
@@ -63,33 +63,58 @@ export default function GiveawaysPage() {
   const isDark = theme === "dark";
   const isFrench = language === "fr";
 
-  // Tabs State
-  const [activeTab, setActiveTab] = useState<"active" | "past">("active");
+  const [userPoints, setUserPoints] = useState(1250);
+  const [activeTab, setActiveTab] = useState<"tasks" | "rewards" | "challenges">("tasks");
 
-  // Tasks & Joined State
-  const [tasksState, setTasksState] = useState<Record<string, boolean>>({});
-  const [joinedGiveaways, setJoinedGiveaways] = useState<Record<string, boolean>>({});
-  const [joinLoading, setJoinLoading] = useState<string | null>(null);
+  const [tasks, setTasks] = useState(initialTasks);
+  const [challenges, setChallenges] = useState(initialChallenges);
+  const [rewards, setRewards] = useState(initialRewards);
+  const [actionLoading, setActionLoading] = useState<string | null>(null);
 
-  const filteredGiveaways = giveawaysData.filter(g => g.status === activeTab);
+  // Verification Modal State
+  const [taskSubmitModal, setTaskSubmitModal] = useState<{isOpen: boolean, taskId: string | null}>({ isOpen: false, taskId: null });
+  const [proofInput, setProofInput] = useState("");
 
-  const toggleTask = (taskId: string) => {
-    setTasksState(prev => ({ ...prev, [taskId]: !prev[taskId] }));
+  const openTaskSubmitModal = (taskId: string) => {
+    setTaskSubmitModal({ isOpen: true, taskId });
+    setProofInput("");
   };
 
-  const handleJoinChallenge = (giveawayId: string) => {
-    setJoinLoading(giveawayId);
+  const confirmTaskSubmit = () => {
+    if (!proofInput.trim() || !taskSubmitModal.taskId) return;
+    
+    // Here you would send `proofInput` to the backend for the admin to review
+    setTasks(prev => prev.map(t => t.id === taskSubmitModal.taskId ? { ...t, status: "pending" } : t));
+    setTaskSubmitModal({ isOpen: false, taskId: null });
+    setProofInput("");
+  };
+
+  const handleClaimReward = (rewardId: string, cost: number) => {
+    if (userPoints < cost) return;
+    setActionLoading(rewardId);
     setTimeout(() => {
-      setJoinedGiveaways(prev => ({ ...prev, [giveawayId]: true }));
-      setJoinLoading(null);
+      setUserPoints(prev => prev - cost);
+      setRewards(prev => prev.map(r => r.id === rewardId ? { ...r, claimed: true } : r));
+      setActionLoading(null);
+    }, 1500);
+  };
+
+  const handleEnterChallenge = (challengeId: string, cost: number) => {
+    if (userPoints < cost) return;
+    setActionLoading(challengeId);
+    setTimeout(() => {
+      setUserPoints(prev => prev - cost);
+      setChallenges(prev => prev.map(c => c.id === challengeId ? { ...c, entered: true } : c));
+      setActionLoading(null);
     }, 1500);
   };
 
   const container: Variants = {
     hidden: { opacity: 0 },
     show: { opacity: 1, transition: { staggerChildren: 0.1 } }
-  },
-  item: Variants = {
+  };
+  
+  const item: Variants = {
     hidden: { opacity: 0, y: 20 },
     show: { opacity: 1, y: 0, transition: { type: "spring" as const, stiffness: 300, damping: 24 } }
   };
@@ -97,17 +122,31 @@ export default function GiveawaysPage() {
   return (
     <div className="space-y-8 pb-10">
       {/* Hero Section */}
-      <motion.div initial="hidden" animate="show" variants={container} className={`relative overflow-hidden rounded-[3rem] border shadow-lg ${isDark ? "border-white/5 bg-[#0a0a0a]" : "border-black/5 bg-white"}`}>
+      <motion.div initial="hidden" animate="show" variants={container} className={`relative overflow-hidden rounded-[3rem] border shadow-lg flex flex-col md:flex-row md:items-center justify-between ${isDark ? "border-white/5 bg-[#0a0a0a]" : "border-black/5 bg-white"}`}>
         <div className="absolute -top-40 -right-40 w-[600px] h-[600px] bg-mg-gold/10 blur-[100px] rounded-full pointer-events-none" />
         <div className="relative z-10 p-8 md:p-12 lg:p-16">
           <h1 className={`text-4xl md:text-5xl font-black mb-4 tracking-tight ${isDark ? "text-white" : "text-gray-900"}`}>
-            {isFrench ? "Cadeaux & " : "Giveaways & "}
-            <span className="text-mg-gold">{isFrench ? "Récompenses." : "Rewards."}</span>
+            {isFrench ? "Hub de " : "Rewards "}
+            <span className="text-mg-gold">{isFrench ? "Récompenses." : "Hub."}</span>
           </h1>
           <p className={`max-w-2xl text-lg font-medium ${isDark ? "text-white/70" : "text-gray-600"}`}>
             {isFrench 
-              ? "Accomplissez des tâches communautaires, accumulez des participations et gagnez des comptes financés, des prix en espèces et un mentorat exclusif."
-              : "Complete community tasks, rack up entries, and win funded accounts, cash prizes, and exclusive mentorship."}
+              ? "Gagnez des points en accomplissant des tâches, puis utilisez-les pour réclamer des récompenses exclusives ou participer à des tirages au sort à fort enjeu."
+              : "Earn points by completing tasks, then spend them to claim exclusive rewards or enter high-stakes giveaways."}
+          </p>
+        </div>
+        
+        {/* Points Display */}
+        <div className={`relative z-10 p-8 md:p-12 lg:p-16 border-t md:border-t-0 md:border-l flex flex-col items-center justify-center shrink-0 ${isDark ? "border-white/10 bg-white/5" : "border-black/10 bg-black/5"}`}>
+          <p className={`text-sm font-bold uppercase tracking-wider mb-2 ${isDark ? "text-mg-gold/80" : "text-mg-gold"}`}>
+            {isFrench ? "Votre Solde" : "Your Balance"}
+          </p>
+          <motion.div key={userPoints} initial={{ scale: 1.2, color: "#fff" }} animate={{ scale: 1, color: "#D4AF37" }} className="flex items-center gap-3">
+            <Coins size={40} className="text-mg-gold drop-shadow-[0_0_15px_rgba(212,175,55,0.5)]" />
+            <span className="text-5xl font-black text-mg-gold">{userPoints}</span>
+          </motion.div>
+          <p className={`text-xs mt-3 ${isDark ? "text-white/50" : "text-gray-500"}`}>
+            {isFrench ? "Points MarketGod (MGP)" : "MarketGod Points (MGP)"}
           </p>
         </div>
       </motion.div>
@@ -116,118 +155,166 @@ export default function GiveawaysPage() {
       <motion.div initial="hidden" animate="show" variants={container} className="flex justify-center mb-2">
         <div className={`flex flex-wrap justify-center rounded-xl p-1 border shadow-inner ${isDark ? "bg-[#0f141b] border-white/10" : "bg-white border-black/10"}`}>
           <button 
-            onClick={() => setActiveTab('active')} 
-            className={`flex items-center gap-1.5 sm:gap-2 px-6 py-2.5 sm:px-10 sm:py-3.5 rounded-lg font-bold text-xs sm:text-sm transition-all ${activeTab === 'active' ? 'bg-mg-gold text-black shadow-md' : isDark ? 'text-white/60 hover:text-white hover:bg-white/5' : 'text-gray-500 hover:text-black hover:bg-black/5'}`}
+            onClick={() => setActiveTab('tasks')} 
+            className={`flex items-center gap-1.5 sm:gap-2 px-6 py-2.5 sm:px-8 sm:py-3.5 rounded-lg font-bold text-xs sm:text-sm transition-all ${activeTab === 'tasks' ? 'bg-mg-gold text-black shadow-md' : isDark ? 'text-white/60 hover:text-white hover:bg-white/5' : 'text-gray-500 hover:text-black hover:bg-black/5'}`}
           >
-            {isFrench ? "Campagnes Actives" : "Active Campaigns"}
+            <Target size={16} />
+            {isFrench ? "Tâches (Gagner)" : "Tasks (Earn)"}
           </button>
           <button 
-            onClick={() => setActiveTab('past')} 
-            className={`flex items-center gap-1.5 sm:gap-2 px-6 py-2.5 sm:px-10 sm:py-3.5 rounded-lg font-bold text-xs sm:text-sm transition-all ${activeTab === 'past' ? 'bg-mg-gold text-black shadow-md' : isDark ? 'text-white/60 hover:text-white hover:bg-white/5' : 'text-gray-500 hover:text-black hover:bg-black/5'}`}
+            onClick={() => setActiveTab('rewards')} 
+            className={`flex items-center gap-1.5 sm:gap-2 px-6 py-2.5 sm:px-8 sm:py-3.5 rounded-lg font-bold text-xs sm:text-sm transition-all ${activeTab === 'rewards' ? 'bg-mg-gold text-black shadow-md' : isDark ? 'text-white/60 hover:text-white hover:bg-white/5' : 'text-gray-500 hover:text-black hover:bg-black/5'}`}
           >
-            {isFrench ? "Campagnes Passées" : "Past Campaigns"}
+            <Gift size={16} />
+            {isFrench ? "Récompenses" : "Rewards Store"}
+          </button>
+          <button 
+            onClick={() => setActiveTab('challenges')} 
+            className={`flex items-center gap-1.5 sm:gap-2 px-6 py-2.5 sm:px-8 sm:py-3.5 rounded-lg font-bold text-xs sm:text-sm transition-all ${activeTab === 'challenges' ? 'bg-mg-gold text-black shadow-md' : isDark ? 'text-white/60 hover:text-white hover:bg-white/5' : 'text-gray-500 hover:text-black hover:bg-black/5'}`}
+          >
+            <Trophy size={16} />
+            {isFrench ? "Défis & Cadeaux" : "Challenges"}
           </button>
         </div>
       </motion.div>
 
       <div className="grid gap-8 lg:grid-cols-3">
         
-        {/* Left Column: Active Giveaways */}
-        <motion.div initial="hidden" animate="show" variants={container} className="lg:col-span-2 space-y-6">
-          <div className="flex items-center gap-3 px-2">
-            <Gift className="text-mg-gold" size={24} />
-            <h2 className={`text-2xl font-black ${isDark ? "text-white" : "text-gray-900"}`}>
-              {isFrench ? "Campagnes Actives" : "Active Campaigns"}
-            </h2>
-          </div>
-
-          {activeGiveaways.map((giveaway, idx) => {
-            // Calculate progress based on default mock + interactive state
+        {/* Left Column: Main Tab Content */}
         <AnimatePresence mode="wait">
           <motion.div key={activeTab} initial="hidden" animate="show" exit={{ opacity: 0, y: -20, transition: { duration: 0.2 } }} variants={container} className="lg:col-span-2 space-y-6">
             
-            {filteredGiveaways.length === 0 ? (
-              <div className={`text-center py-20 rounded-[2rem] border ${isDark ? "border-white/5 bg-[#111111]" : "border-black/5 bg-white"}`}>
-                <p className={`text-lg font-medium ${isDark ? "text-white/50" : "text-gray-500"}`}>
-                  {isFrench ? "Aucune campagne trouvée." : "No campaigns found."}
-                </p>
-              </div>
-            ) : (
-              filteredGiveaways.map((giveaway, idx) => {
-                const isJoined = joinedGiveaways[giveaway.id];
-            const totalTasks = giveaway.tasks.length;
-            const completedTasks = giveaway.tasks.filter(t => tasksState[t.id] ?? t.completed).length;
-            const progressPercent = (completedTasks / totalTasks) * 100;
-                const completedTasks = totalTasks > 0 ? giveaway.tasks.filter(t => tasksState[t.id] ?? t.completed).length : 0;
-                const progressPercent = totalTasks > 0 ? (completedTasks / totalTasks) * 100 : 0;
+            {/* TASKS TAB */}
+            {activeTab === 'tasks' && tasks.map((task) => (
+              <motion.div variants={item} key={task.id} className={`flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-6 rounded-[2rem] border ${isDark ? "bg-[#111111] border-white/10" : "bg-white border-black/10"}`}>
+                <div>
+                  <div className="flex items-center gap-3 mb-2">
+                    <span className="flex items-center gap-1.5 text-xs font-black uppercase tracking-wider text-mg-gold bg-mg-gold/10 px-2 py-1 rounded-md">
+                      <Coins size={14} /> +{task.points} MGP
+                    </span>
+                    {task.status === "pending" && (
+                      <span className="flex items-center gap-1.5 text-xs font-bold uppercase tracking-wider text-blue-400 bg-blue-500/10 px-2 py-1 rounded-md">
+                        <Clock size={14} /> {isFrench ? "En révision" : "Under Review"}
+                      </span>
+                    )}
+                    {task.status === "completed" && (
+                      <span className="flex items-center gap-1.5 text-xs font-bold uppercase tracking-wider text-green-500 bg-green-500/10 px-2 py-1 rounded-md">
+                        <Check size={14} /> {isFrench ? "Terminé" : "Completed"}
+                      </span>
+                    )}
+                  </div>
+                  <h3 className={`text-lg font-bold ${isDark ? "text-white" : "text-gray-900"}`}>{task.title[isFrench ? 'fr' : 'en']}</h3>
+                </div>
+                
+                <div className="shrink-0">
+                  {task.status === "open" && (
+                    <div className="flex items-center gap-2">
+                      <a href={task.link} target="_blank" rel="noreferrer" className={`p-3.5 rounded-xl border transition-colors ${isDark ? "border-white/20 text-white hover:bg-white/10" : "border-black/20 text-black hover:bg-black/5"}`}>
+                        <ExternalLink size={18} />
+                      </a>
+                      <button 
+                        onClick={() => openTaskSubmitModal(task.id)}
+                        disabled={actionLoading === task.id}
+                        className="flex items-center justify-center min-w-[120px] rounded-xl bg-mg-gold px-6 py-3.5 text-sm font-black uppercase tracking-wider text-black transition-transform hover:scale-[1.02] disabled:opacity-50 disabled:hover:scale-100"
+                      >
+                        {actionLoading === task.id ? <Loader2 size={18} className="animate-spin text-black" /> : (isFrench ? "Soumettre" : "Submit")}
+                      </button>
+                    </div>
+                  )}
+                  {task.status !== "open" && (
+                    <button disabled className={`w-full sm:w-auto flex items-center justify-center min-w-[120px] rounded-xl px-6 py-3.5 text-sm font-bold uppercase tracking-wider border-2 border-dashed ${isDark ? "border-white/20 text-white/30" : "border-black/20 text-gray-400"}`}>
+                      {task.status === "pending" ? (isFrench ? "En attente" : "Pending") : (isFrench ? "Terminé" : "Completed")}
+                    </button>
+                  )}
+                </div>
+              </motion.div>
+            ))}
 
-            return (
-              <motion.div variants={item} key={idx} className={`relative overflow-hidden rounded-[2.5rem] border shadow-xl ${isDark ? "border-white/10 bg-[#111111]" : "border-black/10 bg-white"}`}>
-                {progressPercent === 100 && (
+            {/* REWARDS STORE TAB */}
+            {activeTab === 'rewards' && rewards.map((reward) => (
+              <motion.div variants={item} key={reward.id} className={`flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-6 rounded-[2rem] border ${isDark ? "bg-[#111111] border-white/10" : "bg-white border-black/10"}`}>
+                <div>
+                  <div className="flex items-center gap-3 mb-2">
+                    <span className={`flex items-center gap-1.5 text-xs font-black uppercase tracking-wider px-2 py-1 rounded-md ${reward.claimed ? "text-green-500 bg-green-500/10" : "text-gray-400 bg-gray-500/10"}`}>
+                      <Coins size={14} /> {reward.cost} MGP
+                    </span>
+                  </div>
+                  <h3 className={`text-lg font-bold ${isDark ? "text-white" : "text-gray-900"}`}>{reward.title[isFrench ? 'fr' : 'en']}</h3>
+                </div>
+                
+                <div className="shrink-0">
+                  {reward.claimed ? (
+                    <button disabled className={`w-full sm:w-auto flex items-center justify-center min-w-[140px] gap-2 rounded-xl px-6 py-3.5 text-sm font-bold uppercase tracking-wider text-green-500 bg-green-500/10 border border-green-500/20`}>
+                      <CheckCircle2 size={18} /> {isFrench ? "Réclamé" : "Claimed"}
+                    </button>
+                  ) : (
+                    <button 
+                      onClick={() => handleClaimReward(reward.id, reward.cost)}
+                      disabled={actionLoading === reward.id || userPoints < reward.cost}
+                      className={`flex items-center justify-center min-w-[140px] rounded-xl px-6 py-3.5 text-sm font-black uppercase tracking-wider transition-transform hover:scale-[1.02] disabled:hover:scale-100 disabled:opacity-50 disabled:cursor-not-allowed ${userPoints < reward.cost ? (isDark ? "bg-white/10 text-white/50" : "bg-black/10 text-black/50") : "bg-mg-gold text-black shadow-[0_0_15px_rgba(212,175,55,0.3)]"}`}
+                    >
+                      {actionLoading === reward.id ? <Loader2 size={18} className="animate-spin text-black" /> : userPoints < reward.cost ? (isFrench ? "Points Insuffisants" : "Not Enough Pts") : (isFrench ? "Réclamer" : "Claim Reward")}
+                    </button>
+                  )}
+                </div>
+              </motion.div>
+            ))}
+
+            {/* CHALLENGES (RAFFLES) TAB */}
+            {activeTab === 'challenges' && challenges.map((challenge) => (
+              <motion.div variants={item} key={challenge.id} className={`relative overflow-hidden flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-6 md:p-8 rounded-[2.5rem] border shadow-xl ${isDark ? "bg-[#111111] border-white/10" : "bg-white border-black/10"}`}>
+                {challenge.entered && (
                   <div className="absolute top-0 right-0 p-6 opacity-10 pointer-events-none">
                     <Sparkles size={120} className="text-mg-gold" />
                   </div>
                 )}
-                
-                <div className={`p-6 md:p-8 border-b ${isDark ? "border-white/10 bg-white/5" : "border-black/10 bg-black/5"}`}>
-                  <div className="flex flex-wrap items-center justify-between gap-4 mb-4">
-                    <span className="inline-flex items-center gap-1.5 rounded-md bg-mg-gold/20 px-2.5 py-1 text-xs font-bold uppercase tracking-wider text-mg-gold">
-                      {giveaway.deadline[isFrench ? 'fr' : 'en']}
+                <div className="relative z-10 flex-1">
+                  <div className="flex items-center gap-3 mb-3">
+                    <span className={`flex items-center gap-1.5 text-xs font-black uppercase tracking-wider px-2 py-1 rounded-md ${challenge.entered ? "text-green-500 bg-green-500/10" : "text-gray-400 bg-gray-500/10"}`}>
+                      <Coins size={14} /> {challenge.cost} MGP {isFrench ? "L'entrée" : "Entry"}
                     </span>
-                      <span className={`inline-flex items-center gap-1.5 rounded-md px-2.5 py-1 text-xs font-bold uppercase tracking-wider ${activeTab === 'past' ? (isDark ? 'bg-white/10 text-white/50' : 'bg-black/5 text-gray-500') : 'bg-mg-gold/20 text-mg-gold'}`}>
-                        {activeTab === 'past' ? <CalendarRange size={14} /> : <Clock size={14} />}
-                        {giveaway.deadline[isFrench ? 'fr' : 'en']}
-                      </span>
-                    <span className={`text-xs font-bold uppercase tracking-wider flex items-center gap-1.5 ${isDark ? "text-white/50" : "text-gray-500"}`}>
-                      <Star size={14} className="text-mg-gold" /> {giveaway.participants} {isFrench ? "Participations" : "Entries"}
+                    <span className={`flex items-center gap-1.5 text-xs font-bold uppercase tracking-wider ${isDark ? "text-white/50" : "text-gray-500"}`}>
+                      <CalendarDays size={14} className="text-mg-gold" /> {challenge.startDate} — {challenge.endDate}
                     </span>
                   </div>
-                  <h3 className={`text-2xl font-black mb-1 ${isDark ? "text-white" : "text-gray-900"}`}>{giveaway.title[isFrench ? 'fr' : 'en']}</h3>
-                  <p className={`text-sm font-bold ${isDark ? "text-mg-gold/80" : "text-mg-gold"}`}>Prize: {giveaway.prize}</p>
-                </div>
-
-                <div className="p-6 md:p-8">
-                  <div className="flex items-center justify-between mb-3">
-                    <span className={`text-sm font-bold ${isDark ? "text-white/70" : "text-gray-700"}`}>{isFrench ? "Votre Progression" : "Your Progress"}</span>
-                    <span className="text-sm font-black text-mg-gold">{completedTasks} / {totalTasks}</span>
-                  </div>
-                  <div className={`h-2.5 w-full overflow-hidden rounded-full mb-8 ${isDark ? "bg-white/10" : "bg-black/10"}`}>
-                    <div className="h-full rounded-full bg-mg-gold shadow-[0_0_10px_rgba(212,175,55,0.8)] transition-all duration-500" style={{ width: `${progressPercent}%` }} />
-                  </div>
-
-                  <div className="space-y-3">
-                    {giveaway.tasks.map((task) => {
-                      const isCompleted = tasksState[task.id] ?? task.completed;
-                      return (
-                        <div key={task.id} className={`flex items-center justify-between p-4 rounded-2xl border transition-colors ${isCompleted ? (isDark ? "border-mg-gold/30 bg-mg-gold/5" : "border-mg-gold/30 bg-mg-gold/10") : (isDark ? "border-white/10 bg-white/[0.02]" : "border-black/5 bg-gray-50")}`}>
-                          <div className="flex items-center gap-3">
-                            <button onClick={() => toggleTask(task.id)} className={`flex shrink-0 items-center justify-center transition-colors ${isCompleted ? "text-mg-gold" : isDark ? "text-white/20 hover:text-white/50" : "text-black/20 hover:text-black/50"}`}>
-                              {isCompleted ? <CheckCircle2 size={24} /> : <Circle size={24} />}
-                            </button>
-                            <span className={`text-sm font-medium ${isCompleted ? (isDark ? "text-white/60 line-through" : "text-gray-500 line-through") : (isDark ? "text-white" : "text-gray-900")}`}>
-                              {task.desc[isFrench ? 'fr' : 'en']}
-                            </span>
-                          </div>
-                          <a href={task.link} target={task.link.startsWith("http") ? "_blank" : "_self"} rel="noreferrer" className={`shrink-0 p-2 rounded-full transition-colors ${isDark ? "bg-white/5 text-white/50 hover:text-white hover:bg-white/10" : "bg-black/5 text-gray-500 hover:text-black hover:bg-black/10"}`}>
-                            {task.link.startsWith("http") ? <ExternalLink size={16} /> : <ArrowRight size={16} />}
-                          </a>
-                        </div>
-                      );
-                    })}
-                  </div>
+                  <h3 className={`text-2xl font-black mb-1 ${isDark ? "text-white" : "text-gray-900"}`}>{challenge.title[isFrench ? 'fr' : 'en']}</h3>
+                  <p className={`text-sm font-bold mb-4 ${isDark ? "text-mg-gold/80" : "text-mg-gold"}`}>Prize: {challenge.prize}</p>
                   
-                  {progressPercent === 100 && (
-                    <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="mt-6 p-4 rounded-xl bg-green-500/10 border border-green-500/20 text-center">
-                      <p className="text-sm font-bold text-green-500 flex items-center justify-center gap-2">
-                        <CheckCircle2 size={18} /> {isFrench ? "Tâches terminées ! Vous êtes inscrit." : "Tasks Complete! You are entered."}
-                      </p>
-                    </motion.div>
+                  <div className="flex items-center gap-2">
+                    <div className="flex -space-x-2">
+                      {[...Array(3)].map((_, i) => (
+                        <div key={i} className={`w-6 h-6 rounded-full border-2 ${isDark ? "border-[#111111] bg-white/10" : "border-white bg-black/10"}`} />
+                      ))}
+                    </div>
+                    <span className={`text-xs font-bold ${isDark ? "text-white/50" : "text-gray-500"}`}>
+                      {challenge.participants} {isFrench ? "inscrits" : "entered"}
+                    </span>
+                  </div>
+                </div>
+                
+                <div className="relative z-10 shrink-0 w-full sm:w-auto mt-4 sm:mt-0">
+                  {challenge.entered ? (
+                    <div className="flex flex-col items-center gap-2 w-full sm:w-[160px] p-4 rounded-xl bg-green-500/10 border border-green-500/20">
+                      <CheckCircle2 size={24} className="text-green-500" />
+                      <span className="text-xs font-bold uppercase tracking-wider text-green-500 text-center">
+                        {isFrench ? "Inscrit avec succès" : "Successfully Entered"}
+                      </span>
+                    </div>
+                  ) : (
+                    <button 
+                      onClick={() => handleEnterChallenge(challenge.id, challenge.cost)}
+                      disabled={actionLoading === challenge.id || userPoints < challenge.cost}
+                      className={`flex items-center justify-center w-full sm:w-[160px] py-4 rounded-xl text-sm font-black uppercase tracking-wider transition-transform hover:scale-[1.02] disabled:hover:scale-100 disabled:opacity-50 disabled:cursor-not-allowed ${userPoints < challenge.cost ? (isDark ? "bg-white/10 text-white/50" : "bg-black/10 text-black/50") : "bg-mg-gold text-black shadow-[0_0_15px_rgba(212,175,55,0.3)]"}`}
+                    >
+                      {actionLoading === challenge.id ? <Loader2 size={18} className="animate-spin text-black" /> : userPoints < challenge.cost ? (isFrench ? "Points Insuffisants" : "Not Enough Pts") : (isFrench ? "Participer" : "Enter Now")}
+                    </button>
                   )}
                 </div>
               </motion.div>
-            );
-          })}
-        </motion.div>
+            ))}
+
+          </motion.div>
+        </AnimatePresence>
 
         {/* Right Column: Winners Board */}
         <motion.div initial="hidden" animate="show" variants={container} className="space-y-6">
@@ -247,11 +334,14 @@ export default function GiveawaysPage() {
                   </div>
                   <div className="flex-1">
                     <h4 className={`font-bold ${isDark ? "text-white" : "text-gray-900"}`}>{winner.name}</h4>
-                    <p className={`text-xs font-bold text-mg-gold mt-0.5`}>{winner.prize}</p>
                     <p className={`text-[10px] font-bold uppercase tracking-wider text-mg-gold mt-1`}>{winner.prize}</p>
-                    <p className={`text-[10px] italic mt-0.5 ${isDark ? "text-white/40" : "text-gray-500"}`}>{winner.challenge}</p>
+                    <p className={`text-[10px] italic mt-0.5 ${isDark ? "text-white/40" : "text-gray-500"}`}>
+                      {isFrench ? "Défi : " : "Challenge: "} {winner.challenge}
+                    </p>
+                    <p className={`text-[10px] flex items-center gap-1 mt-1 ${isDark ? "text-white/30" : "text-gray-400"}`}>
+                      <Users size={10} /> {winner.participants} {isFrench ? "inscrits" : "entries"}
+                    </p>
                   </div>
-                  <span className={`text-xs font-bold uppercase tracking-wider ${isDark ? "text-white/40" : "text-gray-400"}`}>{winner.date}</span>
                   <span className={`text-[10px] font-bold uppercase tracking-wider ${isDark ? "text-white/40" : "text-gray-400"}`}>{winner.date}</span>
                 </div>
               ))}
@@ -260,6 +350,54 @@ export default function GiveawaysPage() {
         </motion.div>
 
       </div>
+
+      {/* Task Verification Modal */}
+      <AnimatePresence>
+        {taskSubmitModal.isOpen && (
+          <motion.div
+            initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
+            className="fixed inset-0 z-[110] flex items-center justify-center bg-black/60 p-4 backdrop-blur-sm"
+          >
+            <motion.div
+              initial={{ scale: 0.95, opacity: 0, y: 20 }} animate={{ scale: 1, opacity: 1, y: 0 }} exit={{ scale: 0.95, opacity: 0, y: 20 }}
+              className={`w-full max-w-md overflow-hidden rounded-[2rem] border shadow-2xl ${isDark ? "border-white/10 bg-[#111111]" : "border-black/10 bg-white"}`}
+            >
+              <div className={`flex items-center justify-between border-b p-5 ${isDark ? "border-white/10 bg-white/5" : "border-black/10 bg-black/5"}`}>
+                <h3 className={`text-lg font-bold flex items-center gap-2 ${isDark ? "text-white" : "text-gray-900"}`}>
+                  <Target size={18} className="text-mg-gold" />
+                  {isFrench ? "Vérification de la Tâche" : "Task Verification"}
+                </h3>
+                <button onClick={() => setTaskSubmitModal({ isOpen: false, taskId: null })} className={`rounded-full p-2 transition-colors ${isDark ? "bg-white/10 text-white hover:bg-white/20" : "bg-black/10 text-gray-600 hover:bg-black/20"}`}>
+                  <X size={18} />
+                </button>
+              </div>
+              <div className="p-6 space-y-4">
+                <p className={`text-sm font-medium ${isDark ? "text-white/70" : "text-gray-600"}`}>
+                  {isFrench ? "Veuillez fournir votre nom d'utilisateur ou un lien pour que nous puissions vérifier :" : "Please provide your username or a link so our team can verify your submission:"}
+                </p>
+                <input
+                  value={proofInput}
+                  onChange={(e) => setProofInput(e.target.value)}
+                  placeholder={isFrench ? "ex. @mon_nom_utilisateur" : "e.g., @my_username or post link"}
+                  className={`w-full p-4 rounded-xl text-sm border focus:outline-none focus:border-mg-gold ${isDark ? "bg-black/20 border-white/10 text-white placeholder-white/30" : "bg-gray-50 border-black/10 text-gray-900 placeholder-gray-400"}`}
+                />
+                <div className="flex gap-3 pt-2">
+                  <button onClick={() => setTaskSubmitModal({ isOpen: false, taskId: null })} className={`flex-1 rounded-xl border px-4 py-3 text-sm font-semibold transition-colors ${isDark ? "border-white/10 text-white hover:bg-white/5" : "border-black/10 text-gray-900 hover:bg-black/5"}`}>
+                    {isFrench ? "Annuler" : "Cancel"}
+                  </button>
+                  <button 
+                    onClick={confirmTaskSubmit}
+                    disabled={!proofInput.trim()}
+                    className="flex-1 rounded-xl bg-mg-gold px-4 py-3 text-sm font-black uppercase tracking-wider text-black transition-transform hover:scale-[1.02] disabled:opacity-50 disabled:hover:scale-100 disabled:cursor-not-allowed"
+                  >
+                    {isFrench ? "Soumettre" : "Submit"}
+                  </button>
+                </div>
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 }
