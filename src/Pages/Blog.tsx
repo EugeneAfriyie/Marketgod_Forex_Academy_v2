@@ -42,10 +42,8 @@ const  Blog: React.FC = () => {
   >
     {/* MAIN TITLE */}
     <h1 className={`text-5xl sm:text-6xl md:text-7xl font-black bg-clip-text text-transparent mb-6
-      ${isDark 
-        ? "bg-gradient-to-r from-mg-white via-mg-green to-mg-gold" 
-        : "bg-gradient-to-r from-mg-black via-mg-black to-mg-gold"
-      }`}
+      ${isDark ? "bg-white" : "bg-black"} text-transparent bg-clip-text`}
+      style={{ WebkitTextFillColor: isDark ? "white" : "black" }}
     >
       Marketgod Blog
     </h1>
@@ -54,7 +52,7 @@ const  Blog: React.FC = () => {
     <p className={`text-lg sm:text-xl max-w-3xl mx-auto leading-relaxed mb-8 ${
       isDark ? "text-mg-paper/70" : "text-mg-charcoal/70"
     }`}>
-      Daily <span className="font-bold text-mg-green">trading ideas</span>, 
+      Daily <span className="font-bold">trading ideas</span>, 
       <span className="font-bold text-mg-gold"> live signals</span>, 
       YouTube breakdowns, community updates, 
       and <span className="font-bold">real market talk</span> — all in one place.
@@ -66,7 +64,7 @@ const  Blog: React.FC = () => {
         href="https://youtube.com/@marketgod" 
         target="_blank" 
         rel="noopener"
-        className="flex items-center gap-2 px-4 py-2 bg-red-600/90 backdrop-blur-sm rounded-full text-white text-sm font-medium hover:bg-red-600/20 transition"
+        className={`flex items-center gap-2 px-6 py-2.5 rounded-full text-sm font-bold transition-all border-2 ${isDark ? "border-white/20 bg-white/5 text-white hover:bg-white hover:text-black" : "border-black/10 bg-black/5 text-black hover:bg-black hover:text-white"}`}
       >
         <Youtube size={18} /> YouTube
       </a>
@@ -74,7 +72,7 @@ const  Blog: React.FC = () => {
         href="https://www.youtube.com/@marketgodcommunity" 
         target="_blank" 
         rel="noopener"
-        className="flex items-center gap-2 px-4 py-2 bg-cyan-600/70 backdrop-blur-sm rounded-full text-white text-sm font-medium hover:bg-cyan-600/20 transition"
+        className={`flex items-center gap-2 px-6 py-2.5 rounded-full text-sm font-bold transition-all border-2 ${isDark ? "border-white/20 bg-white/5 text-white hover:bg-white hover:text-black" : "border-black/10 bg-black/5 text-black hover:bg-black hover:text-white"}`}
       >
         <Send size={18} /> Telegram
       </a>
@@ -82,7 +80,7 @@ const  Blog: React.FC = () => {
         href="https://www.instagram.com/eyram_dela" 
         target="_blank" 
         rel="noopener"
-        className="flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-purple-600 to-pink-600/70 backdrop-blur-sm rounded-full text-mg-paper text-sm font-medium hover:from-purple-600/20 hover:to-pink-600/20 transition"
+        className={`flex items-center gap-2 px-6 py-2.5 rounded-full text-sm font-bold transition-all border-2 ${isDark ? "border-white/20 bg-white/5 text-white hover:bg-white hover:text-black" : "border-black/10 bg-black/5 text-black hover:bg-black hover:text-white"}`}
       >
         <Instagram size={18} /> Instagram
       </a>
@@ -92,8 +90,8 @@ const  Blog: React.FC = () => {
   {/* GLOW BACKGROUND */}
   <div className={`absolute inset-0 -z-10 ${
     isDark 
-      ? "bg-[radial-gradient(circle_at_center,rgba(255,215,0,0.15),transparent_70%)]" 
-      : "bg-[radial-gradient(circle_at_center,rgba(0,255,136,0.10),transparent_70%)]"
+      ? "bg-[radial-gradient(circle_at_center,rgba(212,175,55,0.15),transparent_70%)]" 
+      : "bg-[radial-gradient(circle_at_center,rgba(212,175,55,0.05),transparent_70%)]"
   }`} />
 </section>
 
@@ -123,7 +121,7 @@ const  Blog: React.FC = () => {
                     isDark ? "text-mg-paper/60" : "text-mg-charcoal/60"
                   }`}
                 >
-                  <Filter size={18} className="text-mg-green" />
+                  <Filter size={18} className="text-mg-gold" />
                   <span>Filter by Category</span>
                 </div>
        <div className="grid md:grid-flow-col  items-cente  z-50  ">
@@ -146,10 +144,10 @@ const  Blog: React.FC = () => {
             placeholder="Search Marketgod resources..."
                 className={`
                   w-full pl-10 pr-4 py-3 rounded-full text-sm transition-all
-                  focus:outline-none focus:ring-2 focus:ring-mg-green/50 
+                  focus:outline-none focus:ring-2 focus:ring-mg-gold/50 
                   ${isDark
                     ? "bg-mg-black/50 border border-mg-white/20 text-mg-paper shadow-gold-glow placeholder-mg-paper/40"
-                    : "bg-white/80 border border-mg-green/20 text-mg-charcoal shadow-lg placeholder-mg-charcoal/40"
+                    : "bg-white/80 border border-black/10 text-mg-charcoal shadow-lg placeholder-mg-charcoal/40"
                   } 
                 `}
               />

@@ -11,22 +11,16 @@ const eventsData = [
     status: "active",
     isNew: true,
     type: { en: "Free Weekly Webinar", fr: "Webinaire Hebdo Gratuit" },
-    title: "Price Action Mastery",
     title: "Weekly Market Breakdown & Psychology",
     date: "Every Thursday",
     time: "7:00 PM GMT",
-    venue: { en: "Live stream room (Telegram)", fr: "Salle de diffusion (Telegram)" },
-    city: { en: "Global (Online)", fr: "Mondial (En ligne)" },
     venue: { en: "Live on Telegram", fr: "En direct sur Telegram" },
     city: { en: "Free Community", fr: "Communauté Gratuite" },
     desc: { 
-      en: "Live breakdown of market setups, Q&A, and Sniper Strategy demo. Perfect for evening study.", 
-      fr: "Analyse en direct des configurations du marché, Q&R et démo de la stratégie Sniper." 
       en: "Join our free Telegram community every Thursday for a comprehensive weekly overview. We dive into live market breakdowns, trading psychology sessions, and analyze the charts together. Join the group to access the meeting link!", 
       fr: "Rejoignez notre communauté Telegram gratuite chaque jeudi pour un aperçu hebdomadaire complet. Nous plongeons dans des analyses de marché en direct, des sessions de psychologie de trading, et analysons les graphiques ensemble. Rejoignez le groupe pour y accéder !" 
     },
     price: { en: "Free", fr: "Gratuit" },
-    action: { en: "View Details", fr: "Voir les détails" },
     action: { en: "Join Telegram to Access", fr: "Rejoindre le Telegram" },
     externalLink: "https://t.me/marketgodcommunity",
     icon: Video,
@@ -228,10 +222,6 @@ export default function EventsPage() {
                         <div className="text-xl font-black text-mg-gold">
                           {isFrench ? event.price.fr : event.price.en}
                         </div>
-                        <Link to={`/dashboard/events/${event.id}`} className={`inline-flex items-center justify-center gap-2 rounded-xl px-8 py-3.5 text-sm font-bold uppercase tracking-wider transition-all ${event.price.en === "Free" || event.price.en === "N/A" ? "bg-mg-gold text-black shadow-[0_0_15px_rgba(212,175,55,0.4)] hover:scale-105" : `border-2 border-mg-gold text-mg-gold hover:bg-mg-gold/10`}`}>
-                          {isFrench ? event.action.fr : event.action.en}
-                          <ArrowRight size={16} className="transition-transform group-hover:translate-x-1" />
-                        </Link>
                         {event.externalLink ? (
                           <a href={event.externalLink} target="_blank" rel="noreferrer" className={`inline-flex items-center justify-center gap-2 rounded-xl px-8 py-3.5 text-sm font-bold uppercase tracking-wider transition-all ${event.price.en === "Free" || event.price.en === "N/A" ? "bg-mg-gold text-black shadow-[0_0_15px_rgba(212,175,55,0.4)] hover:scale-105" : `border-2 border-mg-gold text-mg-gold hover:bg-mg-gold/10`}`}>
                             {isFrench ? event.action.fr : event.action.en}

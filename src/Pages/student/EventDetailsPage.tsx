@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { ArrowLeft, CalendarRange, Clock, MapPin, Info, PlayCircle, Image as ImageIcon, CheckCircle2, Loader2, X, ChevronLeft, ChevronRight } from "lucide-react";
+import { ArrowLeft, CalendarRange, Clock, MapPin, Info, PlayCircle, Image as ImageIcon, CheckCircle2, Loader2, X, ChevronLeft, ChevronRight, Lock, Video, CreditCard } from "lucide-react";
 import { motion, AnimatePresence, type Variants } from "framer-motion";
 import { useTheme } from "../../context/ThemeContext";
 import { useLanguage } from "../../context/LanguageContext";
@@ -202,6 +202,78 @@ const eventDetailsDB: Record<string, any> = {
             }
           }
         ]
+      },
+      "q3-review": {
+        title: { en: "Q3 Market Review", fr: "Revue du Marché T3" },
+        generalDesc: { 
+          en: "A comprehensive review of the Q3 market performance and key takeaways.", 
+          fr: "Une revue complète de la performance du marché au 3e trimestre et des principaux enseignements." 
+        },
+        whatYouWillLearn: {
+          en: ["Q3 Institutional Order Flow", "Major News Impact", "Q4 Projections", "Top setups we capitalized on"],
+          fr: ["Flux d'ordres institutionnels du T3", "Impact des nouvelles majeures", "Projections T4", "Meilleures configurations"]
+        },
+        date: "October 1, 2024",
+        time: "7:00 PM GMT",
+        baseVenue: { en: "Virtual Webinar", fr: "Webinaire Virtuel" },
+        status: "Past",
+        isPaid: false,
+        price: 0,
+        meetingDetails: {
+          topic: "Q3 Market Review & Q4 Outlook",
+          time: "Archived",
+          link: "#"
+        },
+        mediaHighlights: [
+          {
+            id: "q3-1",
+            type: "video",
+            url: "https://res.cloudinary.com/dzqdfaghg/video/upload/v1771486226/SnapInsta.to_AQPsddf-wYv5pqzPsA1sDoEOu-ndz6ijPp1vOvDZGsRpJtCQ7ENdTQzeoDvWf3fZrLPntm5CMo_Lckkp-tbC-8nJ_jddm9o.mp4",
+            city: { en: "Session Recording", fr: "Enregistrement de la session" },
+            date: "October 1, 2024",
+            venue: { en: "Zoom Cloud Archive", fr: "Archive Zoom Cloud" },
+            status: "Archived Video",
+            specificDetails: {
+              en: "The full 2-hour replay of the Q3 review. Watch the breakdown of Gold and EU.",
+              fr: "La rediffusion complète de 2 heures de la revue du T3. Regardez l'analyse de l'Or et de l'EU."
+            }
+          }
+        ]
+      },
+      "marketgod-workshop": {
+        title: { en: "MarketGod Strategy Workshop", fr: "Atelier Stratégie MarketGod" },
+        generalDesc: {
+          en: "An intensive half-day virtual workshop focusing entirely on the Sniper Entry framework. Learn how to pinpoint reversals with zero drawdown. This session includes live Q&A, detailed PDF handouts, and live backtesting sessions.",
+          fr: "Un atelier virtuel intensif d'une demi-journée entièrement consacré au cadre d'entrée Sniper. Apprenez à repérer les inversions avec un drawdown nul. Cette session comprend des questions-réponses en direct et du backtesting."
+        },
+        whatYouWillLearn: {
+          en: [
+            "Advanced Market Structure & Liquidity Concepts",
+            "The complete Sniper Entry Framework (Step-by-Step)",
+            "Zero-Drawdown Execution Techniques",
+            "Live Backtesting on 5 years of Gold data",
+            "Psychology of holding winning trades"
+          ],
+          fr: [
+            "Structure avancée du marché et concepts de liquidité",
+            "Le cadre d'entrée Sniper complet (étape par étape)",
+            "Techniques d'exécution à drawdown nul",
+            "Backtesting en direct sur 5 ans de données sur l'or",
+            "Psychologie de la conservation des trades gagnants"
+          ]
+        },
+        date: "Dec 15, 2025",
+        time: "09:00 AM GMT",
+        baseVenue: { en: "Virtual Workshop (Zoom)", fr: "Atelier Virtuel (Zoom)" },
+        status: "Upcoming",
+        isPaid: true,
+        price: 67,
+        meetingDetails: {
+          topic: "Mastering the Sniper Entry & Liquidity Sweeps",
+          time: "09:00 AM GMT Prompt",
+          link: "https://zoom.us/j/marketgod-sniper-workshop"
+        },
+        mediaHighlights: []
       }
     };
 
@@ -225,6 +297,27 @@ export default function EventDetailsPage() {
         baseVenue: { en: "TBD", fr: "À déterminer" },
         mediaHighlights: []
       };
+
+  // Main Event Access / Payment State
+  const [hasAccess, setHasAccess] = useState(!event.isPaid); // If it's free, they already have access
+  const [showPaymentModal, setShowPaymentModal] = useState(false);
+  const [paymentState, setPaymentState] = useState<'idle' | 'loading' | 'success'>('idle');
+
+  const handleProcessPayment = () => {
+    setPaymentState('loading');
+    setTimeout(() => {
+      setPaymentState('success');
+      setTimeout(() => {
+        setHasAccess(true); // Unlock the meeting details!
+        setShowPaymentModal(false);
+      }, 1500);
+    }, 2000);
+  };
+
+  const closePaymentModal = () => {
+    setShowPaymentModal(false);
+    setTimeout(() => setPaymentState('idle'), 300);
+  };
 
   // Booking Modal State
   const [selectedStop, setSelectedStop] = useState<any>(null);
@@ -326,6 +419,20 @@ export default function EventDetailsPage() {
             {isFrench ? event.generalDesc.fr : event.generalDesc.en}
           </p>
 
+          {event.whatYouWillLearn && (
+            <div className="mb-8">
+              <h3 className={`text-lg font-bold mb-4 ${isDark ? "text-white" : "text-gray-900"}`}>{isFrench ? "Ce que vous apprendrez :" : "What You Will Learn:"}</h3>
+              <ul className="grid sm:grid-cols-2 gap-3">
+                {(isFrench ? event.whatYouWillLearn.fr : event.whatYouWillLearn.en).map((item: string, idx: number) => (
+                  <li key={idx} className={`flex items-start gap-3 text-sm font-medium ${isDark ? "text-white/70" : "text-gray-600"}`}>
+                    <CheckCircle2 size={18} className="shrink-0 text-mg-gold" />
+                    <span>{item}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
+
           <div className={`flex flex-wrap gap-6 pt-6 border-t ${isDark ? "border-white/10" : "border-black/10"}`}>
             <div className={`flex items-center gap-3 text-sm font-semibold ${isDark ? "text-white/80" : "text-gray-700"}`}>
               <CalendarRange size={18} className="text-mg-gold" />
@@ -343,71 +450,146 @@ export default function EventDetailsPage() {
         </div>
       </motion.div>
 
+      {/* Single Event Access Card (Webinars / Seminars) - Hidden if the event is already in the past */}
+      {event.meetingDetails && event.status !== "Past" && (
+        <motion.div variants={item} className={`relative overflow-hidden rounded-[2.5rem] border shadow-xl ${isDark ? "border-white/10 bg-[#111111]" : "border-black/10 bg-white"}`}>
+          {hasAccess ? (
+            <div className="p-8 md:p-10 flex flex-col md:flex-row md:items-center justify-between gap-6">
+              <div>
+                <div className="inline-flex items-center gap-2 rounded-full bg-green-500/10 px-3 py-1.5 text-xs font-bold uppercase tracking-wider text-green-500 mb-4">
+                  <CheckCircle2 size={14} />
+                  {isFrench ? "Accès Confirmé" : "Access Granted"}
+                </div>
+                <h2 className={`text-2xl font-black mb-2 ${isDark ? "text-white" : "text-gray-900"}`}>
+                  {event.meetingDetails.topic}
+                </h2>
+                <p className={`flex items-center gap-2 text-sm font-semibold ${isDark ? "text-white/60" : "text-gray-500"}`}>
+                  <Clock size={16} className="text-mg-gold" /> {event.meetingDetails.time}
+                </p>
+              </div>
+              <a href={event.meetingDetails.link} target="_blank" rel="noreferrer" className="shrink-0 flex items-center justify-center gap-2 rounded-xl bg-mg-gold px-8 py-4 text-sm font-black uppercase tracking-wider text-black shadow-[0_0_20px_rgba(212,175,55,0.4)] transition-transform hover:scale-105">
+                <Video size={18} />
+                {isFrench ? "Rejoindre la réunion" : "Join Meeting"}
+              </a>
+            </div>
+          ) : (
+            <div className="p-8 md:p-10 flex flex-col md:flex-row md:items-center justify-between gap-6">
+              <div>
+                <div className="inline-flex items-center gap-2 rounded-full bg-mg-gold/10 px-3 py-1.5 text-xs font-bold uppercase tracking-wider text-mg-gold mb-4">
+                  <Lock size={14} />
+                  {isFrench ? "Accès Restreint" : "Premium Event"}
+                </div>
+                <h2 className={`text-2xl font-black mb-2 ${isDark ? "text-white" : "text-gray-900"}`}>
+                  {isFrench ? "Billet d'accès requis" : "Access Ticket Required"}
+                </h2>
+                <p className={`text-sm font-medium ${isDark ? "text-white/60" : "text-gray-500"}`}>
+                  {isFrench ? `Sécurisez votre place pour débloquer le lien de la réunion pour ${event.date}.` : `Secure your spot to unlock the live meeting link for ${event.date}.`}
+                </p>
+              </div>
+              <button onClick={() => { setShowPaymentModal(true); setPaymentState('idle'); }} className="shrink-0 flex items-center justify-center gap-2 rounded-xl bg-mg-gold px-8 py-4 text-sm font-black uppercase tracking-wider text-black shadow-[0_0_20px_rgba(212,175,55,0.4)] transition-transform hover:scale-105">
+                <CreditCard size={18} />
+                {isFrench ? `Payer ${event.price}$` : `Secure Access ($${event.price})`}
+              </button>
+            </div>
+          )}
+        </motion.div>
+      )}
+
       {/* Media / Tour Highlights Section */}
-      {event.mediaHighlights.length > 0 && (
+      {(event.meetingDetails || event.mediaHighlights.length > 0) && (
         <motion.div variants={item} className="space-y-6">
           <h2 className={`text-2xl font-black px-2 ${isDark ? "text-white" : "text-gray-900"}`}>
-            {isFrench ? "Faits saillants de la tournée et médias" : "Tour Highlights & Media"}
+            {event.meetingDetails 
+              ? (isFrench ? "Enregistrements de session" : "Session Recordings") 
+              : (isFrench ? "Étapes de la tournée et médias" : "Tour Stops & Media")}
           </h2>
           
-          <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-            {event.mediaHighlights.map((media: any) => (
-              <motion.div key={media.id} className={`group relative overflow-hidden rounded-[2rem] border transition-all duration-300 hover:-translate-y-1 hover:shadow-xl ${isDark ? "border-white/10 bg-[#111111]" : "border-black/10 bg-[#faf7f0]"}`}>
-                {/* Media Thumbnail */}
-                <div className="relative h-48 w-full overflow-hidden bg-black/20">
-                  <img src={media.url} alt={media.city.en} className="w-full h-full object-cover opacity-80 transition-transform duration-500 group-hover:scale-105 group-hover:opacity-100" />
-                  <div className="absolute top-4 left-4 flex h-8 w-8 items-center justify-center rounded-full bg-black/50 backdrop-blur-md text-white border border-white/20">
-                    {media.type === "video" ? <PlayCircle size={16} /> : <ImageIcon size={16} />}
-                  </div>
-                </div>
-                
-                {/* Media / Tour Stop Specific Details */}
-                <div className="p-6">
-                  <div className="flex items-start justify-between mb-3">
-                    <h3 className={`text-xl font-black tracking-tight ${isDark ? "text-mg-gold" : "text-mg-gold"}`}>{isFrench ? media.city.fr : media.city.en}</h3>
-                    {media.status && (
-                      <span className={`text-[9px] uppercase font-black px-2 py-1 rounded-md tracking-widest ${media.status.includes('Archived') ? (isDark ? 'bg-white/10 text-white/60' : 'bg-black/5 text-gray-500') : 'bg-mg-gold/10 text-mg-gold border border-mg-gold/20'}`}>
-                        {media.status}
-                      </span>
-                    )}
+          {event.meetingDetails && !hasAccess ? (
+            <div className={`p-12 flex flex-col items-center justify-center text-center rounded-[2.5rem] border-2 border-dashed ${isDark ? "border-white/10 bg-white/5" : "border-black/10 bg-black/5"}`}>
+              <div className="h-20 w-20 rounded-full bg-mg-gold/10 flex items-center justify-center mb-6">
+                <Lock size={40} className="text-mg-gold" />
+              </div>
+              <h3 className={`text-2xl font-black mb-3 ${isDark ? "text-white" : "text-gray-900"}`}>
+                {isFrench ? "Enregistrements Verrouillés" : "Recordings Locked"}
+              </h3>
+              <p className={`text-sm font-medium max-w-md ${isDark ? "text-white/60" : "text-gray-500"}`}>
+                {isFrench ? "Sécurisez votre accès ci-dessus pour débloquer les enregistrements et les ressources de cette session." : "Secure your access above to unlock the recordings and resources for this session."}
+              </p>
+            </div>
+          ) : event.mediaHighlights.length === 0 ? (
+            <div className={`p-12 flex flex-col items-center justify-center text-center rounded-[2.5rem] border-2 border-dashed ${isDark ? "border-white/10 bg-white/5" : "border-black/10 bg-black/5"}`}>
+              <div className="h-20 w-20 rounded-full bg-mg-gold/10 flex items-center justify-center mb-6">
+                <PlayCircle size={40} className="text-mg-gold" />
+              </div>
+              <h3 className={`text-2xl font-black mb-3 ${isDark ? "text-white" : "text-gray-900"}`}>
+                {isFrench ? "Les enregistrements apparaîtront ici" : "Recordings will appear here"}
+              </h3>
+              <p className={`text-sm font-medium max-w-md ${isDark ? "text-white/60" : "text-gray-500"}`}>
+                {isFrench ? "Une fois la session terminée, la vidéo enregistrée sera disponible ici." : "Once the session concludes, the recorded video and resources will be uploaded here."}
+              </p>
+            </div>
+          ) : (
+            <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+              {event.mediaHighlights.map((media: any) => (
+                <motion.div key={media.id} className={`group relative overflow-hidden rounded-[2rem] border transition-all duration-300 hover:-translate-y-1 hover:shadow-xl ${isDark ? "border-white/10 bg-[#111111]" : "border-black/10 bg-[#faf7f0]"}`}>
+                  {/* Media Thumbnail */}
+                  <div className="relative h-48 w-full overflow-hidden bg-black/20">
+                    <img src={media.url} alt={media.city.en} className="w-full h-full object-cover opacity-80 transition-transform duration-500 group-hover:scale-105 group-hover:opacity-100" />
+                    <div className="absolute top-4 left-4 flex h-8 w-8 items-center justify-center rounded-full bg-black/50 backdrop-blur-md text-white border border-white/20">
+                      {media.type === "video" ? <PlayCircle size={16} /> : <ImageIcon size={16} />}
+                    </div>
                   </div>
                   
-                  <div className="space-y-1.5 mb-4">
-                    <p className={`text-xs font-bold uppercase tracking-wider flex items-center gap-2 ${isDark ? "text-white/50" : "text-gray-500"}`}>
-                      <CalendarRange size={14} className={isDark ? "text-white/30" : "text-gray-400"} /> {media.date}
-                    </p>
-                    {media.venue && (
-                      <p className={`text-xs font-bold uppercase tracking-wider flex items-center gap-2 ${isDark ? "text-white/50" : "text-gray-500"}`}>
-                        <MapPin size={14} className={isDark ? "text-white/30" : "text-gray-400"} /> {isFrench ? media.venue.fr : media.venue.en}
-                      </p>
-                    )}
-                  </div>
-                  
-                  <p className={`text-sm leading-relaxed font-medium ${isDark ? "text-white/70" : "text-gray-600"}`}>{isFrench ? media.specificDetails.fr : media.specificDetails.en}</p>
-
-                  <div className="mt-6 flex flex-col gap-3">
-                    {media.status !== "Completed" && !media.status.includes('Archived') && (
-                      <button
-                        onClick={() => { setSelectedStop(media); setBookingState('idle'); }}
-                        className="w-full rounded-xl bg-mg-gold px-4 py-3 text-sm font-bold uppercase tracking-wider text-black shadow-lg transition-transform hover:scale-[1.02]"
-                      >
-                        {isFrench ? "Réserver ma place" : "Book My Seat"}
-                      </button>
-                    )}
+                  {/* Media / Tour Stop Specific Details */}
+                  <div className="p-6">
+                    <div className="flex items-start justify-between mb-3">
+                      <h3 className={`text-xl font-black tracking-tight ${isDark ? "text-mg-gold" : "text-mg-gold"}`}>{isFrench ? media.city.fr : media.city.en}</h3>
+                      {media.status && (
+                        <span className={`text-[9px] uppercase font-black px-2 py-1 rounded-md tracking-widest ${media.status.includes('Archived') ? (isDark ? 'bg-white/10 text-white/60' : 'bg-black/5 text-gray-500') : 'bg-mg-gold/10 text-mg-gold border border-mg-gold/20'}`}>
+                          {media.status}
+                        </span>
+                      )}
+                    </div>
                     
-                    {(media.status === "Completed" || media.status.includes('Archived') || media.gallery) && (
-                      <button
-                        onClick={() => openHighlights(media)}
-                        className={`w-full rounded-xl border px-4 py-3 text-sm font-bold uppercase tracking-wider transition-colors ${isDark ? "border-mg-gold/30 text-mg-gold hover:bg-mg-gold/10" : "border-mg-gold text-mg-gold hover:bg-mg-gold/10"}`}
-                      >
-                        {isFrench ? "Voir les temps forts" : "View Highlights"}
-                      </button>
-                    )}
+                    <div className="space-y-1.5 mb-4">
+                      <p className={`text-xs font-bold uppercase tracking-wider flex items-center gap-2 ${isDark ? "text-white/50" : "text-gray-500"}`}>
+                        <CalendarRange size={14} className={isDark ? "text-white/30" : "text-gray-400"} /> {media.date}
+                      </p>
+                      {media.venue && (
+                        <p className={`text-xs font-bold uppercase tracking-wider flex items-center gap-2 ${isDark ? "text-white/50" : "text-gray-500"}`}>
+                          <MapPin size={14} className={isDark ? "text-white/30" : "text-gray-400"} /> {isFrench ? media.venue.fr : media.venue.en}
+                        </p>
+                      )}
+                    </div>
+                    
+                    <p className={`text-sm leading-relaxed font-medium ${isDark ? "text-white/70" : "text-gray-600"}`}>{isFrench ? media.specificDetails.fr : media.specificDetails.en}</p>
+
+                    <div className="mt-6 flex flex-col gap-3">
+                      {media.status !== "Completed" && !media.status.includes('Archived') && !event.meetingDetails && (
+                        <button
+                          onClick={() => { setSelectedStop(media); setBookingState('idle'); }}
+                          className="w-full rounded-xl bg-mg-gold px-4 py-3 text-sm font-bold uppercase tracking-wider text-black shadow-lg transition-transform hover:scale-[1.02]"
+                        >
+                          {isFrench ? "Réserver ma place" : "Book My Seat"}
+                        </button>
+                      )}
+                      
+                      {(media.status === "Completed" || media.status.includes('Archived') || media.gallery || event.meetingDetails) && (
+                        <button
+                          onClick={() => openHighlights(media)}
+                          className={`w-full rounded-xl border px-4 py-3 text-sm font-bold uppercase tracking-wider transition-colors ${isDark ? "border-mg-gold/30 text-mg-gold hover:bg-mg-gold/10" : "border-mg-gold text-mg-gold hover:bg-mg-gold/10"}`}
+                        >
+                          {event.meetingDetails 
+                            ? (isFrench ? "Voir l'enregistrement" : "View Recording") 
+                            : (isFrench ? "Voir les temps forts" : "View Highlights")}
+                        </button>
+                      )}
+                    </div>
                   </div>
-                </div>
-              </motion.div>
-            ))}
-          </div>
+                </motion.div>
+              ))}
+            </div>
+          )}
         </motion.div>
       )}
 
@@ -481,6 +663,68 @@ export default function EventDetailsPage() {
                     <button onClick={closeBookingModal} className={`w-full rounded-xl border px-4 py-3 text-sm font-bold uppercase tracking-wider transition-colors ${isDark ? "border-white/10 text-white hover:bg-white/5" : "border-black/10 text-gray-900 hover:bg-black/5"}`}>
                       {isFrench ? "Fermer" : "Close"}
                     </button>
+                  </motion.div>
+                )}
+              </AnimatePresence>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* Payment Checkout Modal for Seminars/Webinars */}
+      <AnimatePresence>
+        {showPaymentModal && (
+          <motion.div
+            initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
+            className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4 backdrop-blur-sm"
+          >
+            <motion.div
+              initial={{ scale: 0.95, opacity: 0, y: 20 }} animate={{ scale: 1, opacity: 1, y: 0 }} exit={{ scale: 0.95, opacity: 0, y: 20 }}
+              className={`w-full max-w-md overflow-hidden rounded-[2rem] border shadow-2xl ${isDark ? "border-white/10 bg-[#111111]" : "border-black/10 bg-white"}`}
+            >
+              <AnimatePresence mode="wait">
+                {paymentState === 'idle' && (
+                  <motion.div key="idle" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 0.2 }}>
+                    <div className={`flex items-center justify-between border-b p-5 ${isDark ? "border-white/10 bg-white/5" : "border-black/10 bg-black/5"}`}>
+                      <div>
+                        <h3 className={`text-lg font-bold ${isDark ? "text-white" : "text-gray-900"}`}>
+                          {isFrench ? "Sécuriser l'accès" : "Secure Your Access"}
+                        </h3>
+                        <p className={`text-xs font-medium mt-1 ${isDark ? "text-mg-gold" : "text-mg-gold"}`}>
+                          {isFrench ? event.title.fr : event.title.en}
+                        </p>
+                      </div>
+                      <button onClick={closePaymentModal} className={`rounded-full p-2 transition-colors ${isDark ? "bg-white/10 text-white hover:bg-white/20" : "bg-black/10 text-gray-600 hover:bg-black/20"}`}>
+                        <X size={18} />
+                      </button>
+                    </div>
+                    
+                    <div className="p-6">
+                      <div className="mb-6 flex items-center justify-between p-4 rounded-xl border border-mg-gold/20 bg-mg-gold/5">
+                         <span className={`font-bold ${isDark ? "text-white" : "text-gray-900"}`}>{isFrench ? "Total à payer" : "Total Due"}</span>
+                         <span className="text-2xl font-black text-mg-gold">${event.price}.00</span>
+                      </div>
+                      <button onClick={handleProcessPayment} className="w-full rounded-xl bg-mg-gold px-4 py-4 text-sm font-black uppercase tracking-wider text-black shadow-[0_0_15px_rgba(212,175,55,0.3)] transition-transform hover:scale-[1.02]">
+                        {isFrench ? "Confirmer le paiement" : "Confirm Payment"}
+                      </button>
+                    </div>
+                  </motion.div>
+                )}
+
+                {paymentState === 'loading' && (
+                  <motion.div key="loading" initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0 }} transition={{ duration: 0.2 }} className="flex flex-col items-center justify-center p-12 text-center">
+                    <Loader2 size={48} className="mb-6 animate-spin text-mg-gold" />
+                    <h3 className={`text-xl font-bold ${isDark ? "text-white" : "text-gray-900"}`}>{isFrench ? "Traitement du paiement..." : "Processing Payment..."}</h3>
+                  </motion.div>
+                )}
+
+                {paymentState === 'success' && (
+                  <motion.div key="success" initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0 }} transition={{ duration: 0.3 }} className="flex flex-col items-center justify-center p-12 text-center">
+                    <CheckCircle2 size={64} className="mb-6 text-mg-gold drop-shadow-[0_0_15px_rgba(212,175,55,0.4)]" />
+                    <h3 className={`text-2xl font-black mb-2 ${isDark ? "text-white" : "text-gray-900"}`}>{isFrench ? "Paiement Réussi !" : "Payment Successful!"}</h3>
+                    <p className={`text-sm ${isDark ? "text-white/60" : "text-gray-600"}`}>
+                      {isFrench ? "Votre accès a été débloqué." : "Your access has been unlocked."}
+                    </p>
                   </motion.div>
                 )}
               </AnimatePresence>
