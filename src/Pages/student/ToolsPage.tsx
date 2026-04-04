@@ -184,7 +184,8 @@ const RiskCalculator = ({ isDark, isFrench, item }: { isDark: boolean; isFrench:
               <span className="flex h-6 w-6 items-center justify-center rounded-full bg-mg-gold/20 text-mg-gold text-xs font-bold border border-mg-gold/30">1</span>
               <span className="text-xs font-bold uppercase tracking-widest text-white/70">{isFrench ? "Choisir l'Actif" : "Select Asset"}</span>
             </div>
-            <div className="flex flex-wrap justify-end gap-1.5 rounded-xl bg-[#0f141b] p-1 border border-white/10 shadow-inner">
+            
+            <div className="  flex flex-wrap justify-end gap-1.5 rounded-xl bg-[#0f141b] p-1 border border-white/10 shadow-inner">
               {["forex", "gold", "silver", "btc", "eth"].map((type) => (
                 <button
                   key={type}
@@ -492,7 +493,7 @@ export default function ToolsPage() {
   };
 
   return (
-    <div className={`relative min-h-screen p-6 ${isDark ? "bg-[#0b0f14]" : "bg-[#f7f9fc]"}`}>
+    <div className={`relative min-h-screen  sm:p-6 ${isDark ? "bg-[#0b0f14]" : "bg-[#f7f9fc]"}`}>
       {/* Background grid */}
       <div className="absolute inset-0 bg-[linear-gradient(to_right,#ffffff05_1px,transparent_1px),linear-gradient(to_bottom,#ffffff05_1px,transparent_1px)] bg-[size:40px_40px] pointer-events-none" />
 
