@@ -1,28 +1,19 @@
-import { CalendarCheck2, Clock3, Video } from "lucide-react";
-import StudentFeaturePage from "../../Components/student/StudentFeaturePage";
-import { useState } from "react";
-import { CalendarCheck2, Clock3, Video, Calendar, User, ArrowRight, CheckCircle2, Loader2, FileText, PlayCircle, XCircle, Lock, Crown } from "lucide-react";
+import { useState, useEffect } from "react";
+import { CalendarCheck2, Clock3, Video, Calendar, User, ArrowRight, CheckCircle2, Loader2, FileText, PlayCircle, XCircle, Lock, Crown, X, Star, MessageSquare } from "lucide-react";
 import { motion, AnimatePresence, type Variants } from "framer-motion";
 import { useTheme } from "../../context/ThemeContext";
 import { useLanguage } from "../../context/LanguageContext";
 import { Link } from "react-router-dom";
 
-const items = [
 // --- MOCK DATA ---
 const sessionTypes = [
   {
-    title: "Mentor Sessions",
-    description: "Book one-on-one or group sessions with mentors directly from the platform.",
-    icon: Video,
     id: "technical",
     title: { en: "1-on-1 Chart Review", fr: "Analyse Technique 1-à-1" },
     duration: "45 Min",
     desc: { en: "Bring your marked-up charts. We will review your setups, correct your mistakes, and refine your sniper entries.", fr: "Apportez vos graphiques. Nous examinerons vos configurations et affinerons vos entrées." },
   },
   {
-    title: "Upcoming Schedule",
-    description: "Keep the student's confirmed meeting times, reminders, and attendance details in one place.",
-    icon: CalendarCheck2,
     id: "psychology",
     title: { en: "Psychology Coaching", fr: "Coaching Psychologique" },
     duration: "30 Min",
@@ -30,48 +21,52 @@ const sessionTypes = [
   }
 ];
 
-const availableDates = ["Mon, Oct 26", "Wed, Oct 28", "Fri, Oct 30", "Mon, Nov 2"];
-const availableTimes = ["09:00 AM", "11:30 AM", "14:00 PM", "16:45 PM"];
+const ALL_TIMES = ["09:00 AM - 12:00 PM", "12:00 PM - 04:00 PM", "07:00 PM - 08:00 PM"];
+
+// Dynamic Date Generator: Calculates days until Sunday, enforcing a 24h advance buffer
+const generateAvailableDates = (isFrench: boolean) => {
+  const dates = [];
+  const today = new Date();
+  const jsDay = today.getDay(); // 0 = Sunday, 1 = Monday, ..., 6 = Saturday
+  const isoDay = jsDay === 0 ? 7 : jsDay; // Convert to 1 (Mon) - 7 (Sun) format
+  const daysUntilSunday = 7 - isoDay;
+
+  // Start from 1 (tomorrow) to guarantee at least 24 hours advance booking.
+  // If today is Sunday (daysUntilSunday === 0), show next week's Mon-Sun to avoid an empty list.
+  const endOffset = daysUntilSunday === 0 ? 7 : daysUntilSunday;
+
+  for (let i = 1; i <= endOffset; i++) {
+    const d = new Date(today);
+    d.setDate(today.getDate() + i);
+    
+    const formatted = new Intl.DateTimeFormat(isFrench ? 'fr-FR' : 'en-US', {
+      weekday: 'short', month: 'short', day: 'numeric'
+    }).format(d);
+
+    dates.push(formatted.charAt(0).toUpperCase() + formatted.slice(1));
+  }
+  return dates;
+};
 
 const initialUpcomingSessions = [
   {
     id: "up1",
     type: { en: "1-on-1 Chart Review", fr: "Analyse Technique 1-à-1" },
     date: "Wed, Oct 28, 2026",
-    time: "14:00 GMT",
+    time: "12:00 PM - 04:00 PM",
     mentor: "Eyram Dela",
-    link: "#"
+    link: "#",
+    status: "confirmed"
   }
 ];
 
-const pastSessions = [
-  {
-    id: "p1",
-    type: { en: "Psychology Coaching", fr: "Coaching Psychologique" },
-    date: "Oct 10, 2026",
-    time: "10:00 GMT",
-    mentor: "Eyram Dela",
-    notes: { en: "Identified emotional triggers during losing streaks. Action item: Cut lot size by half for the next 2 weeks and journal all feelings.", fr: "Déclencheurs émotionnels identifiés. Action : Réduire la taille du lot de moitié." }
-  },
-  {
-    title: "Session History",
-    description: "Review past meetings, outcomes, and follow-up action points from each session.",
-    icon: Clock3,
-  },
-    id: "p2",
-    type: { en: "1-on-1 Chart Review", fr: "Analyse Technique 1-à-1" },
-    date: "Sep 25, 2026",
-    time: "16:00 GMT",
-    mentor: "Eyram Dela",
-    notes: { en: "Reviewed Gold liquidity sweeps. Student needs to wait for the H1 candle close before executing.", fr: "Revue des balayages de liquidité sur l'Or. L'étudiant doit attendre la clôture de la bougie H1." }
-  }
-];
-
-export default function MeetingsPage() {
+ export default function MeetingsPage() {
   const { theme } = useTheme();
   const { language } = useLanguage();
   const isDark = theme === "dark";
   const isFrench = language === "fr";
+
+  const availableDates = generateAvailableDates(isFrench);
 
   // MOCK STATE: This will come from your user auth/subscription context later.
   // Set to `false` to see the locked sales/teaser page for regular users.
@@ -82,14 +77,37 @@ export default function MeetingsPage() {
   
   // Dynamic Upcoming Sessions State
   const [upcomingSessions, setUpcomingSessions] = useState(initialUpcomingSessions);
+  const [pastSessions, setPastSessions] = useState<any[]>([]);
 
   // Booking State
   const [selectedType, setSelectedType] = useState<string | null>(null);
   const [selectedDate, setSelectedDate] = useState<string | null>(null);
   const [selectedTime, setSelectedTime] = useState<string | null>(null);
   
+  // Filter out times that are already booked for the selected date
+  const availableTimesForDate = selectedDate 
+    ? ALL_TIMES.filter(time => !upcomingSessions.some(session => session.date === selectedDate && session.time === time))
+    : ALL_TIMES;
+
+  // Automatically reset the selected time if the user switches to a date where that time is already taken
+  useEffect(() => {
+    if (selectedTime && !availableTimesForDate.includes(selectedTime)) {
+      setSelectedTime(null);
+    }
+  }, [selectedDate, upcomingSessions]);
+
   // Modal State
   const [bookingState, setBookingState] = useState<'idle' | 'loading' | 'success'>('idle');
+
+  // Cancel / Deny Modal State
+  const [cancelModal, setCancelModal] = useState<{isOpen: boolean, id: string | null, role: 'user' | 'admin', action: 'cancel' | 'deny'}>({
+    isOpen: false, id: null, role: 'user', action: 'cancel'
+  });
+  const [cancelReason, setCancelReason] = useState("");
+
+  // Review Modal State
+  const [reviewModal, setReviewModal] = useState<{isOpen: boolean, id: string | null}>({ isOpen: false, id: null });
+  const [reviewText, setReviewText] = useState("");
 
   const handleBookSession = () => {
     if (!selectedType || !selectedDate || !selectedTime) return;
@@ -102,7 +120,8 @@ export default function MeetingsPage() {
         date: selectedDate,
         time: selectedTime,
         mentor: "Eyram Dela",
-        link: "#"
+        link: "https://zoom.us/j/marketgod-private",
+        status: "pending"
       };
       setUpcomingSessions(prev => [newBooking, ...prev]);
       setBookingState('success');
@@ -117,8 +136,59 @@ export default function MeetingsPage() {
     setActiveTab('upcoming'); // Send them to see their new booking!
   };
 
-  const handleCancelSession = (id: string) => {
-    setUpcomingSessions(prev => prev.filter(session => session.id !== id));
+  const openCancelModal = (id: string, role: 'user' | 'admin', action: 'cancel' | 'deny') => {
+    setCancelModal({ isOpen: true, id, role, action });
+    setCancelReason("");
+  };
+
+  const openReviewModal = (id: string) => {
+    setReviewModal({ isOpen: true, id });
+    setReviewText("");
+  };
+
+  const submitReview = () => {
+    if (!reviewText.trim() || !reviewModal.id) return;
+    setPastSessions(prev => prev.map(s => s.id === reviewModal.id ? { ...s, userReview: reviewText } : s));
+    setReviewModal({ isOpen: false, id: null });
+    setReviewText("");
+  };
+
+  const confirmCancel = () => {
+    if (!cancelReason.trim() || !cancelModal.id) return;
+    
+    // Find the session and move it to the history tab with the appropriate status and reason
+    const sessionToCancel = upcomingSessions.find(s => s.id === cancelModal.id);
+    if (sessionToCancel) {
+      let newStatus = 'canceled_by_user';
+      if (cancelModal.action === 'deny') newStatus = 'denied_by_admin';
+      else if (cancelModal.action === 'cancel' && cancelModal.role === 'admin') newStatus = 'canceled_by_admin';
+
+      setPastSessions(prev => [{
+        ...sessionToCancel,
+        status: newStatus,
+        notes: { en: cancelReason, fr: cancelReason } // Save the typed reason as the note
+      }, ...prev]);
+    }
+
+    setUpcomingSessions(prev => prev.filter(s => s.id !== cancelModal.id));
+    setCancelModal({ isOpen: false, id: null, role: 'user', action: 'cancel' });
+    setCancelReason("");
+  };
+
+  const handleSimulateApproval = (id: string) => {
+    setUpcomingSessions(prev => prev.map(s => s.id === id ? { ...s, status: 'confirmed' } : s));
+  };
+
+  const handleCompleteSession = (id: string) => {
+    const session = upcomingSessions.find(s => s.id === id);
+    if (session) {
+      setUpcomingSessions(prev => prev.filter(s => s.id !== id));
+      setPastSessions(prev => [{
+        ...session,
+        status: 'completed',
+        notes: { en: "Session completed. Notes will be added by your mentor soon.", fr: "Session terminée. Les notes seront bientôt ajoutées par votre mentor." }
+      }, ...prev]);
+    }
   };
 
   const container: Variants = {
@@ -190,11 +260,6 @@ export default function MeetingsPage() {
   }
 
   return (
-    <StudentFeaturePage
-      title="Meetings"
-      description="Students will use this area to manage mentor calls, live sessions, and any scheduled coaching meetings."
-      items={items}
-    />
     <div className="space-y-8 pb-10">
       {/* Hero Section */}
       <motion.div initial="hidden" animate="show" variants={container} className={`relative overflow-hidden rounded-[3rem] border shadow-lg ${isDark ? "border-white/5 bg-[#0a0a0a]" : "border-black/5 bg-white"}`}>
@@ -294,17 +359,23 @@ export default function MeetingsPage() {
 
                   <div>
                     <label className={`text-sm font-bold mb-3 block ${isDark ? "text-white/70" : "text-gray-700"}`}>{isFrench ? "Sélectionner une Heure" : "Select Time"}</label>
-                    <div className="flex flex-wrap gap-2">
-                      {availableTimes.map(time => (
-                        <button
-                          key={time}
-                          onClick={() => setSelectedTime(time)}
-                          className={`px-4 py-2.5 rounded-xl text-sm font-bold border transition-all ${selectedTime === time ? "bg-mg-gold border-mg-gold text-black shadow-md" : isDark ? "border-white/10 text-white/60 hover:bg-white/5" : "border-black/10 text-gray-600 hover:bg-black/5"}`}
-                        >
-                          {time}
-                        </button>
-                      ))}
-                    </div>
+                    {availableTimesForDate.length > 0 ? (
+                      <div className="flex flex-wrap gap-2">
+                        {availableTimesForDate.map(time => (
+                          <button
+                            key={time}
+                            onClick={() => setSelectedTime(time)}
+                            className={`px-4 py-2.5 rounded-xl text-sm font-bold border transition-all ${selectedTime === time ? "bg-mg-gold border-mg-gold text-black shadow-md" : isDark ? "border-white/10 text-white/60 hover:bg-white/5" : "border-black/10 text-gray-600 hover:bg-black/5"}`}
+                          >
+                            {time}
+                          </button>
+                        ))}
+                      </div>
+                    ) : (
+                      <p className={`text-sm font-medium ${isDark ? "text-red-400" : "text-red-500"}`}>
+                        {isFrench ? "Aucun créneau disponible pour cette date." : "No slots available for this date."}
+                      </p>
+                    )}
                   </div>
                 </div>
               </motion.div>
@@ -355,8 +426,8 @@ export default function MeetingsPage() {
                   ) : (
                     <motion.div key="success" initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} className="text-center">
                       <CheckCircle2 size={48} className="mx-auto text-green-500 mb-3" />
-                      <h3 className={`text-xl font-bold ${isDark ? "text-white" : "text-gray-900"}`}>{isFrench ? "Session Réservée !" : "Session Booked!"}</h3>
-                      <p className={`text-sm mt-1 mb-4 ${isDark ? "text-white/60" : "text-gray-500"}`}>{isFrench ? "Un email de confirmation a été envoyé." : "A confirmation email has been sent."}</p>
+                      <h3 className={`text-xl font-bold ${isDark ? "text-white" : "text-gray-900"}`}>{isFrench ? "Demande Envoyée !" : "Request Sent!"}</h3>
+                      <p className={`text-sm mt-1 mb-4 max-w-xs mx-auto ${isDark ? "text-white/60" : "text-gray-500"}`}>{isFrench ? "Votre réservation est en attente de confirmation par l'administrateur." : "Your booking is pending admin approval."}</p>
                       <button onClick={resetBooking} className={`text-sm font-bold uppercase tracking-wider underline ${isDark ? "text-white/60 hover:text-white" : "text-gray-500 hover:text-black"}`}>
                         {isFrench ? "Voir mes sessions" : "View my sessions"}
                       </button>
@@ -401,14 +472,48 @@ export default function MeetingsPage() {
                     </div>
                   </div>
                   <div className="shrink-0 flex flex-col gap-3">
-                    <a href={session.link} className={`flex items-center justify-center gap-2 px-8 py-4 rounded-xl text-sm font-black uppercase tracking-wider transition-all border-2 ${isDark ? "border-mg-gold/50 text-mg-gold hover:bg-mg-gold/10" : "border-mg-gold text-mg-gold hover:bg-mg-gold/10"}`}>
-                      <Video size={18} />
-                      {isFrench ? "Lien de Réunion" : "Meeting Link"}
-                    </a>
-                    <button onClick={() => handleCancelSession(session.id)} className={`flex items-center justify-center gap-2 px-8 py-3 rounded-xl text-xs font-bold uppercase tracking-wider transition-all ${isDark ? "text-white/50 hover:text-red-400 hover:bg-red-500/10" : "text-gray-500 hover:text-red-600 hover:bg-red-50"}`}>
-                      <XCircle size={14} />
-                      {isFrench ? "Annuler" : "Cancel"}
-                    </button>
+                    {session.status === 'pending' ? (
+                      <>
+                        <div className={`flex flex-col items-center justify-center gap-1.5 px-6 py-3 rounded-xl border-2 border-dashed ${isDark ? "border-mg-gold/30 bg-mg-gold/5" : "border-mg-gold/30 bg-mg-gold/10"}`}>
+                          <Clock3 size={18} className="text-mg-gold animate-pulse" />
+                          <span className="text-[10px] font-bold uppercase tracking-wider text-mg-gold text-center">
+                            {isFrench ? "En attente de l'Admin" : "Waiting for Admin"}
+                          </span>
+                          <div className="flex gap-3 mt-1">
+                            <button onClick={() => handleSimulateApproval(session.id)} className="text-[9px] font-bold text-green-500/70 hover:text-green-500 hover:opacity-100 transition-colors uppercase tracking-wider">
+                              (Approve)
+                            </button>
+                            <button onClick={() => openCancelModal(session.id, 'admin', 'deny')} className="text-[9px] font-bold text-red-500/70 hover:text-red-500 hover:opacity-100 transition-colors uppercase tracking-wider">
+                              (Deny)
+                            </button>
+                          </div>
+                        </div>
+                        <button onClick={() => openCancelModal(session.id, 'user', 'cancel')} className={`flex items-center justify-center gap-2 px-8 py-3 rounded-xl text-xs font-bold uppercase tracking-wider transition-all ${isDark ? "text-white/50 hover:text-red-400 hover:bg-red-500/10" : "text-gray-500 hover:text-red-600 hover:bg-red-50"}`}>
+                          <XCircle size={14} />
+                          {isFrench ? "Annuler" : "Cancel"}
+                        </button>
+                      </>
+                    ) : (
+                      <div className="flex flex-col gap-2 w-full">
+                        <a href={session.link} target="_blank" rel="noreferrer" className={`flex items-center justify-center gap-2 px-8 py-4 rounded-xl text-sm font-black uppercase tracking-wider transition-all border-2 ${isDark ? "border-mg-gold/50 text-mg-gold hover:bg-mg-gold/10" : "border-mg-gold text-mg-gold hover:bg-mg-gold/10"}`}>
+                          <Video size={18} />
+                          {isFrench ? "Lien de Réunion" : "Meeting Link"}
+                        </a>
+                        <button onClick={() => openCancelModal(session.id, 'admin', 'cancel')} className="text-[9px] font-bold uppercase tracking-wider opacity-50 hover:text-red-500 hover:opacity-100 transition-colors text-center w-full">
+                          (Simulate Admin Cancel)
+                        </button>
+                        <div className="flex gap-2 w-full mt-1">
+                          <button onClick={() => handleCompleteSession(session.id)} className={`flex-1 flex items-center justify-center gap-1.5 py-2.5 rounded-xl text-[10px] font-bold uppercase tracking-wider transition-all ${isDark ? "bg-green-500/10 text-green-400 hover:bg-green-500/20" : "bg-green-50 text-green-600 hover:bg-green-100"}`}>
+                            <CheckCircle2 size={14} />
+                            {isFrench ? "Terminer" : "Complete"}
+                          </button>
+                          <button onClick={() => openCancelModal(session.id, 'user', 'cancel')} className={`flex-1 flex items-center justify-center gap-1.5 py-2.5 rounded-xl text-[10px] font-bold uppercase tracking-wider transition-all ${isDark ? "bg-red-500/10 text-red-400 hover:bg-red-500/20" : "bg-red-50 text-red-600 hover:bg-red-100"}`}>
+                            <XCircle size={14} />
+                            {isFrench ? "Annuler" : "Cancel"}
+                          </button>
+                        </div>
+                      </div>
+                    )}
                   </div>
                 </motion.div>
               ))
@@ -429,7 +534,31 @@ export default function MeetingsPage() {
                 <motion.div variants={item} key={idx} className={`p-6 md:p-8 rounded-[2rem] border ${isDark ? "border-white/5 bg-white/[0.02]" : "border-black/5 bg-[#faf7f0]"}`}>
                   <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
                     <div>
-                      <h3 className={`text-lg font-bold mb-1 ${isDark ? "text-white" : "text-gray-900"}`}>{isFrench ? session.type.fr : session.type.en}</h3>
+                      <div className="flex items-center flex-wrap gap-3 mb-1">
+                        <h3 className={`text-lg font-bold ${isDark ? "text-white" : "text-gray-900"}`}>{isFrench ? session.type.fr : session.type.en}</h3>
+                        
+                        {/* Dynamic Status Badges */}
+                        {session.status === 'completed' && (
+                          <span className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-[10px] font-bold uppercase tracking-wider ${isDark ? "bg-green-500/20 text-green-400" : "bg-green-100 text-green-600"}`}>
+                            <CheckCircle2 size={12} /> {isFrench ? "Terminée" : "Completed"}
+                          </span>
+                        )}
+                        {session.status === 'canceled_by_user' && (
+                          <span className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-[10px] font-bold uppercase tracking-wider ${isDark ? "bg-gray-500/20 text-gray-400" : "bg-gray-200 text-gray-600"}`}>
+                            <XCircle size={12} /> {isFrench ? "Annulée par vous" : "Canceled by you"}
+                          </span>
+                        )}
+                        {session.status === 'canceled_by_admin' && (
+                           <span className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-[10px] font-bold uppercase tracking-wider ${isDark ? "bg-red-500/20 text-red-400" : "bg-red-100 text-red-600"}`}>
+                            <XCircle size={12} /> {isFrench ? "Annulée par l'Admin" : "Canceled by Admin"}
+                          </span>
+                        )}
+                        {session.status === 'denied_by_admin' && (
+                           <span className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-[10px] font-bold uppercase tracking-wider ${isDark ? "bg-red-500/20 text-red-400" : "bg-red-100 text-red-600"}`}>
+                            <XCircle size={12} /> {isFrench ? "Refusée par l'Admin" : "Denied by Admin"}
+                          </span>
+                        )}
+                      </div>
                       <p className={`text-sm flex items-center gap-2 ${isDark ? "text-white/50" : "text-gray-500"}`}>
                         <CalendarCheck2 size={14} /> {session.date} • {session.time}
                       </p>
@@ -441,23 +570,148 @@ export default function MeetingsPage() {
                   
                   <div className={`p-5 rounded-2xl border ${isDark ? "bg-[#111111] border-white/10" : "bg-white border-black/10"}`}>
                     <div className="flex items-center gap-2 mb-3">
-                      <FileText size={16} className="text-mg-gold" />
-                      <h4 className={`text-sm font-bold uppercase tracking-wider ${isDark ? "text-white/80" : "text-gray-800"}`}>{isFrench ? "Notes du Mentor" : "Mentor Notes"}</h4>
+                      <FileText size={16} className={session.status === 'completed' ? "text-mg-gold" : "text-red-400"} />
+                      <h4 className={`text-sm font-bold uppercase tracking-wider ${isDark ? "text-white/80" : "text-gray-800"}`}>
+                        {session.status === 'completed' 
+                          ? (isFrench ? "Notes du Mentor" : "Mentor Notes")
+                          : (isFrench ? "Raison indiquée" : "Provided Reason")
+                        }
+                      </h4>
                     </div>
                     <p className={`text-sm leading-relaxed ${isDark ? "text-white/60" : "text-gray-600"}`}>
-                      {isFrench ? session.notes.fr : session.notes.en}
+                      {isFrench ? session.notes?.fr : session.notes?.en}
                     </p>
                   </div>
 
-                  <div className="mt-4 flex justify-end">
-                    <button className={`inline-flex items-center gap-2 text-sm font-bold transition-colors ${isDark ? "text-mg-gold hover:text-white" : "text-mg-gold hover:text-black"}`}>
-                      <PlayCircle size={16} />
-                      {isFrench ? "Demander l'enregistrement" : "Request Recording"}
-                    </button>
-                  </div>
+                  {/* User Review Display */}
+                  {session.userReview && (
+                    <div className={`mt-4 p-5 rounded-2xl border ${isDark ? "bg-[#1a1a1a] border-white/5" : "bg-gray-50 border-black/5"}`}>
+                      <div className="flex items-center gap-2 mb-3">
+                        <Star size={16} className="text-mg-gold" />
+                        <h4 className={`text-sm font-bold uppercase tracking-wider ${isDark ? "text-white/80" : "text-gray-800"}`}>
+                          {isFrench ? "Votre Avis" : "Your Review"}
+                        </h4>
+                      </div>
+                      <p className={`text-sm leading-relaxed italic ${isDark ? "text-white/60" : "text-gray-600"}`}>
+                        "{session.userReview}"
+                      </p>
+                    </div>
+                  )}
+
+                  {session.status === 'completed' && (
+                    <div className="mt-5 flex flex-wrap justify-end gap-4">
+                      {!session.userReview && (
+                        <button onClick={() => openReviewModal(session.id)} className={`inline-flex items-center gap-2 text-sm font-bold transition-colors ${isDark ? "text-white/60 hover:text-white" : "text-gray-500 hover:text-black"}`}>
+                          <MessageSquare size={16} />
+                          {isFrench ? "Laisser un avis" : "Leave a Review"}
+                        </button>
+                      )}
+                      <button className={`inline-flex items-center gap-2 text-sm font-bold transition-colors ${isDark ? "text-mg-gold hover:text-mg-gold/80" : "text-mg-gold hover:text-mg-gold/80"}`}>
+                        <PlayCircle size={16} />
+                        {isFrench ? "Demander l'enregistrement" : "Request Recording"}
+                      </button>
+                    </div>
+                  )}
                 </motion.div>
               ))
             )}
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* Cancellation / Denial Reason Modal */}
+      <AnimatePresence>
+        {cancelModal.isOpen && (
+          <motion.div
+            initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
+            className="fixed inset-0 z-[110] flex items-center justify-center bg-black/60 p-4 backdrop-blur-sm"
+          >
+            <motion.div
+              initial={{ scale: 0.95, opacity: 0, y: 20 }} animate={{ scale: 1, opacity: 1, y: 0 }} exit={{ scale: 0.95, opacity: 0, y: 20 }}
+              className={`w-full max-w-md overflow-hidden rounded-[2rem] border shadow-2xl ${isDark ? "border-white/10 bg-[#111111]" : "border-black/10 bg-white"}`}
+            >
+              <div className={`flex items-center justify-between border-b p-5 ${isDark ? "border-white/10 bg-white/5" : "border-black/10 bg-black/5"}`}>
+                <h3 className={`text-lg font-bold ${isDark ? "text-white" : "text-gray-900"}`}>
+                  {cancelModal.action === 'deny' 
+                    ? (isFrench ? "Refuser la demande" : "Deny Request") 
+                    : (isFrench ? "Annuler la session" : "Cancel Session")}
+                </h3>
+                <button onClick={() => setCancelModal({...cancelModal, isOpen: false})} className={`rounded-full p-2 transition-colors ${isDark ? "bg-white/10 text-white hover:bg-white/20" : "bg-black/10 text-gray-600 hover:bg-black/20"}`}>
+                  <X size={18} />
+                </button>
+              </div>
+              <div className="p-6 space-y-4">
+                <p className={`text-sm font-medium ${isDark ? "text-white/70" : "text-gray-600"}`}>
+                  {isFrench ? "Veuillez fournir une raison pour cette action :" : "Please provide a reason for this action:"}
+                </p>
+                <textarea
+                  value={cancelReason}
+                  onChange={(e) => setCancelReason(e.target.value)}
+                  placeholder={isFrench ? "Raison obligatoire..." : "Reason is required..."}
+                  className={`w-full p-4 rounded-xl text-sm border focus:outline-none focus:border-mg-gold min-h-[100px] resize-none ${isDark ? "bg-black/20 border-white/10 text-white placeholder-white/30" : "bg-gray-50 border-black/10 text-gray-900 placeholder-gray-400"}`}
+                />
+                <div className="flex gap-3 pt-2">
+                  <button onClick={() => setCancelModal({...cancelModal, isOpen: false})} className={`flex-1 rounded-xl border px-4 py-3 text-sm font-semibold transition-colors ${isDark ? "border-white/10 text-white hover:bg-white/5" : "border-black/10 text-gray-900 hover:bg-black/5"}`}>
+                    {isFrench ? "Retour" : "Back"}
+                  </button>
+                  <button 
+                    onClick={confirmCancel}
+                    disabled={!cancelReason.trim()}
+                    className="flex-1 rounded-xl bg-red-500 px-4 py-3 text-sm font-black uppercase tracking-wider text-white transition-transform hover:scale-[1.02] disabled:opacity-50 disabled:hover:scale-100 disabled:cursor-not-allowed"
+                  >
+                    {cancelModal.action === 'deny' ? (isFrench ? "Refuser" : "Deny") : (isFrench ? "Confirmer l'annulation" : "Confirm Cancel")}
+                  </button>
+                </div>
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* Review Modal */}
+      <AnimatePresence>
+        {reviewModal.isOpen && (
+          <motion.div
+            initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
+            className="fixed inset-0 z-[110] flex items-center justify-center bg-black/60 p-4 backdrop-blur-sm"
+          >
+            <motion.div
+              initial={{ scale: 0.95, opacity: 0, y: 20 }} animate={{ scale: 1, opacity: 1, y: 0 }} exit={{ scale: 0.95, opacity: 0, y: 20 }}
+              className={`w-full max-w-md overflow-hidden rounded-[2rem] border shadow-2xl ${isDark ? "border-white/10 bg-[#111111]" : "border-black/10 bg-white"}`}
+            >
+              <div className={`flex items-center justify-between border-b p-5 ${isDark ? "border-white/10 bg-white/5" : "border-black/10 bg-black/5"}`}>
+                <h3 className={`text-lg font-bold flex items-center gap-2 ${isDark ? "text-white" : "text-gray-900"}`}>
+                  <Star size={18} className="text-mg-gold" />
+                  {isFrench ? "Évaluer la Session" : "Review Session"}
+                </h3>
+                <button onClick={() => setReviewModal({ isOpen: false, id: null })} className={`rounded-full p-2 transition-colors ${isDark ? "bg-white/10 text-white hover:bg-white/20" : "bg-black/10 text-gray-600 hover:bg-black/20"}`}>
+                  <X size={18} />
+                </button>
+              </div>
+              <div className="p-6 space-y-4">
+                <p className={`text-sm font-medium ${isDark ? "text-white/70" : "text-gray-600"}`}>
+                  {isFrench ? "Comment s'est passée votre session ? Partagez votre expérience :" : "How was your session? Share your experience:"}
+                </p>
+                <textarea
+                  value={reviewText}
+                  onChange={(e) => setReviewText(e.target.value)}
+                  placeholder={isFrench ? "La session m'a beaucoup aidé à comprendre..." : "The session really helped me understand..."}
+                  className={`w-full p-4 rounded-xl text-sm border focus:outline-none focus:border-mg-gold min-h-[120px] resize-none ${isDark ? "bg-black/20 border-white/10 text-white placeholder-white/30" : "bg-gray-50 border-black/10 text-gray-900 placeholder-gray-400"}`}
+                />
+                <div className="flex gap-3 pt-2">
+                  <button onClick={() => setReviewModal({ isOpen: false, id: null })} className={`flex-1 rounded-xl border px-4 py-3 text-sm font-semibold transition-colors ${isDark ? "border-white/10 text-white hover:bg-white/5" : "border-black/10 text-gray-900 hover:bg-black/5"}`}>
+                    {isFrench ? "Annuler" : "Cancel"}
+                  </button>
+                  <button 
+                    onClick={submitReview}
+                    disabled={!reviewText.trim()}
+                    className="flex-1 rounded-xl bg-mg-gold px-4 py-3 text-sm font-black uppercase tracking-wider text-black transition-transform hover:scale-[1.02] disabled:opacity-50 disabled:hover:scale-100 disabled:cursor-not-allowed"
+                  >
+                    {isFrench ? "Soumettre" : "Submit Review"}
+                  </button>
+                </div>
+              </div>
+            </motion.div>
           </motion.div>
         )}
       </AnimatePresence>
