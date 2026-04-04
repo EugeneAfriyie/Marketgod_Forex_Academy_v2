@@ -100,3 +100,6 @@ const PlansNavFloating: React.FC<PlansNavFloatingProps> = ({ sections }) => {
 };
 
 export default PlansNavFloating;
+
+
+

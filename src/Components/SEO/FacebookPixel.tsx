@@ -22,3 +22,6 @@ const FacebookPixel = () => {
 };
 
 export default FacebookPixel;
+
+
+

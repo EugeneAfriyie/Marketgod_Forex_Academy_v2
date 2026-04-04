@@ -21,3 +21,5 @@ const GhanaFlagStripe = () => {
 }
 
 export default GhanaFlagStripe
+
+

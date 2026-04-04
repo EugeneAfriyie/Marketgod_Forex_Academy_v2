@@ -53,3 +53,6 @@ const SoftSwipeCards = () => {
 };
 
 export default SoftSwipeCards;
+
+
+

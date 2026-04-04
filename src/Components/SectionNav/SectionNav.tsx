@@ -55,3 +55,6 @@ const SectionNav: React.FC<SectionNavProps> = ({ sections, isMobile }) => {
 };
 
 export default SectionNav;
+
+
+

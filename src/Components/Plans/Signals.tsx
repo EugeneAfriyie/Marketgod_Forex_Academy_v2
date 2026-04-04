@@ -431,3 +431,5 @@ const CardInner: React.FC<CardInnerProps> = ({ plan, isDark, onFreeClick, onPaid
 };
 
 export default Signals;
+
+

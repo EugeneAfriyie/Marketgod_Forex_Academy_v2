@@ -123,3 +123,6 @@ const WhatIsForex = () => {
 };
 
 export default WhatIsForex;
+
+
+

@@ -2,7 +2,6 @@ import { useMemo, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { Outlet, useLocation } from "react-router-dom";
 import { useTheme } from "../../context/ThemeContext";
-import { useLanguage } from "../../context/LanguageContext";
 import AppSidebar from "./app-shell/AppSidebar";
 import AppTopbar from "./app-shell/AppTopbar";
 import {
@@ -16,7 +15,6 @@ import {
   defaultUser,
   mockNotifications,
   type AppArea,
-  type AppLanguage,
 } from "./app-shell/data";
 
 interface AppShellProps {
@@ -27,42 +25,32 @@ interface AppShellProps {
 
 export default function AppShell({ title, description, area }: AppShellProps) {
   const { theme, setTheme } = useTheme();
-  const { language, setLanguage } = useLanguage();
   const isDark = theme === "dark";
-  const isFrench = language === "fr";
   const currentYear = new Date().getFullYear();
   const location = useLocation();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
 
   const navItems = navConfig[area];
-  const translatedNavItems = useMemo(
-    () => getTranslatedNavItems(navItems, language as AppLanguage),
-    [language, navItems]
-  );
+  const translatedNavItems = useMemo(() => getTranslatedNavItems(navItems), [navItems]);
 
-  const areaLabel = getAreaLabel(area, language as AppLanguage);
-  const ui = getUiStrings(language as AppLanguage);
+  const areaLabel = getAreaLabel(area);
+  const ui = getUiStrings();
   const basePath = area === "student" ? "/dashboard" : `/${area}`;
 
   const activeItem = [...translatedNavItems].reverse().find(
     (item) => location.pathname === item.to || (item.to !== basePath && location.pathname.startsWith(item.to))
   );
 
-  const displayTitle = activeItem ? activeItem.translatedLabel : translateLabel(title, language as AppLanguage);
-  const displayDescription = activeItem
-    ? activeItem.translatedDescription
-    : translateDescription(description, language as AppLanguage);
+  const displayTitle = activeItem ? activeItem.translatedLabel : translateLabel(title);
+  const displayDescription = activeItem ? activeItem.translatedDescription : translateDescription(description);
 
   const isOverviewPage = activeItem?.to === basePath;
   const firstName = defaultUser.name.split(" ")[0];
   const finalTitle = isOverviewPage ? `${ui.welcomeBack}, ${firstName}!` : displayTitle;
   const finalDescription = isOverviewPage ? ui.overviewDescription : displayDescription;
 
-  const carouselItems = useMemo(
-    () => getCarouselItems(language as AppLanguage, finalTitle, finalDescription),
-    [finalDescription, finalTitle, language]
-  );
+  const carouselItems = useMemo(() => getCarouselItems(finalTitle, finalDescription), [finalDescription, finalTitle]);
 
   const toggleTheme = () => {
     setTheme(isDark ? "light" : "dark");
@@ -76,13 +64,12 @@ export default function AppShell({ title, description, area }: AppShellProps) {
           : "bg-[radial-gradient(circle_at_top_left,rgba(212,175,55,0.12),transparent_24%),#f6f2e9] text-mg-light-text"
       }`}
     >
-      {/* Subtle Background Watermark Logo */}
-      <div 
-        className={`pointer-events-none absolute inset-0 -z-10 flex items-center justify-center overflow-hidden transition-opacity duration-500 ${isDark ? 'opacity-[0.02]' : 'opacity-[0.04]'}`}
+      <div
+        className={`pointer-events-none absolute inset-0 -z-10 flex items-center justify-center overflow-hidden transition-opacity duration-500 ${isDark ? "opacity-[0.02]" : "opacity-[0.04]"}`}
       >
-        <img 
-          src="/logo.png" 
-          alt="" 
+        <img
+          src="/logo.png"
+          alt=""
           aria-hidden="true"
           className="h-auto w-[min(90vw,850px)] object-contain grayscale"
         />
@@ -132,14 +119,12 @@ export default function AppShell({ title, description, area }: AppShellProps) {
             markAllReadLabel={ui.markAllRead}
             viewAllActivityLabel={ui.viewAllActivity}
             notifications={mockNotifications}
-            language={language as AppLanguage}
-            onLanguageChange={(value) => setLanguage(value)}
             onToggleMobileMenu={() => setIsMobileMenuOpen(true)}
             isMobileMenuOpen={isMobileMenuOpen}
             onToggleTheme={toggleTheme}
           />
 
-          <div className="px-1 pb-1 flex-1">
+          <div className="flex-1 px-1 pb-1">
             <AnimatePresence mode="wait">
               <motion.div
                 key={location.pathname}
@@ -153,13 +138,12 @@ export default function AppShell({ title, description, area }: AppShellProps) {
             </AnimatePresence>
           </div>
 
-          {/* Dashboard Footer */}
-          <div className="mt-auto px-4 py-6 text-center opacity-80 border-t border-black/5 dark:border-white/5">
+          <div className="mt-auto border-t border-black/5 px-4 py-6 text-center opacity-80 dark:border-white/5">
             <p className={`text-xs font-medium ${isDark ? "text-white/40" : "text-gray-500"}`}>
-              &copy; {currentYear} Marketgod Academy. {isFrench ? "Tous droits réservés." : "All rights reserved."}
+              &copy; {currentYear} Marketgod Academy. All rights reserved.
             </p>
             <p className={`mt-2 text-xs font-medium ${isDark ? "text-white/30" : "text-gray-400"}`}>
-              {isFrench ? "Le trading comporte des risques. Assurez-vous de comprendre ces risques avant d'investir." : "Trading involves high risk. Ensure you fully understand these risks before investing."}
+              Trading involves high risk. Ensure you fully understand these risks before investing.
             </p>
           </div>
         </main>
@@ -167,3 +151,6 @@ export default function AppShell({ title, description, area }: AppShellProps) {
     </div>
   );
 }
+
+
+

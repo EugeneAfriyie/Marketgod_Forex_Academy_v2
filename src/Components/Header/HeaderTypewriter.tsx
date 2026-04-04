@@ -111,3 +111,6 @@ const HeaderTypewriter: React.FC = () => {
 };
 
 export default HeaderTypewriter;
+
+
+

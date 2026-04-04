@@ -285,3 +285,5 @@ const AboutJourney = () => {
 };
 
 export default AboutJourney;
+
+

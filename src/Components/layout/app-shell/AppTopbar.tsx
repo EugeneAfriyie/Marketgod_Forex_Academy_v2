@@ -1,10 +1,39 @@
 import { AnimatePresence, motion } from "framer-motion";
 import { Menu, Moon, Sun } from "lucide-react";
+import { Link } from "react-router-dom";
 import { useTheme } from "../../../context/ThemeContext";
-import type { AppLanguage, CarouselItem, NotificationItem } from "./data";
+import type { CarouselItem, NotificationItem } from "./data";
 import AppHeaderCarousel from "./AppHeaderCarousel";
-import LanguageMenu from "./LanguageMenu";
 import NotificationMenu from "./NotificationMenu";
+
+const MiniMarketGodCoin = () => {
+  return (
+    <div className="relative w-5 h-5 shrink-0 perspective-[500px]" style={{ perspective: 500 }}>
+      <motion.div animate={{ rotateY: [0, 360] }} transition={{ duration: 4, repeat: Infinity, ease: "linear" }} className="w-full h-full relative" style={{ transformStyle: "preserve-3d" }}>
+        {/* Front of Coin */}
+        <div className="absolute inset-0 rounded-full border-[1px] border-yellow-200 flex items-center justify-center shadow-[0_0_10px_rgba(212,175,55,0.6)] bg-gradient-to-br from-yellow-400 via-mg-gold to-yellow-600 [backface-visibility:hidden]" style={{ transform: "translateZ(1.5px)" }}>
+          <div className="w-[80%] h-[80%] rounded-full border border-yellow-300/50 flex items-center justify-center bg-gradient-to-tr from-yellow-500 to-mg-gold shadow-inner overflow-hidden">
+            <img src="/ourteam/Eyram_Dela.png" alt="MG" className="w-full h-full object-cover mix-blend-luminosity opacity-90"/>
+          </div>
+        </div>
+
+        {/* Edges */}
+        <div className="absolute inset-0 rounded-full bg-yellow-600 border border-yellow-500" style={{ transform: "translateZ(1px) scale(0.98)" }}/>
+        <div className="absolute inset-0 rounded-full bg-yellow-700" style={{ transform: "translateZ(0.5px)" }}/>
+        <div className="absolute inset-0 rounded-full bg-yellow-900" style={{ transform: "translateZ(0px)" }}/>
+        <div className="absolute inset-0 rounded-full bg-yellow-800" style={{ transform: "translateZ(-0.5px)" }}/>
+        <div className="absolute inset-0 rounded-full bg-yellow-600 border border-yellow-500" style={{ transform: "translateZ(-1px) scale(0.98)" }}/>
+
+        {/* Back of Coin */}
+        <div className="absolute inset-0 rounded-full border-[1px] border-yellow-200 flex items-center justify-center shadow-[0_0_10px_rgba(212,175,55,0.6)] bg-gradient-to-br from-yellow-600 via-mg-gold to-yellow-400 [backface-visibility:hidden]" style={{ transform: "rotateY(180deg) translateZ(1.5px)" }}>
+          <div className="relative w-[85%] h-[85%] rounded-full border-[1px] border-yellow-300/60 flex flex-col items-center justify-center bg-gradient-to-tr from-yellow-500 to-mg-gold shadow-inner overflow-hidden">
+            <span className="font-black text-yellow-900/90 tracking-tighter text-[7px] drop-shadow-md">MGP</span>
+          </div>
+        </div>
+      </motion.div>
+    </div>
+  );
+};
 
 interface AppTopbarProps {
   areaLabel: string;
@@ -16,8 +45,6 @@ interface AppTopbarProps {
   markAllReadLabel: string;
   viewAllActivityLabel: string;
   notifications: NotificationItem[];
-  language: AppLanguage;
-  onLanguageChange: (language: AppLanguage) => void;
   onToggleMobileMenu: () => void;
   isMobileMenuOpen: boolean;
   onToggleTheme: () => void;
@@ -33,8 +60,6 @@ export default function AppTopbar({
   markAllReadLabel,
   viewAllActivityLabel,
   notifications,
-  language,
-  onLanguageChange,
   onToggleMobileMenu,
   isMobileMenuOpen,
   onToggleTheme,
@@ -44,7 +69,7 @@ export default function AppTopbar({
 
   return (
     <header
-      className={`relative z-10 rounded-b-[2rem] border-b p-5 shadow-xl transition-all duration-500 ease-in-out ${
+      className={`relative z-40 rounded-b-[2rem] border-b p-5 shadow-xl transition-all duration-500 ease-in-out ${
         isDark ? "border-white/10 bg-[#111111]/80 backdrop-blur-2xl" : "border-black/10 bg-white/70 backdrop-blur-sm"
       }`}
     >
@@ -71,7 +96,27 @@ export default function AppTopbar({
         />
 
         <div className="absolute top-6 right-6 z-20 flex items-center gap-3 xl:relative xl:top-auto xl:right-auto">
-          <LanguageMenu language={language} onChange={onLanguageChange} />
+          {/* Coin Balance */}
+          <div className={`group relative flex items-center gap-2 rounded-full px-3 py-1.5 border transition-colors cursor-pointer ${
+            isDark ? "bg-mg-gold/10 border-mg-gold/20 text-mg-gold hover:bg-mg-gold/20" : "bg-mg-gold/10 border-mg-gold/30 text-mg-gold hover:bg-mg-gold/20"
+          }`}>
+            <MiniMarketGodCoin />
+            <span className="text-sm font-black">1,250</span>
+
+            {/* Tooltip */}
+            <div className="pointer-events-none absolute top-full right-0 z-[100] mt-2 w-64 opacity-0 transition-all duration-300 group-hover:translate-y-1 group-hover:opacity-100 group-hover:pointer-events-auto">
+              <div className="ml-auto mr-12 h-0 w-0 border-b-[6px] border-x-[6px] border-b-white/10 border-x-transparent" />
+              <div className="rounded-xl border border-white/10 bg-[#111111]/95 p-4 shadow-2xl backdrop-blur-xl">
+                <h4 className="mb-1.5 text-sm font-black text-mg-gold">MarketGod Points (MGP)</h4>
+                <p className="text-xs font-medium leading-relaxed text-white/70">
+                  Earn MGP by completing tasks, finishing courses, and participating in the community. Spend them in the Rewards Hub to claim exclusive merch, 1-on-1 sessions, or funded account challenges!
+                </p>
+                <Link to="/dashboard/giveaways" className="mt-3 inline-block text-xs font-bold text-mg-gold hover:text-white transition-colors">
+                  View Rewards Hub &rarr;
+                </Link>
+              </div>
+            </div>
+          </div>
 
           <button
             onClick={onToggleTheme}

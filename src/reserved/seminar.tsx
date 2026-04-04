@@ -193,3 +193,5 @@ const SeminarCarousel = () => {
 };
 
 export default SeminarCarousel;
+
+

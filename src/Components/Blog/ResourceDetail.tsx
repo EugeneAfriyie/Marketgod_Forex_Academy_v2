@@ -52,3 +52,5 @@ const ResourceDetail: React.FC = () => {
 };
 
 export default ResourceDetail;
+
+

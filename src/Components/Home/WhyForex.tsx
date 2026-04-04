@@ -246,3 +246,5 @@ const WhyForex = () => {
 };
 
 export default WhyForex;
+
+
