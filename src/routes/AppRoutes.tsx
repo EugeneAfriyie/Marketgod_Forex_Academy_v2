@@ -22,6 +22,7 @@ import CourseDetailsPage from "../Pages/student/CourseDetailsPage";
 import LessonPlayerPage from "../Pages/student/LessonPlayerPage";
 import ResourcesPage from "../Pages/student/ResourcesPage";
 import EventsPage from "../Pages/student/EventsPage";
+import EventDetailsPage from "../Pages/student/EventDetailsPage";
 import CollaborationPage from "../Pages/student/CollaborationPage";
 import AffiliatePage from "../Pages/student/AffiliatePage";
 import MeetingsPage from "../Pages/student/MeetingsPage";
@@ -91,6 +92,7 @@ export default function AppRoutes() {
           <Route path="resources" element={<ResourcesPage />} />
           <Route path="resources/:collectionId" element={<ResourceCollectionPage />} />
           <Route path="events" element={<EventsPage />} />
+          <Route path="events/:eventId" element={<EventDetailsPage />} />
           <Route path="affiliate" element={<AffiliatePage />} />
           <Route path="collaboration" element={<CollaborationPage />} />
           <Route path="meetings" element={<MeetingsPage />} />

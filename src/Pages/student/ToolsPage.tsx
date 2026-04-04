@@ -7,15 +7,23 @@ import { useTheme } from "../../context/ThemeContext";
 import { useLanguage } from "../../context/LanguageContext";
 
 // Custom Tooltip for Mobile (Tap) & Desktop (Hover)
-const TooltipInfo = ({ text }: { text: string }) => (
+const TooltipInfo = ({ text, align = "center" }: { text: string; align?: "left" | "center" | "right" }) => (
   <div className="group relative flex items-center justify-center outline-none" tabIndex={0}>
     <Info size={14} className="text-white/40 cursor-help transition-colors group-hover:text-mg-gold group-focus:text-mg-gold" />
-    <div className="pointer-events-none absolute bottom-full left-1/2 z-50 mb-2 w-max max-w-[200px] -translate-x-1/2 opacity-0 transition-opacity group-hover:opacity-100 group-focus:opacity-100">
-      <div className="rounded-lg bg-black border border-white/20 px-3 py-2 text-xs font-medium text-white shadow-2xl text-center">
+    <div className={`pointer-events-none absolute bottom-full z-50 mb-2 w-max max-w-[160px] sm:max-w-[200px] opacity-0 transition-opacity group-hover:opacity-100 group-focus:opacity-100 ${
+      align === 'left' ? 'left-0 lg:left-1/2 lg:-translate-x-1/2' :
+      align === 'right' ? 'right-0 lg:right-auto lg:left-1/2 lg:-translate-x-1/2' :
+      'left-1/2 -translate-x-1/2'
+    }`}>
+      <div className="rounded-lg bg-black border border-white/20 px-3 py-2 text-[10px] sm:text-xs font-medium text-white shadow-2xl text-center whitespace-normal leading-tight">
         {text}
       </div>
       {/* Little triangle pointer */}
-      <div className="mx-auto h-0 w-0 border-x-[5px] border-t-[5px] border-x-transparent border-t-white/20" />
+      <div className={`h-0 w-0 border-x-[5px] border-t-[5px] border-x-transparent border-t-white/20 ${
+        align === 'left' ? 'ml-1.5 lg:mx-auto' :
+        align === 'right' ? 'mr-1.5 ml-auto lg:mx-auto' :
+        'mx-auto'
+      }`} />
     </div>
   </div>
 );
@@ -169,9 +177,9 @@ const RiskCalculator = ({ isDark, isFrench, item }: { isDark: boolean; isFrench:
   const riskColor = isDark ? "text-white/60" : "text-gray-500";
 
   return (
-          <div className="space-y-6">
+          <div className="space-y-4 sm:space-y-6">
             {/* HEADER */}
-            <motion.div variants={item} className={`flex items-center justify-between p-4 rounded-xl border backdrop-blur-xl ${isDark ? "bg-white/5 border-white/10" : "bg-white/50 border-black/10"}`}>
+            <motion.div variants={item} className={`flex flex-col sm:flex-row items-center justify-between p-3 sm:p-4 gap-4 sm:gap-0 rounded-xl border backdrop-blur-xl ${isDark ? "bg-white/5 border-white/10" : "bg-white/50 border-black/10"}`}>
           <div className="flex items-center gap-3">
             <Calculator className="text-mg-gold" />
             <h1 className="font-bold text-white text-lg">
@@ -185,12 +193,12 @@ const RiskCalculator = ({ isDark, isFrench, item }: { isDark: boolean; isFrench:
               <span className="text-xs font-bold uppercase tracking-widest text-white/70">{isFrench ? "Choisir l'Actif" : "Select Asset"}</span>
             </div>
             
-            <div className="  flex flex-wrap justify-end gap-1.5 rounded-xl bg-[#0f141b] p-1 border border-white/10 shadow-inner">
+            <div className="flex flex-wrap justify-center sm:justify-end gap-1.5 rounded-xl bg-[#0f141b] p-1 border border-white/10 shadow-inner">
               {["forex", "gold", "silver", "btc", "eth"].map((type) => (
                 <button
                   key={type}
                   onClick={() => setPairType(type)}
-                  className={`px-4 py-1.5 text-xs font-bold rounded-lg transition-all ${
+                  className={`px-3 py-1 sm:px-4 sm:py-1.5 text-[10px] sm:text-xs font-bold rounded-lg transition-all ${
                     pairType === type
                       ? "bg-mg-gold text-black shadow-md"
                       : "text-white/60 hover:text-white hover:bg-white/5"
@@ -203,21 +211,21 @@ const RiskCalculator = ({ isDark, isFrench, item }: { isDark: boolean; isFrench:
           </div>
             </motion.div>
 
-            <div className="grid lg:grid-cols-2 gap-6">
+            <div className="grid lg:grid-cols-2 gap-4 lg:gap-6">
 
           {/* INPUT PANEL */}
-              <motion.div variants={item} className={`p-6 rounded-2xl border backdrop-blur-xl space-y-6 ${isDark ? "bg-white/[0.03] border-white/10" : "bg-white border-black/10"}`}>
+              <motion.div variants={item} className={`p-4 sm:p-6 rounded-xl sm:rounded-2xl border backdrop-blur-xl space-y-4 sm:space-y-6 ${isDark ? "bg-white/[0.03] border-white/10" : "bg-white border-black/10"}`}>
 
             {/* Balance */}
             <div>
-              <label className="flex items-center gap-2 text-sm text-white/70">Account Balance <TooltipInfo text={isFrench ? "Votre capital total de trading" : "Your total trading capital"} /></label>
+              <label className="flex items-center gap-2 text-sm text-white/70">Account Balance <TooltipInfo text={isFrench ? "Votre capital total de trading" : "Your total trading capital"} align="left" /></label>
               <div className="relative mt-2">
                 <DollarSign className="absolute left-3 top-3 text-mg-gold" size={18} />
                 <input
                   type="number"
                   value={accountBalance}
                   onChange={(e) => setAccountBalance(e.target.value === "" ? "" : Number(e.target.value))}
-                  className="w-full pl-10 pr-4 py-3 rounded-lg bg-[#0f141b] border border-white/10 text-white font-bold"
+                  className="w-full pl-10 pr-4 py-2.5 sm:py-3 rounded-lg bg-[#0f141b] border border-white/10 text-white font-bold text-sm sm:text-base focus:outline-none focus:border-mg-gold transition-colors"
                 />
               </div>
             </div>
@@ -225,7 +233,7 @@ const RiskCalculator = ({ isDark, isFrench, item }: { isDark: boolean; isFrench:
             {/* Risk */}
             <div>
               <div className="flex items-center justify-between mb-2">
-                <label className="flex items-center gap-2 text-sm text-white/70">Risk <TooltipInfo text={isFrench ? "Le montant que vous êtes prêt à perdre" : "The amount you are willing to lose"} /></label>
+                <label className="flex items-center gap-2 text-sm text-white/70">Risk <TooltipInfo text={isFrench ? "Le montant que vous êtes prêt à perdre" : "The amount you are willing to lose"} align="left" /></label>
                 <div className="flex bg-[#0f141b] rounded-lg p-1 border border-white/10">
                   <button onClick={() => setRiskMode("percent")} className={`px-2 py-1 text-[10px] uppercase font-bold rounded ${riskMode === 'percent' ? 'bg-mg-gold text-black' : 'text-white/50'}`}>Percent</button>
                   <button onClick={() => setRiskMode("amount")} className={`px-2 py-1 text-[10px] uppercase font-bold rounded ${riskMode === 'amount' ? 'bg-mg-gold text-black' : 'text-white/50'}`}>Amount</button>
@@ -240,7 +248,7 @@ const RiskCalculator = ({ isDark, isFrench, item }: { isDark: boolean; isFrench:
                       type="number"
                       value={riskPercent}
                       onChange={(e) => setRiskPercent(e.target.value === "" ? "" : Number(e.target.value))}
-                      className="w-full pl-10 pr-4 py-3 rounded-lg bg-[#0f141b] border border-white/10 text-white font-bold"
+                      className="w-full pl-10 pr-4 py-2.5 sm:py-3 rounded-lg bg-[#0f141b] border border-white/10 text-white font-bold text-sm sm:text-base focus:outline-none focus:border-mg-gold transition-colors"
                     />
                   </div>
                   <div className="flex gap-2 mt-3">
@@ -258,7 +266,7 @@ const RiskCalculator = ({ isDark, isFrench, item }: { isDark: boolean; isFrench:
                     type="number"
                     value={riskAmountInput}
                     onChange={(e) => setRiskAmountInput(e.target.value === "" ? "" : Number(e.target.value))}
-                    className="w-full pl-10 pr-4 py-3 rounded-lg bg-[#0f141b] border border-white/10 text-white font-bold"
+                    className="w-full pl-10 pr-4 py-2.5 sm:py-3 rounded-lg bg-[#0f141b] border border-white/10 text-white font-bold text-sm sm:text-base focus:outline-none focus:border-mg-gold transition-colors"
                   />
                 </div>
               )}
@@ -266,16 +274,16 @@ const RiskCalculator = ({ isDark, isFrench, item }: { isDark: boolean; isFrench:
 
             {/* Trade Direction */}
             <div>
-              <label className="flex items-center gap-2 text-sm text-white/70">{isFrench ? "Direction du Trade" : "Trade Direction"} <TooltipInfo text={isFrench ? "Acheter (Long) ou Vendre (Short)" : "Buy (Long) or Sell (Short)"} /></label>
+              <label className="flex items-center gap-2 text-sm text-white/70">{isFrench ? "Direction du Trade" : "Trade Direction"} <TooltipInfo text={isFrench ? "Acheter (Long) ou Vendre (Short)" : "Buy (Long) or Sell (Short)"} align="left" /></label>
               <div className="flex bg-[#0f141b] rounded-lg p-1 border border-white/10 mt-2">
-                <button onClick={() => setTradeDirection("buy")} className={`flex-1 py-3 text-xs uppercase font-bold rounded-md transition-colors ${tradeDirection === 'buy' ? 'bg-white text-black shadow-sm' : 'text-white/50 hover:text-white'}`}>Buy</button>
-                <button onClick={() => setTradeDirection("sell")} className={`flex-1 py-3 text-xs uppercase font-bold rounded-md transition-colors ${tradeDirection === 'sell' ? 'bg-white text-black shadow-sm' : 'text-white/50 hover:text-white'}`}>Sell</button>
+                <button onClick={() => setTradeDirection("buy")} className={`flex-1 py-2 sm:py-3 text-[10px] sm:text-xs uppercase font-bold rounded-md transition-colors ${tradeDirection === 'buy' ? 'bg-white text-black shadow-sm' : 'text-white/50 hover:text-white'}`}>Buy</button>
+                <button onClick={() => setTradeDirection("sell")} className={`flex-1 py-2 sm:py-3 text-[10px] sm:text-xs uppercase font-bold rounded-md transition-colors ${tradeDirection === 'sell' ? 'bg-white text-black shadow-sm' : 'text-white/50 hover:text-white'}`}>Sell</button>
               </div>
             </div>
 
             {/* Entry Price */}
             <div>
-              <label className="flex items-center gap-2 text-sm text-white/70">Entry Price {slMode === "price" && <span className="text-mg-gold">*</span>} <TooltipInfo text={isFrench ? "Votre prix d'entrée sur le marché" : "Your market entry price"} /></label>
+              <label className="flex items-center gap-2 text-sm text-white/70">Entry Price {slMode === "price" && <span className="text-mg-gold">*</span>} <TooltipInfo text={isFrench ? "Votre prix d'entrée sur le marché" : "Your market entry price"} align="left" /></label>
               <div className="relative mt-2">
                 <DollarSign className="absolute left-3 top-3 text-mg-gold" size={18} />
                 <input
@@ -283,7 +291,7 @@ const RiskCalculator = ({ isDark, isFrench, item }: { isDark: boolean; isFrench:
                   value={entryPrice}
                   onChange={(e) => setEntryPrice(e.target.value === "" ? "" : Number(e.target.value))}
                   placeholder="e.g. 2000.50"
-                  className="w-full pl-10 pr-4 py-3 rounded-lg bg-[#0f141b] border border-white/10 text-white font-bold focus:outline-none focus:border-mg-gold transition-colors"
+                  className="w-full pl-10 pr-4 py-2.5 sm:py-3 rounded-lg bg-[#0f141b] border border-white/10 text-white font-bold text-sm sm:text-base focus:outline-none focus:border-mg-gold transition-colors"
                 />
               </div>
             </div>
@@ -291,7 +299,7 @@ const RiskCalculator = ({ isDark, isFrench, item }: { isDark: boolean; isFrench:
             {/* Stop Loss */}
             <div>
               <div className="flex items-center justify-between mb-2">
-                <label className="flex items-center gap-2 text-sm text-white/70">Stop Loss <TooltipInfo text={isFrench ? "Votre niveau d'invalidation (en Pips ou Prix)" : "Your invalidation level (in Pips or Price)"} /></label>
+                <label className="flex items-center gap-2 text-sm text-white/70">Stop Loss <TooltipInfo text={isFrench ? "Votre niveau d'invalidation (en Pips ou Prix)" : "Your invalidation level (in Pips or Price)"} align="left" /></label>
                 <div className="flex bg-[#0f141b] rounded-lg p-1 border border-white/10">
                   <button onClick={() => setSlMode("pips")} className={`px-2 py-1 text-[10px] uppercase font-bold rounded ${slMode === 'pips' ? 'bg-mg-gold text-black' : 'text-white/50'}`}>In Pips</button>
                   <button onClick={() => setSlMode("price")} className={`px-2 py-1 text-[10px] uppercase font-bold rounded ${slMode === 'price' ? 'bg-mg-gold text-black' : 'text-white/50'}`}>Exit Price</button>
@@ -306,7 +314,7 @@ const RiskCalculator = ({ isDark, isFrench, item }: { isDark: boolean; isFrench:
                     value={stopLoss}
                     onChange={(e) => setStopLoss(e.target.value === "" ? "" : Number(e.target.value))}
                     placeholder="e.g. 20"
-                    className="w-full pl-10 pr-4 py-3 rounded-lg bg-[#0f141b] border border-white/10 text-white font-bold focus:outline-none focus:border-mg-gold transition-colors"
+                    className="w-full pl-10 pr-4 py-2.5 sm:py-3 rounded-lg bg-[#0f141b] border border-white/10 text-white font-bold text-sm sm:text-base focus:outline-none focus:border-mg-gold transition-colors"
                   />
                 </div>
               ) : (
@@ -318,7 +326,7 @@ const RiskCalculator = ({ isDark, isFrench, item }: { isDark: boolean; isFrench:
                       value={exitPrice}
                       onChange={(e) => setExitPrice(e.target.value === "" ? "" : Number(e.target.value))}
                       placeholder="e.g. 1998.50"
-                      className={`w-full pl-10 pr-4 py-3 rounded-lg bg-[#0f141b] border ${slError ? "border-red-500/50 focus:border-red-500" : "border-white/10 focus:border-mg-gold"} text-white font-bold focus:outline-none transition-colors`}
+                      className={`w-full pl-10 pr-4 py-2.5 sm:py-3 rounded-lg bg-[#0f141b] border ${slError ? "border-red-500/50 focus:border-red-500" : "border-white/10 focus:border-mg-gold"} text-white font-bold text-sm sm:text-base focus:outline-none transition-colors`}
                     />
                   </div>
                   {slError && <p className="text-red-500 text-xs mt-2 font-medium">{slError}</p>}
@@ -327,11 +335,11 @@ const RiskCalculator = ({ isDark, isFrench, item }: { isDark: boolean; isFrench:
             </div>
 
             {/* Contract Size Info */}
-            <div className="flex flex-col gap-3 p-4 rounded-xl bg-[#0f141b] border border-white/10">
+            <div className="flex flex-col gap-2 sm:gap-3 p-3 sm:p-4 rounded-xl bg-[#0f141b] border border-white/10">
               <div className="flex items-center justify-between">
                 <span className="text-sm text-white/70 flex items-center gap-2">
                   {isFrench ? "Taille du Contrat" : "Contract Size"} 
-                  <TooltipInfo text={isFrench ? "Taille standard du contrat sur MT4/MT5" : "Standard contract size on MT4/MT5"} />
+                  <TooltipInfo text={isFrench ? "Taille standard du contrat sur MT4/MT5" : "Standard contract size on MT4/MT5"} align="left" />
                 </span>
                 <span className="font-bold text-mg-gold">
                   {pairType === "forex" ? "100,000" : pairType === "gold" ? "100" : pairType === "silver" ? "500" : "1"}
@@ -347,10 +355,10 @@ const RiskCalculator = ({ isDark, isFrench, item }: { isDark: boolean; isFrench:
           </motion.div>
 
           {/* OUTPUT PANEL */}
-          <motion.div variants={item} className="flex flex-col gap-6">
+          <motion.div variants={item} className="flex flex-col gap-4 sm:gap-6">
 
             {/* Risk Amount */}
-            <div className="relative p-6 rounded-2xl border bg-gradient-to-br from-mg-gold/10 to-transparent border-mg-gold/20 backdrop-blur-xl">
+            <div className="relative p-4 sm:p-6 rounded-xl sm:rounded-2xl border bg-gradient-to-br from-mg-gold/10 to-transparent border-mg-gold/20 backdrop-blur-xl">
               
               <p className="text-xs text-white/50 uppercase">
                 Amount at Risk {riskMode === "amount" && balance > 0 && <span className="font-bold text-white/70 tracking-wider">({actualRiskPercent.toFixed(2)}%)</span>}
@@ -360,7 +368,7 @@ const RiskCalculator = ({ isDark, isFrench, item }: { isDark: boolean; isFrench:
                 key={actualRiskAmount}
                 initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
-                className="text-5xl font-black text-mg-gold drop-shadow-[0_0_10px_rgba(255,215,0,0.4)]"
+                className="text-4xl sm:text-5xl font-black text-mg-gold drop-shadow-[0_0_10px_rgba(255,215,0,0.4)]"
               >
                 ${actualRiskAmount.toFixed(2)}
               </motion.h1>
@@ -378,21 +386,21 @@ const RiskCalculator = ({ isDark, isFrench, item }: { isDark: boolean; isFrench:
             </div>
 
             {/* LOT SIZES */}
-            <div className="grid grid-cols-3 gap-4">
+            <div className="grid grid-cols-3 gap-2 sm:gap-4">
               {[
-                { label: "Standard", value: standardLots, info: "Volume: 1.00 (100,000 units)" },
-                { label: "Mini", value: miniLots, info: "Volume: 0.10 (10,000 units)" },
-                { label: "Micro", value: microLots, info: "Volume: 0.01 (1,000 units)" }
+                { label: "Standard", value: standardLots, info: "Volume: 1.00 (100,000 units)", align: "left" as const },
+                { label: "Mini", value: miniLots, info: "Volume: 0.10 (10,000 units)", align: "center" as const },
+                { label: "Micro", value: microLots, info: "Volume: 0.01 (1,000 units)", align: "right" as const }
               ].map((lot) => (
                 <div
                   key={lot.label}
-                  className="relative p-4 rounded-xl bg-white/5 border border-white/10 text-center hover:scale-105 transition"
+                  className="relative p-3 sm:p-4 rounded-lg sm:rounded-xl bg-white/5 border border-white/10 text-center hover:scale-105 transition"
                 >
                   <div className="absolute top-2 right-2">
-                    <TooltipInfo text={lot.info} />
+                    <TooltipInfo text={lot.info} align={lot.align} />
                   </div>
-                  <p className="text-xs text-white/50">{lot.label}</p>
-                  <p className="text-2xl font-black text-mg-gold">
+                  <p className="text-[10px] sm:text-xs text-white/50">{lot.label}</p>
+                  <p className="text-lg sm:text-2xl font-black text-mg-gold mt-1 sm:mt-0">
                     {lot.value.toFixed(2)}
                   </p>
                 </div>
@@ -400,25 +408,25 @@ const RiskCalculator = ({ isDark, isFrench, item }: { isDark: boolean; isFrench:
             </div>
 
             {/* EXECUTION DETAILS SUMMARY FOR COPYING */}
-            <div className={`p-6 rounded-2xl border backdrop-blur-xl ${isDark ? "bg-white/[0.03] border-white/10" : "bg-white border-black/10"}`}>
+            <div className={`p-4 sm:p-6 rounded-xl sm:rounded-2xl border backdrop-blur-xl ${isDark ? "bg-white/[0.03] border-white/10" : "bg-white border-black/10"}`}>
               <h3 className="text-sm font-bold text-white/70 uppercase tracking-wider mb-4">
                 {isFrench ? "Détails d'Exécution" : "Execution Details"}
               </h3>
-              <div className="space-y-3">
+              <div className="space-y-2 sm:space-y-3">
                 {/* Direction */}
-                <div className="flex items-center justify-between p-3 rounded-xl bg-[#0f141b] border border-white/5">
+                <div className="flex items-center justify-between p-2.5 sm:p-3 rounded-lg sm:rounded-xl bg-[#0f141b] border border-white/5">
                   <span className="text-sm text-white/60">{isFrench ? "Direction" : "Direction"}</span>
                   <span className="font-bold text-white uppercase">{tradeDirection}</span>
                 </div>
 
                 {/* Entry Price */}
                 {entryPrice !== "" && (
-                  <div className="flex items-center justify-between p-3 rounded-xl bg-[#0f141b] border border-white/5">
+                  <div className="flex items-center justify-between p-2.5 sm:p-3 rounded-lg sm:rounded-xl bg-[#0f141b] border border-white/5">
                     <span className="text-sm text-white/60">{isFrench ? "Prix d'Entrée" : "Entry Price"}</span>
                     <div className="flex items-center gap-3">
                       <span className="font-bold text-white">{entryPrice}</span>
                       <button onClick={() => handleCopy(String(entryPrice), "entry")} className="text-mg-gold hover:text-white transition" aria-label="Copy Entry Price">
-                        {copiedField === "entry" ? <Check size={16} /> : <Copy size={16} />}
+                        {copiedField === "entry" ? <Check size={14} className="sm:w-4 sm:h-4" /> : <Copy size={14} className="sm:w-4 sm:h-4" />}
                       </button>
                     </div>
                   </div>
@@ -426,14 +434,14 @@ const RiskCalculator = ({ isDark, isFrench, item }: { isDark: boolean; isFrench:
 
                 {/* Exit Price */}
                 {finalExitPrice !== "" && (
-                  <div className="flex items-center justify-between p-3 rounded-xl bg-[#0f141b] border border-white/5">
+                  <div className="flex items-center justify-between p-2.5 sm:p-3 rounded-lg sm:rounded-xl bg-[#0f141b] border border-white/5">
                     <span className="text-sm text-white/60">{isFrench ? "Prix de Sortie (SL)" : "Exit Price (SL)"}</span>
                     <div className="flex items-center gap-3">
                       <span className="font-bold text-white">
                         {typeof finalExitPrice === 'number' ? String(Number(finalExitPrice.toFixed(5))) : finalExitPrice}
                       </span>
                       <button onClick={() => handleCopy(String(typeof finalExitPrice === 'number' ? Number(finalExitPrice.toFixed(5)) : finalExitPrice), "exit")} className="text-mg-gold hover:text-white transition" aria-label="Copy Exit Price">
-                        {copiedField === "exit" ? <Check size={16} /> : <Copy size={16} />}
+                        {copiedField === "exit" ? <Check size={14} className="sm:w-4 sm:h-4" /> : <Copy size={14} className="sm:w-4 sm:h-4" />}
                       </button>
                     </div>
                   </div>
@@ -441,12 +449,12 @@ const RiskCalculator = ({ isDark, isFrench, item }: { isDark: boolean; isFrench:
 
                 {/* Stop Loss (Pips) */}
                 {calculatedPips > 0 && (
-                  <div className="flex items-center justify-between p-3 rounded-xl bg-[#0f141b] border border-white/5">
+                  <div className="flex items-center justify-between p-2.5 sm:p-3 rounded-lg sm:rounded-xl bg-[#0f141b] border border-white/5">
                     <span className="text-sm text-white/60">{isFrench ? "Stop Loss (Pips)" : "Stop Loss (Pips)"}</span>
                     <div className="flex items-center gap-3">
                       <span className="font-bold text-white">{calculatedPips.toFixed(1)}</span>
                       <button onClick={() => handleCopy(calculatedPips.toFixed(1), "pips")} className="text-mg-gold hover:text-white transition" aria-label="Copy Pips">
-                        {copiedField === "pips" ? <Check size={16} /> : <Copy size={16} />}
+                        {copiedField === "pips" ? <Check size={14} className="sm:w-4 sm:h-4" /> : <Copy size={14} className="sm:w-4 sm:h-4" />}
                       </button>
                     </div>
                   </div>
@@ -454,12 +462,12 @@ const RiskCalculator = ({ isDark, isFrench, item }: { isDark: boolean; isFrench:
 
                 {/* Standard Lot Size */}
                 {standardLots > 0 && (
-                  <div className="flex items-center justify-between p-3 rounded-xl bg-[#0f141b] border border-white/5">
+                  <div className="flex items-center justify-between p-2.5 sm:p-3 rounded-lg sm:rounded-xl bg-[#0f141b] border border-white/5">
                     <span className="text-sm text-white/60">{isFrench ? "Taille de Lot (Standard)" : "Lot Size (Standard)"}</span>
                     <div className="flex items-center gap-3">
                       <span className="font-bold text-mg-gold">{standardLots.toFixed(2)}</span>
                       <button onClick={() => handleCopy(standardLots.toFixed(2), "lot")} className="text-mg-gold hover:text-white transition" aria-label="Copy Lot Size">
-                        {copiedField === "lot" ? <Check size={16} /> : <Copy size={16} />}
+                        {copiedField === "lot" ? <Check size={14} className="sm:w-4 sm:h-4" /> : <Copy size={14} className="sm:w-4 sm:h-4" />}
                       </button>
                     </div>
                   </div>
@@ -493,28 +501,28 @@ export default function ToolsPage() {
   };
 
   return (
-    <div className={`relative min-h-screen  sm:p-6 ${isDark ? "bg-[#0b0f14]" : "bg-[#f7f9fc]"}`}>
+    <div className={`relative min-h-screen overflow-x-hidden p-3 sm:p-6 ${isDark ? "bg-[#0b0f14]" : "bg-[#f7f9fc]"}`}>
       {/* Background grid */}
       <div className="absolute inset-0 bg-[linear-gradient(to_right,#ffffff05_1px,transparent_1px),linear-gradient(to_bottom,#ffffff05_1px,transparent_1px)] bg-[size:40px_40px] pointer-events-none" />
 
-      <motion.div initial="hidden" animate="show" variants={container} className="relative z-10 space-y-6">
+      <motion.div initial="hidden" animate="show" variants={container} className="relative z-10 space-y-4 sm:space-y-6">
         {/* TOOL TABS */}
         <motion.div variants={item} className="flex justify-center mb-2">
           <div className={`flex flex-wrap justify-center rounded-xl p-1 border shadow-inner ${isDark ? "bg-[#0f141b] border-white/10" : "bg-white border-black/10"}`}>
-            <button onClick={() => setActiveTab('calculator')} className={`flex items-center gap-2 px-6 py-3 rounded-lg font-bold text-sm transition-all ${activeTab === 'calculator' ? 'bg-mg-gold text-black shadow-md' : isDark ? 'text-white/60 hover:text-white hover:bg-white/5' : 'text-gray-500 hover:text-black hover:bg-black/5'}`}>
-              <Calculator size={18} />
+            <button onClick={() => setActiveTab('calculator')} className={`flex items-center gap-1.5 sm:gap-2 px-3 py-2 sm:px-6 sm:py-3 rounded-lg font-bold text-xs sm:text-sm transition-all ${activeTab === 'calculator' ? 'bg-mg-gold text-black shadow-md' : isDark ? 'text-white/60 hover:text-white hover:bg-white/5' : 'text-gray-500 hover:text-black hover:bg-black/5'}`}>
+              <Calculator className="w-4 h-4 sm:w-[18px] sm:h-[18px]" />
               {isFrench ? "Calculateur" : "Risk Calculator"}
             </button>
-            <button onClick={() => setActiveTab('calendar')} className={`flex items-center gap-2 px-6 py-3 rounded-lg font-bold text-sm transition-all ${activeTab === 'calendar' ? 'bg-mg-gold text-black shadow-md' : isDark ? 'text-white/60 hover:text-white hover:bg-white/5' : 'text-gray-500 hover:text-black hover:bg-black/5'}`}>
-              <CalendarDays size={18} />
+            <button onClick={() => setActiveTab('calendar')} className={`flex items-center gap-1.5 sm:gap-2 px-3 py-2 sm:px-6 sm:py-3 rounded-lg font-bold text-xs sm:text-sm transition-all ${activeTab === 'calendar' ? 'bg-mg-gold text-black shadow-md' : isDark ? 'text-white/60 hover:text-white hover:bg-white/5' : 'text-gray-500 hover:text-black hover:bg-black/5'}`}>
+              <CalendarDays className="w-4 h-4 sm:w-[18px] sm:h-[18px]" />
               {isFrench ? "Calendrier Économique" : "Economic Calendar"}
             </button>
-            <button onClick={() => setActiveTab('chart')} className={`flex items-center gap-2 px-6 py-3 rounded-lg font-bold text-sm transition-all ${activeTab === 'chart' ? 'bg-mg-gold text-black shadow-md' : isDark ? 'text-white/60 hover:text-white hover:bg-white/5' : 'text-gray-500 hover:text-black hover:bg-black/5'}`}>
-              <LineChart size={18} />
+            <button onClick={() => setActiveTab('chart')} className={`flex items-center gap-1.5 sm:gap-2 px-3 py-2 sm:px-6 sm:py-3 rounded-lg font-bold text-xs sm:text-sm transition-all ${activeTab === 'chart' ? 'bg-mg-gold text-black shadow-md' : isDark ? 'text-white/60 hover:text-white hover:bg-white/5' : 'text-gray-500 hover:text-black hover:bg-black/5'}`}>
+              <LineChart className="w-4 h-4 sm:w-[18px] sm:h-[18px]" />
               {isFrench ? "Graphique" : "Advanced Chart"}
             </button>
-            <button onClick={() => setActiveTab('heatmap')} className={`flex items-center gap-2 px-6 py-3 rounded-lg font-bold text-sm transition-all ${activeTab === 'heatmap' ? 'bg-mg-gold text-black shadow-md' : isDark ? 'text-white/60 hover:text-white hover:bg-white/5' : 'text-gray-500 hover:text-black hover:bg-black/5'}`}>
-              <Activity size={18} />
+            <button onClick={() => setActiveTab('heatmap')} className={`flex items-center gap-1.5 sm:gap-2 px-3 py-2 sm:px-6 sm:py-3 rounded-lg font-bold text-xs sm:text-sm transition-all ${activeTab === 'heatmap' ? 'bg-mg-gold text-black shadow-md' : isDark ? 'text-white/60 hover:text-white hover:bg-white/5' : 'text-gray-500 hover:text-black hover:bg-black/5'}`}>
+              <Activity className="w-4 h-4 sm:w-[18px] sm:h-[18px]" />
               {isFrench ? "Heatmap" : "Market Heatmap"}
             </button>
           </div>
@@ -530,21 +538,21 @@ export default function ToolsPage() {
 
           {/* ECONOMIC CALENDAR TOOL */}
           {activeTab === 'calendar' && (
-            <motion.div key="calendar" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -20, transition: { duration: 0.2 } }} className={`h-[calc(100vh-140px)] min-h-[600px] w-full rounded-2xl overflow-hidden border p-4 backdrop-blur-xl ${isDark ? "bg-white/[0.03] border-white/10" : "bg-white border-black/10"}`}>
+            <motion.div key="calendar" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -20, transition: { duration: 0.2 } }} className={`h-[calc(100vh-140px)] min-h-[500px] sm:min-h-[600px] w-full rounded-xl sm:rounded-2xl overflow-hidden border p-2 sm:p-4 backdrop-blur-xl ${isDark ? "bg-white/[0.03] border-white/10" : "bg-white border-black/10"}`}>
               <EconomicCalendarWidget isDark={isDark} isFrench={isFrench} />
             </motion.div>
           )}
 
           {/* ADVANCED CHART TOOL */}
           {activeTab === 'chart' && (
-            <motion.div key="chart" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -20, transition: { duration: 0.2 } }} className={`h-[calc(100vh-140px)] min-h-[600px] w-full rounded-2xl overflow-hidden border p-4 backdrop-blur-xl ${isDark ? "bg-white/[0.03] border-white/10" : "bg-white border-black/10"}`}>
+            <motion.div key="chart" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -20, transition: { duration: 0.2 } }} className={`h-[calc(100vh-140px)] min-h-[500px] sm:min-h-[600px] w-full rounded-xl sm:rounded-2xl overflow-hidden border p-2 sm:p-4 backdrop-blur-xl ${isDark ? "bg-white/[0.03] border-white/10" : "bg-white border-black/10"}`}>
               <AdvancedChartWidget isDark={isDark} isFrench={isFrench} />
             </motion.div>
           )}
 
           {/* MARKET HEATMAP TOOL */}
           {activeTab === 'heatmap' && (
-            <motion.div key="heatmap" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -20, transition: { duration: 0.2 } }} className={`h-[calc(100vh-140px)] min-h-[600px] w-full rounded-2xl overflow-hidden border p-4 backdrop-blur-xl ${isDark ? "bg-white/[0.03] border-white/10" : "bg-white border-black/10"}`}>
+            <motion.div key="heatmap" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -20, transition: { duration: 0.2 } }} className={`h-[calc(100vh-140px)] min-h-[500px] sm:min-h-[600px] w-full rounded-xl sm:rounded-2xl overflow-hidden border p-2 sm:p-4 backdrop-blur-xl ${isDark ? "bg-white/[0.03] border-white/10" : "bg-white border-black/10"}`}>
               <MarketHeatmapWidget isDark={isDark} isFrench={isFrench} />
             </motion.div>
           )}
