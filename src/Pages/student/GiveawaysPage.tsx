@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Trophy, CheckCircle2, ExternalLink,  Sparkles, Loader2, Clock, Coins, Target, Gift,  Check, X, Users, CalendarDays } from "lucide-react";
+import { Trophy, CheckCircle2, ExternalLink,  Sparkles, Loader2, Clock, Coins, Target, Gift,  Check, X, Users, CalendarDays, Info } from "lucide-react";
 import { motion, AnimatePresence, type Variants } from "framer-motion";
 import { useTheme } from "../../context/ThemeContext";
 // --- MOCK DATA ---
@@ -160,9 +160,23 @@ export default function GiveawaysPage() {
             <MarketGodCoin />
             <span className="text-5xl font-black text-mg-gold drop-shadow-[0_0_15px_rgba(212,175,55,0.4)]">{userPoints}</span>
           </motion.div>
-          <p className={`text-xs mt-4 font-bold uppercase tracking-widest ${isDark ? "text-white/50" : "text-gray-500"}`}>
-            {"MarketGod Coins (MGC)"}
-          </p>
+          <div className="group relative mt-4 flex items-center gap-1.5 cursor-help">
+            <p className={`text-xs font-bold uppercase tracking-widest transition-colors ${isDark ? "text-white/50 group-hover:text-mg-gold" : "text-gray-500 group-hover:text-mg-gold"}`}>
+              {"MarketGod Coins (MGC)"}
+            </p>
+            <Info size={14} className={`transition-colors ${isDark ? "text-white/40 group-hover:text-mg-gold" : "text-gray-400 group-hover:text-mg-gold"}`} />
+
+            {/* Tooltip */}
+            <div className="pointer-events-none absolute bottom-full left-1/2 z-50 mb-2 w-64 -translate-x-1/2 opacity-0 transition-all duration-300 group-hover:-translate-y-1 group-hover:opacity-100">
+              <div className="rounded-xl border border-white/10 bg-[#111111]/95 p-4 shadow-2xl backdrop-blur-xl text-left">
+                <h4 className="mb-1.5 text-sm font-black text-mg-gold">MarketGod Coins (MGC)</h4>
+                <p className="text-xs font-medium leading-relaxed text-white/70">
+                  Earn MGC by completing tasks, finishing courses, and participating in the community. Spend them in the Rewards Hub to claim exclusive merch, 1-on-1 sessions, or funded account challenges!
+                </p>
+              </div>
+              <div className="mx-auto h-0 w-0 border-x-[6px] border-t-[6px] border-x-transparent border-t-white/10" />
+            </div>
+          </div>
         </div>
       </motion.div>
 

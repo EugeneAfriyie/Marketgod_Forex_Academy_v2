@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { motion, AnimatePresence, type Variants } from "framer-motion";
-import { BadgeDollarSign, Link2, TrendingUp, Users, Copy, CheckCircle2,  Wallet, Share2, X, Loader2, Bitcoin, Landmark, Smartphone, MessageCircle, Twitter, Send, Facebook, Download, Image as ImageIcon, FileText, History, Megaphone, Percent, Zap, RefreshCcw, UserPlus, Target } from "lucide-react";
+import { BadgeDollarSign, Link2, TrendingUp, Users, Copy, CheckCircle2,  Wallet, Share2, X, Loader2, Bitcoin, Landmark, Smartphone, MessageCircle, Twitter, Send, Facebook, Download, Image as ImageIcon, FileText, History, Megaphone, Percent, Zap, RefreshCcw, UserPlus, Target, ArrowRight } from "lucide-react";
 import { useTheme } from "../../context/ThemeContext";
 // --- MOCK DATA ---
 const stats = [
@@ -380,8 +380,9 @@ export default function AffiliatePage() {
               {"Recent Referrals"}
             </h2>
           </div>
-          <button onClick={() => setShowAllReferralsModal(true)} className={`text-sm font-bold uppercase tracking-wider transition-colors hover:text-mg-gold ${isDark ? "text-white/50" : "text-gray-500"}`}>
+          <button onClick={() => setShowAllReferralsModal(true)} className={`group flex items-center gap-1.5 text-sm font-bold uppercase tracking-wider transition-colors hover:text-mg-gold ${isDark ? "text-white/50" : "text-gray-500"}`}>
             {"View All"}
+            <ArrowRight size={16} className="transition-transform group-hover:translate-x-1" />
           </button>
         </div>
 

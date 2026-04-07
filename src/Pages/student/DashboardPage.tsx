@@ -87,7 +87,10 @@ export default function DashboardPage() {
                   </motion.div>);
         })}
             </div>
-            <Link to="/dashboard/notifications" className={`mt-4 block text-center text-xs font-bold uppercase tracking-wider transition-colors ${isDark ? "text-white/40 hover:text-mg-gold" : "text-gray-400 hover:text-mg-gold"}`}>View All Activity</Link>
+            <Link to="/dashboard/notifications" className={`group mt-4 flex items-center justify-center gap-1.5 text-xs font-bold uppercase tracking-wider transition-colors ${isDark ? "text-white/40 hover:text-mg-gold" : "text-gray-400 hover:text-mg-gold"}`}>
+              View All Activity
+              <ArrowRight size={14} className="transition-transform group-hover:translate-x-1" />
+            </Link>
           </StudentSectionCard>
         </div>
 
@@ -105,8 +108,8 @@ export default function DashboardPage() {
                     <div className="h-full rounded-full bg-mg-gold" style={{ width: `${lesson.progress}%` }}/>
                   </div>
                 </motion.div>))}
-              <Link to="/dashboard/courses/enrolled" className={`mt-2 flex items-center justify-center gap-2 rounded-xl border-2 border-dashed py-3 text-xs font-bold uppercase tracking-wider transition-colors ${isDark ? "border-white/20 text-white/50 hover:text-white hover:bg-white/5" : "border-black/20 text-gray-500 hover:text-black hover:bg-black/5"}`}>
-                {"View All Enrolled"} <ArrowRight size={14}/>
+              <Link to="/dashboard/courses/enrolled" className={`group mt-2 flex items-center justify-center gap-2 rounded-xl border-2 border-dashed py-3 text-xs font-bold uppercase tracking-wider transition-colors ${isDark ? "border-white/20 text-white/50 hover:text-white hover:bg-white/5" : "border-black/20 text-gray-500 hover:text-black hover:bg-black/5"}`}>
+                {"View All Enrolled"} <ArrowRight size={14} className="transition-transform group-hover:translate-x-1" />
               </Link>
             </div>
           </StudentSectionCard>

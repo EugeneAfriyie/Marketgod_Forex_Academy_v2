@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { Bell, ArrowRight } from "lucide-react";
 import { useTheme } from "../../../context/ThemeContext";
+import { Link } from "react-router-dom";
 
 interface NotificationItem {
   id: number;
@@ -92,7 +93,8 @@ export default function NotificationMenu({
             </div>
 
             <div className={`border-t p-3 ${isDark ? "border-white/10 bg-black/20" : "border-black/5 bg-gray-50/50"}`}>
-              <button
+              <Link
+                to="/dashboard/notifications"
                 onClick={() => setOpen(false)}
                 className={`group flex w-full items-center justify-center gap-2 text-xs font-bold transition-colors ${
                   isDark ? "text-white/60 hover:text-mg-gold" : "text-mg-light-textSecondary hover:text-mg-gold"
@@ -100,7 +102,7 @@ export default function NotificationMenu({
               >
                 {viewAllLabel}
                 <ArrowRight size={14} className="transition-transform group-hover:translate-x-1" />
-              </button>
+              </Link>
             </div>
           </motion.div>
         )}

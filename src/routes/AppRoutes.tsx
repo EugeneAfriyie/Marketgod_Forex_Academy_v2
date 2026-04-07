@@ -43,6 +43,7 @@ import AdminBookingsPage from "../Pages/admin/AdminBookingsPage";
 import AdminSupportPage from "../Pages/admin/AdminSupportPage";
 import EnrolledCourseOverviewPage from "../Pages/student/EnrolledCourseOverviewPage";
 import ResourceCollectionPage from "../Pages/student/ResourceCollectionPage";
+import NotificationsPage from "../Pages/student/NotificationsPage";
 
 function RouteSEO() {
   const location = useLocation();
@@ -103,6 +104,7 @@ export default function AppRoutes() {
           <Route path="signals" element={<SignalsPage />} />
           <Route path="profile" element={<ProfilePage />} />
           <Route path="support" element={<SupportPage />} />
+          <Route path="notifications" element={<NotificationsPage />} />
         </Route>
 
         <Route
@@ -152,6 +154,3 @@ export default function AppRoutes() {
     </>
   );
 }
-
-
-
