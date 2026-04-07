@@ -211,10 +211,10 @@ const [matchingState, setMatchingState] = useState<'idle' | 'searching' | 'found
 
       {/* Matchmaking Section */}
       <motion.div initial="hidden" animate="show" variants={container} id="matchmaking" className={`relative overflow-hidden rounded-[3rem] border shadow-lg mt-8 ${isDark ? "border-white/5 bg-[#111111]" : "border-black/5 bg-[#faf7f0]"}`}>
-        <div className="p-8 md:p-12 flex flex-col lg:flex-row items-center gap-10">
+        <div className="p-4 md:p-12 flex flex-col lg:flex-row items-center gap-10">
           <div className="lg:w-1/2">
             <div className="inline-flex items-center gap-2 rounded-full bg-mg-gold/10 px-3 py-1.5 text-xs font-bold uppercase tracking-wider text-mg-gold mb-4 border border-mg-gold/20">
-              <Zap size={14}/>
+              <Zap size={10}/>
               {"New Feature"}
             </div>
             <h2 className={`text-3xl md:text-4xl font-black mb-4 ${isDark ? "text-white" : "text-gray-900"}`}>
@@ -225,7 +225,7 @@ const [matchingState, setMatchingState] = useState<'idle' | 'searching' | 'found
             </p>
           </div>
 
-          <div className={`lg:w-1/2 w-full p-6 sm:p-8 rounded-[2rem] border ${isDark ? "border-white/10 bg-black/40" : "border-black/10 bg-white"}`}>
+          <div className={`lg:w-1/2 w-full p-3 sm:p-8 rounded-[2rem] border ${isDark ? "border-white/10 bg-black/40" : "border-black/10 bg-white"}`}>
             <AnimatePresence mode="wait">
               {matchingState === 'idle' && (<motion.div key="idle" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
                   <label className={`block text-sm font-bold mb-3 ${isDark ? "text-white/80" : "text-gray-700"}`}>

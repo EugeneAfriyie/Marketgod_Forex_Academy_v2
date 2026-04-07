@@ -314,7 +314,7 @@ export default function MentorshipPage() {
             {"Don't trade another day without a proven system and an army of winners behind you."}
           </p>
           <div className="flex justify-center">
-            <button onClick={handleOpenPayment} className="group relative overflow-hidden inline-flex items-center gap-3 rounded-2xl bg-mg-gold px-12 py-6 text-base font-black uppercase tracking-[0.15em] text-black shadow-[0_0_30px_rgba(212,175,55,0.5)] transition-all hover:scale-105 hover:shadow-[0_0_40px_rgba(212,175,55,0.7)]">
+            <button onClick={handleOpenPayment} className="group relative overflow-hidden inline-flex items-center gap-3 rounded-2xl bg-mg-gold px-12 py-6 text-sm sm:text-base font-black uppercase tracking-[0.15em] text-black shadow-[0_0_30px_rgba(212,175,55,0.5)] transition-all hover:scale-105 hover:shadow-[0_0_40px_rgba(212,175,55,0.7)]">
               <span className="relative z-10">{"Unlock VIP Access Now"}</span>
               <ArrowRight size={22} className="relative z-10 transition-transform group-hover:translate-x-2"/>
               <div className="absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/50 to-transparent group-hover:animate-shimmer"/>

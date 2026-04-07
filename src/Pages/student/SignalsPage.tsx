@@ -209,7 +209,7 @@ export default function SignalsPage() {
           <h2 className="text-3xl md:text-4xl font-black mb-6 text-white tracking-tight">
             {"The bridge between theory and profit."}
           </h2>
-          <p className="max-w-4xl mx-auto text-lg leading-relaxed font-medium text-white/70">
+          <p className="max-w-4xl mx-auto sm:text-lg leading-relaxed font-medium text-white/70">
             {"Learning Forex takes time. Many traders get stuck in the frustrating cycle of blown accounts before finding consistency. A professional signal service is the shortcut: it allows you to leverage the experience of market veterans, protect your capital, and generate income while you develop your own psychological edge."}
           </p>
         </div>
@@ -218,7 +218,7 @@ export default function SignalsPage() {
       {/* The MarketGod Difference */}
       <div className="grid lg:grid-cols-2 gap-8 items-center">
         <motion.div initial="hidden" animate="visible" variants={sectionVariant} className="order-2 lg:order-1">
-          <h2 className={`text-3xl md:text-4xl font-black mb-6 ${isDark ? "text-white" : "text-gray-900"}`}>
+          <h2 className={`text-xl md:text-4xl font-black mb-6 ${isDark ? "text-white" : "text-gray-900"}`}>
             {"Why MarketGod Signals?"}
           </h2>
           <p className={`text-lg mb-8 leading-relaxed ${isDark ? "text-white/70" : "text-gray-600"}`}>
@@ -242,7 +242,7 @@ export default function SignalsPage() {
           <div className="relative w-48 h-96 rounded-[3rem] border-8 border-gray-900 bg-black shadow-2xl flex flex-col p-4">
             <div className="w-1/2 h-1 bg-gray-800 mx-auto rounded-full mb-6"></div>
             <div className="flex-1 space-y-3">
-               <div className="w-full bg-white/10 text-white text-[10px] font-bold p-3 rounded-xl border border-white/20">BUY XAUUSD @ 5045.50</div>
+               <div className="w-full bg-white/10 text-white text-[10px] font-bold p-3 rounded-xl border border-white/20"><span className="text-green-600">BUY</span> XAUUSD @   <span className="text-green-600">5045.50</span></div>
                <div className="w-3/4 h-2 bg-white/20 rounded-full"></div>
                <div className="w-1/2 h-2 bg-white/20 rounded-full mb-4"></div>
                <div className="w-full aspect-video bg-mg-gold/20 rounded-lg flex items-center justify-center"><LineChart size={24} className="text-mg-gold"/></div>

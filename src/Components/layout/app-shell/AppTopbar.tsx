@@ -8,7 +8,7 @@ import NotificationMenu from "./NotificationMenu";
 
 const MiniMarketGodCoin = () => {
   return (
-    <div className="relative w-5 h-5 shrink-0 perspective-[500px]" style={{ perspective: 500 }}>
+    <div className="relative w-4 h-4 sm:w-5 sm:h-5 shrink-0 perspective-[500px]" style={{ perspective: 500 }}>
       <motion.div animate={{ rotateY: [0, 360] }} transition={{ duration: 4, repeat: Infinity, ease: "linear" }} className="w-full h-full relative" style={{ transformStyle: "preserve-3d" }}>
         {/* Front of Coin */}
         <div className="absolute inset-0 rounded-full border-[1px] border-yellow-200 flex items-center justify-center shadow-[0_0_10px_rgba(212,175,55,0.6)] bg-gradient-to-br from-yellow-400 via-mg-gold to-yellow-600 [backface-visibility:hidden]" style={{ transform: "translateZ(1.5px)" }}>
@@ -84,7 +84,6 @@ export default function AppTopbar({
             }`}
           >
             <Menu size={20} className="text-mg-gold" />
-            <span className="text-sm font-bold">{menuLabel}</span>
           </button>
         </div>
 
@@ -97,14 +96,14 @@ export default function AppTopbar({
 
         <div className="absolute top-6 right-6 z-20 flex items-center gap-3 xl:relative xl:top-auto xl:right-auto">
           {/* Coin Balance */}
-          <div className={`group relative flex items-center gap-2 rounded-full px-3 py-1.5 border transition-colors cursor-pointer ${
+          <div className={`group relative flex items-center gap-2 rounded-full px-2 sm:px-3 py-1.5 border transition-colors cursor-pointer ${
             isDark ? "bg-mg-gold/10 border-mg-gold/20 text-mg-gold hover:bg-mg-gold/20" : "bg-mg-gold/10 border-mg-gold/30 text-mg-gold hover:bg-mg-gold/20"
           }`}>
             <MiniMarketGodCoin />
-            <span className="text-sm font-black">1,250</span>
+            <span className=" text-[.5rem] sm:text-sm font-black">1,250</span>
 
             {/* Tooltip */}
-            <div className="pointer-events-none absolute top-full right-0 z-[100] mt-2 w-64 opacity-0 transition-all duration-300 group-hover:translate-y-1 group-hover:opacity-100 group-hover:pointer-events-auto">
+            <div className="pointer-events-none absolute top-full right-0 z-[100] pt-2 w-64 opacity-0 transition-all duration-300 group-hover:translate-y-1 group-hover:opacity-100 group-hover:pointer-events-auto">
               <div className="ml-auto mr-12 h-0 w-0 border-b-[6px] border-x-[6px] border-b-white/10 border-x-transparent" />
               <div className="rounded-xl border border-white/10 bg-[#111111]/95 p-4 shadow-2xl backdrop-blur-xl">
                 <h4 className="mb-1.5 text-sm font-black text-mg-gold">MarketGod Coins (MGC)</h4>

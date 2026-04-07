@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
-import { Bell } from "lucide-react";
+import { Bell, ArrowRight } from "lucide-react";
 import { useTheme } from "../../../context/ThemeContext";
 
 interface NotificationItem {
@@ -62,7 +62,7 @@ export default function NotificationMenu({
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 10, scale: 0.95 }}
             transition={{ duration: 0.2 }}
-            className={`absolute right-0 top-full mt-3 z-50 w-80 overflow-hidden rounded-2xl border shadow-2xl backdrop-blur-2xl sm:w-96 ${
+            className={`absolute -right-2 sm:right-0 top-full mt-3 z-50 w-[300px] sm:w-96 overflow-hidden rounded-2xl border shadow-2xl backdrop-blur-2xl ${
               isDark ? "border-white/10 bg-[#151515]/95" : "border-black/10 bg-white/95"
             }`}
           >
@@ -91,13 +91,15 @@ export default function NotificationMenu({
               ))}
             </div>
 
-            <div className={`border-t p-3 text-center ${isDark ? "border-white/10 bg-black/20" : "border-black/5 bg-gray-50/50"}`}>
+            <div className={`border-t p-3 ${isDark ? "border-white/10 bg-black/20" : "border-black/5 bg-gray-50/50"}`}>
               <button
-                className={`text-xs font-bold transition-colors ${
-                  isDark ? "text-white/60 hover:text-white" : "text-mg-light-textSecondary hover:text-mg-light-text"
+                onClick={() => setOpen(false)}
+                className={`group flex w-full items-center justify-center gap-2 text-xs font-bold transition-colors ${
+                  isDark ? "text-white/60 hover:text-mg-gold" : "text-mg-light-textSecondary hover:text-mg-gold"
                 }`}
               >
                 {viewAllLabel}
+                <ArrowRight size={14} className="transition-transform group-hover:translate-x-1" />
               </button>
             </div>
           </motion.div>
@@ -106,6 +108,3 @@ export default function NotificationMenu({
     </div>
   );
 }
-
-
-

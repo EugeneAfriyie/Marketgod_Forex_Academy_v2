@@ -2,6 +2,8 @@ import { useState, useRef } from "react";
 import { motion, AnimatePresence, type Variants, useMotionValue, useSpring, useTransform, useMotionTemplate } from "framer-motion";
 import { User, Shield, Bell, Camera, Save, Loader2, CheckCircle2, Mail, Phone, Lock, MapPin, CreditCard, ShieldCheck, Send, Wifi, QrCode, BadgeCheck, X } from "lucide-react";
 import { useTheme } from "../../context/ThemeContext";
+import { toast, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 // Mock User Data
 const mockUser = {
     id: "MG-8924",
@@ -86,7 +88,6 @@ export default function ProfilePage() {
     const [notifications, setNotifications] = useState({ email: true, telegram: false, marketing: true });
     // Save State
     const [isSaving, setIsSaving] = useState(false);
-    const [saveSuccess, setSaveSuccess] = useState(false);
     // Avatar Upload States
     const [avatarUrl, setAvatarUrl] = useState<string | null>(null);
     const fileInputRef = useRef<HTMLInputElement>(null);
@@ -133,9 +134,7 @@ export default function ProfilePage() {
         // Simulate API call
         setTimeout(() => {
             setIsSaving(false);
-            setSaveSuccess(true);
-            // Reset success message after 3 seconds
-            setTimeout(() => setSaveSuccess(false), 3000);
+            toast.success("Changes saved successfully!");
         }, 1500);
     };
     const container: Variants = {
@@ -241,6 +240,9 @@ export default function ProfilePage() {
       </div>
     </div>);
     return (<div className="space-y-8 pb-10">
+      {/* Toast Notification Container */}
+      <ToastContainer theme={isDark ? "dark" : "light"} position="bottom-right" autoClose={3000} />
+
       {/* Hero Section & Avatar */}
       <motion.div initial="hidden" animate="show" variants={container} className={`relative overflow-hidden rounded-[3rem] border shadow-lg flex flex-col md:flex-row md:items-center justify-between gap-8 ${isDark ? "border-white/5 bg-[#0a0a0a]" : "border-black/5 bg-white"}`}>
         <div className="absolute -top-40 -right-40 w-[600px] h-[600px] bg-mg-gold/10 blur-[100px] rounded-full pointer-events-none"/>
@@ -449,15 +451,8 @@ export default function ProfilePage() {
 
           {/* Footer Action Area */}
           <div className={`p-6 border-t flex items-center justify-between gap-4 ${isDark ? "bg-white/[0.02] border-white/10" : "bg-gray-50 border-black/10"}`}>
-            <AnimatePresence mode="popLayout">
-              {saveSuccess && (<motion.div initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }} className="flex items-center gap-2 text-green-500 text-sm font-bold">
-                  <CheckCircle2 size={18}/>
-                  {"Changes saved successfully!"}
-                </motion.div>)}
-            </AnimatePresence>
-            
             <div className="ml-auto">
-              <button type="submit" disabled={isSaving} className="flex items-center justify-center gap-2 min-w-[200px] rounded-xl bg-mg-gold px-8 py-4 text-sm font-black uppercase tracking-wider text-black transition-transform hover:scale-[1.02] disabled:opacity-50 disabled:hover:scale-100 disabled:cursor-not-allowed shadow-[0_0_15px_rgba(212,175,55,0.3)]">
+              <button type="submit" disabled={isSaving} className="flex items-center justify-center gap-2 min-w-[200px] rounded-xl bg-mg-gold px-5 py-4 text-sm font-black uppercase tracking-wider text-black transition-transform hover:scale-[1.02] disabled:opacity-50 disabled:hover:scale-100 disabled:cursor-not-allowed shadow-[0_0_15px_rgba(212,175,55,0.3)]">
                 {isSaving ? <Loader2 size={18} className="animate-spin text-black"/> : <Save size={18}/>}
                 {isSaving ? ("Saving...") : ("Save Changes")}
               </button>
@@ -507,4 +502,3 @@ export default function ProfilePage() {
       </div>
     </div>);
 }
-

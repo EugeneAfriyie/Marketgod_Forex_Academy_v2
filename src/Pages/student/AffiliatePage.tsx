@@ -376,7 +376,7 @@ export default function AffiliatePage() {
         <div className="flex items-center justify-between px-2">
           <div className="flex items-center gap-3">
             <Users className="text-mg-gold" size={24}/>
-            <h2 className={`text-2xl font-black ${isDark ? "text-white" : "text-gray-900"}`}>
+            <h2 className={`sm:text-2xl font-black ${isDark ? "text-white" : "text-gray-900"}`}>
               {"Recent Referrals"}
             </h2>
           </div>
