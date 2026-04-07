@@ -10,9 +10,10 @@ const stats = [
     { label: "Upcoming Booking", value: "1", note: "Thursday, 7:00 PM", icon: CalendarDays, link: "/dashboard/meetings" },
 ];
 const recentLessons = [
-    { title: "Gold Structure Mastery", progress: 72 },
-    { title: "Sniper Entry Framework", progress: 48 },
-    { title: "Mindset and Discipline", progress: 100 },
+    { title: "Gold Structure Mastery", course: "Advanced Mastery Course", progress: 72 },
+    { title: "Sniper Entry Framework", course: "Flipping Mastery Course", progress: 48 },
+    { title: "Mindset and Discipline", course: "Beginner Mastery Course", progress: 100 },
+   
 ];
 const quickActions = [
     { title: "My Courses", icon: BookOpen, to: "/dashboard/courses/enrolled" },
