@@ -102,10 +102,10 @@ export default function AppHeaderCarousel({
           {currentItem.type === "pageContext" && (
             <div>
               <p className="text-[11px] font-semibold uppercase tracking-[0.3em] text-mg-gold">{areaLabel}</p>
-              <h1 className={`mt-2 text-3xl font-black md:text-4xl ${!hasBgImage && !isDark ? "text-mg-light-text" : "text-white"}`}>
+              <h1 className={`mt-2 text-sm font-black md:text-4xl ${!hasBgImage && !isDark ? "text-mg-light-text" : "text-white"}`}>
                 {currentItem.title}
               </h1>
-              <p className={`mt-2 max-w-2xl text-sm leading-6 ${!hasBgImage && !isDark ? "text-mg-light-textSecondary/80" : "text-white/65"}`}>
+              <p className={`mt-2 max-w-2xl text-[.5rem] sm:text-sm leading-6 ${!hasBgImage && !isDark ? "text-mg-light-textSecondary/80" : "text-white/65"}`}>
                 {currentItem.description}
               </p>
             </div>
@@ -114,7 +114,7 @@ export default function AppHeaderCarousel({
           {currentItem.type === "quote" && (
             <div>
               <p className="text-[11px] font-semibold uppercase tracking-[0.3em] text-mg-gold">{dailyMotivationLabel}</p>
-              <p className={`mt-4 max-w-3xl text-lg italic md:text-xl ${!hasBgImage && !isDark ? "text-mg-light-textSecondary/80" : "text-white/60"}`}>
+              <p className={`mt-4 max-w-3xl text-sm italic md:text-xl ${!hasBgImage && !isDark ? "text-mg-light-textSecondary/80" : "text-white/60"}`}>
                 "{currentItem.text}"
               </p>
             </div>
@@ -130,7 +130,7 @@ export default function AppHeaderCarousel({
                 }`}
               >
                 <span className="h-3 w-3 animate-pulse rounded-full bg-current" />
-                <span>{currentItem.text}</span>
+                <span className="text-sm">{currentItem.text}</span>
                 <ArrowRight size={20} />
               </Link>
             </div>

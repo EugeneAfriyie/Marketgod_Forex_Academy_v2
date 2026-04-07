@@ -38,7 +38,10 @@ export default function AppSidebar({
   const isRootArea = (to: string) => to === "/dashboard" || to === "/admin" || to === "/premium";
 
   const navigate = useNavigate();
-  const handleLogout = () => navigate("/login");
+  const handleLogout = () => {
+    onCloseMobile();
+    navigate("/login");
+  };
   const location = useLocation();
 
   // Submenu state
@@ -96,7 +99,7 @@ export default function AppSidebar({
           isDark ? "border-white/10 bg-[#111111]/95 backdrop-blur-2xl" : "border-black/10 bg-white/95 backdrop-blur-2xl"
         } ${isMobileMenuOpen ? "translate-x-0" : "-translate-x-[150%]"} ${isSidebarCollapsed ? "xl:w-[92px]" : "xl:w-[280px]"}`}
       >
-        <Link to="/" className={`group relative z-40 mb-8 flex items-center ${isSidebarCollapsed ? "xl:justify-center" : "gap-3"}`}>
+      <Link to="/" onClick={onCloseMobile} className={`group relative z-40 mb-8 flex items-center ${isSidebarCollapsed ? "xl:justify-center" : "gap-3"}`}>
           <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-mg-gold text-black">
             <BookOpen size={16} />
           </span>
@@ -109,7 +112,7 @@ export default function AppSidebar({
         <button
           onClick={onCloseMobile}
           aria-label="Close sidebar"
-          className={`absolute top-6 right-5 xl:hidden rounded-full p-2 transition-colors ${
+          className={`absolute top-6 right-5 z-50 xl:hidden rounded-full p-2 transition-colors ${
             isDark ? "bg-white/5 text-white hover:bg-white/10" : "bg-black/5 text-mg-light-text hover:bg-black/10"
           }`}
         >
@@ -143,6 +146,7 @@ export default function AppSidebar({
                   <NavLink
                     to={item.to}
                     end={isRootArea(item.to)}
+                    onClick={onCloseMobile}
                     className={({ isActive }) =>
                       `group relative flex items-center ${isSidebarCollapsed ? "xl:justify-center" : "justify-between"} gap-3.5 rounded-xl px-4 py-3 text-sm font-medium transition-all duration-500 ease-in-out ${
                         isActive
@@ -206,6 +210,7 @@ export default function AppSidebar({
                             key={child.to}
                             to={child.to}
                             end={isRootArea(child.to)}
+                            onClick={onCloseMobile}
                             className={({ isActive }) =>
                               `relative block rounded-lg px-3 py-2 text-xs font-medium transition-colors ${
                                 isActive
@@ -232,7 +237,7 @@ export default function AppSidebar({
               isDark ? "bg-black/20" : "bg-black/5" // Note: group class is not needed here for hover
             }`}
           >
-            <Link to={profilePath} className="group relative flex flex-1 items-center gap-3 min-w-0 rounded-lg focus:outline-none focus-visible:ring-2 focus-visible:ring-mg-gold">
+          <Link to={profilePath} onClick={onCloseMobile} className="group relative flex flex-1 items-center gap-3 min-w-0 rounded-lg focus:outline-none focus-visible:ring-2 focus-visible:ring-mg-gold">
               <img src={user.avatar} alt="User Avatar" className="h-9 w-9 shrink-0 rounded-full object-cover" />
               <div className={`min-w-0 ${isSidebarCollapsed ? "xl:hidden" : "block"}`}>
                 <p className="truncate text-sm font-semibold transition-colors group-hover:text-mg-gold">{user.name}</p>
@@ -283,6 +288,3 @@ export default function AppSidebar({
     </>
   );
 }
-
-
-
