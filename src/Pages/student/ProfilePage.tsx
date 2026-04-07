@@ -1,6 +1,6 @@
 import { useState, useRef } from "react";
 import { motion, AnimatePresence, type Variants, useMotionValue, useSpring, useTransform, useMotionTemplate } from "framer-motion";
-import { User, Shield, Bell, Camera, Save, Loader2, CheckCircle2, Mail, Phone, Lock, MapPin, CreditCard, ShieldCheck, Send, Wifi, QrCode, BadgeCheck, X } from "lucide-react";
+import { User, Shield, Bell, Camera, Save, Loader2, Mail, Phone, Lock, MapPin, CreditCard, ShieldCheck, Send, Wifi, QrCode, BadgeCheck, X } from "lucide-react";
 import { useTheme } from "../../context/ThemeContext";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";

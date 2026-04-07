@@ -52,7 +52,7 @@ interface AppTopbarProps {
 
 export default function AppTopbar({
   areaLabel,
-  menuLabel,
+  // menuLabel,
   carouselItems,
   dailyMotivationLabel,
   announcementLabel,
