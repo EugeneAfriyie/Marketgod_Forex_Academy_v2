@@ -103,7 +103,7 @@ export default function MentorshipPage() {
     // ENROLLED VIEW (ACTIVE MENTORSHIP HUB)
     // ==========================================
     if (isEnrolled) {
-        return (<div className="space-y-8 pb-10">
+        return (<div key="enrolled-view" className="space-y-8 pb-10">
         {/* Active Hero Section */}
         <motion.div initial="hidden" animate="visible" variants={sectionVariant} className={`relative overflow-hidden rounded-[3rem] border shadow-2xl ${isDark ? "border-mg-gold/30 bg-[#0a0a0a]" : "border-mg-gold/40 bg-white"}`}>
           <div className="absolute top-0 right-0 p-10 opacity-5 pointer-events-none"><Crown size={250} className="text-mg-gold"/></div>
@@ -144,7 +144,7 @@ export default function MentorshipPage() {
         </motion.div>
 
         {/* Mentorship Hub Action Grid */}
-        <motion.div initial="hidden" whileInView="visible" viewport={{ once: true, amount: 0.2 }} variants={gridContainerVariant} className="grid gap-6 md:grid-cols-2 lg:grid-cols-2">
+        <motion.div initial="hidden" animate="visible" variants={gridContainerVariant} className="grid gap-6 md:grid-cols-2 lg:grid-cols-2">
           
           {/* VIP Community Card */}
           <motion.div variants={gridItemVariant} className={`group relative overflow-hidden rounded-[2rem] border p-8 transition-all hover:-translate-y-1 hover:shadow-xl ${isDark ? "border-white/10 bg-black/20 hover:border-mg-gold/50" : "border-black/10 bg-[#faf7f0] hover:border-mg-gold/50"}`}>
@@ -207,7 +207,7 @@ export default function MentorshipPage() {
     // ==========================================
     // UNENROLLED VIEW (SALES LANDING PAGE)
     // ==========================================
-    return (<div className="space-y-8 pb-10">
+    return (<div key="sales-view" className="space-y-8 pb-10">
       {/* Hero Section */}
       <motion.div initial="hidden" animate="visible" variants={sectionVariant} className={`relative overflow-hidden rounded-[3rem] border shadow-2xl ${isDark ? "border-white/5 bg-[#0a0a0a]" : "border-mg-gold/20 bg-white"}`}>
         {/* Premium Ambient Glows */}
@@ -235,7 +235,7 @@ export default function MentorshipPage() {
       </motion.div>
 
       {/* Trust & Social Proof Bar */}
-      <motion.div initial="hidden" whileInView="visible" viewport={{ once: true, amount: 0.5 }} variants={gridContainerVariant} className={`grid grid-cols-1 md:grid-cols-3 gap-6 rounded-[2rem] border p-8 shadow-lg backdrop-blur-xl ${isDark ? "border-white/5 bg-white/[0.02]" : "border-black/5 bg-[#faf7f0]/50"}`}>
+      <motion.div initial="hidden" animate="visible" variants={gridContainerVariant} className={`grid grid-cols-1 md:grid-cols-3 gap-6 rounded-[2rem] border p-8 shadow-lg backdrop-blur-xl ${isDark ? "border-white/5 bg-white/[0.02]" : "border-black/5 bg-[#faf7f0]/50"}`}>
         {stats.map((stat, idx) => {
             const Icon = stat.icon;
             return (<motion.div variants={gridItemVariant} key={idx} className={`flex flex-col items-center justify-center text-center ${idx !== stats.length - 1 ? (isDark ? "md:border-r border-white/10" : "md:border-r border-black/10") : ""}`}>
@@ -254,7 +254,7 @@ export default function MentorshipPage() {
 
       {/* Features Grid */}
       <div className="pt-8">
-        <motion.div initial="hidden" whileInView="visible" viewport={{ once: true, amount: 0.8 }} variants={sectionVariant} className="mb-8 text-center">
+        <motion.div initial="hidden" animate="visible" variants={sectionVariant} className="mb-8 text-center">
           <h2 className={`text-3xl md:text-4xl font-black ${isDark ? "text-white" : "text-gray-900"}`}>
             {"The Ultimate Arsenal"}
           </h2>
@@ -263,7 +263,7 @@ export default function MentorshipPage() {
           </p>
         </motion.div>
         
-        <motion.div initial="hidden" whileInView="visible" viewport={{ once: true, amount: 0.1 }} variants={gridContainerVariant} className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+        <motion.div initial="hidden" animate="visible" variants={gridContainerVariant} className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
           {features.map((feature, idx) => {
             const Icon = feature.icon;
             return (<motion.div variants={gridItemVariant} key={idx} className={`group relative overflow-hidden rounded-[2rem] border p-8 transition-all duration-500 hover:-translate-y-2 hover:shadow-[0_20px_40px_-15px_rgba(212,175,55,0.15)] ${isDark ? "border-white/5 bg-white/[0.01] hover:bg-white/[0.03] hover:border-mg-gold/30 backdrop-blur-md" : "border-black/5 bg-[#faf7f0] hover:bg-white hover:border-mg-gold/30"}`}>
@@ -279,7 +279,7 @@ export default function MentorshipPage() {
 
       {/* Benefits Section */}
       <div className="pt-8">
-        <motion.div initial="hidden" whileInView="visible" viewport={{ once: true, amount: 0.3 }} variants={sectionVariant} className={`relative overflow-hidden rounded-[3rem] border shadow-2xl lg:grid lg:grid-cols-2 ${isDark ? "border-white/5 bg-[#0a0a0a]" : "border-black/5 bg-white"}`}>
+        <motion.div initial="hidden" animate="visible" variants={sectionVariant} className={`relative overflow-hidden rounded-[3rem] border shadow-2xl lg:grid lg:grid-cols-2 ${isDark ? "border-white/5 bg-[#0a0a0a]" : "border-black/5 bg-white"}`}>
            {/* Subtly glowing badge */}
            <div className="absolute top-0 right-0 p-10 opacity-10 pointer-events-none"><Crown size={200} className="text-mg-gold"/></div>
            
@@ -304,7 +304,7 @@ export default function MentorshipPage() {
       </div>
 
       {/* Final CTA */}
-      <motion.div initial="hidden" whileInView="visible" viewport={{ once: true, amount: 0.5 }} variants={sectionVariant} className="mt-8 relative overflow-hidden rounded-[3rem] p-10 md:p-16 text-center shadow-2xl border border-mg-gold/30">
+      <motion.div initial="hidden" animate="visible" variants={sectionVariant} className="mt-8 relative overflow-hidden rounded-[3rem] p-10 md:p-16 text-center shadow-2xl border border-mg-gold/30">
         <div className="absolute inset-0 bg-mg-gold/10 backdrop-blur-xl"/>
         <div className="relative z-10">
           <h2 className={`text-4xl md:text-5xl lg:text-6xl font-black mb-6 tracking-tight ${isDark ? "text-white" : "text-gray-900"}`}>
@@ -324,7 +324,7 @@ export default function MentorshipPage() {
       </motion.div>
 
       {/* Support Section */}
-      <motion.div initial="hidden" whileInView="visible" viewport={{ once: true, amount: 0.5 }} variants={sectionVariant} className={`overflow-hidden rounded-[3rem] border ${isDark ? "border-white/5 bg-[#111111]" : "border-black/5 bg-[#faf7f0]"}`}>
+      <motion.div initial="hidden" animate="visible" variants={sectionVariant} className={`overflow-hidden rounded-[3rem] border ${isDark ? "border-white/5 bg-[#111111]" : "border-black/5 bg-[#faf7f0]"}`}>
         <div className="p-8 md:p-12 flex flex-col md:flex-row items-center justify-between gap-6">
           <div className="flex flex-col md:flex-row items-center text-center md:text-left gap-6">
             <div className="h-16 w-16 shrink-0 rounded-full bg-mg-gold/10 text-mg-gold flex items-center justify-center">
@@ -346,7 +346,7 @@ export default function MentorshipPage() {
       </motion.div>
 
       {/* Page-Level Risk Disclaimer */}
-      <motion.div initial="hidden" whileInView="visible" viewport={{ once: true, amount: 0.5 }} variants={sectionVariant} className={`mt-16 pt-12 border-t ${isDark ? "border-white/10" : "border-black/10"}`}>
+      <motion.div initial="hidden" animate="visible" variants={sectionVariant} className={`mt-16 pt-12 border-t ${isDark ? "border-white/10" : "border-black/10"}`}>
         <div className="max-w-4xl mx-auto">
           <h3 className={`flex items-center gap-3 text-xl font-black mb-4 ${isDark ? "text-white/40" : "text-gray-400"}`}>
             <AlertTriangle size={24}/>

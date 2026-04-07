@@ -75,7 +75,7 @@ const MarketGodCoin = () => {
         <div className="absolute inset-0 rounded-full border-[2px] border-yellow-200 flex items-center justify-center shadow-[0_0_25px_rgba(212,175,55,0.6)] bg-gradient-to-br from-yellow-600 via-mg-gold to-yellow-400 [backface-visibility:hidden]" style={{ transform: "rotateY(180deg) translateZ(4px)" }}>
           <div className="relative w-[85%] h-[85%] rounded-full border-[2px] border-yellow-300/60 flex flex-col items-center justify-center bg-gradient-to-tr from-yellow-500 to-mg-gold shadow-inner overflow-hidden">
             <div className="absolute inset-0 border border-dashed border-yellow-700/40 rounded-full m-1 animate-[spin_10s_linear_infinite]"/>
-            <span className="font-black text-yellow-900/90 tracking-tighter text-sm sm:text-lg drop-shadow-md">MGP</span>
+            <span className="font-black text-yellow-900/90 tracking-tighter text-sm sm:text-lg drop-shadow-md">MGC</span>
             <span className="text-[5px] sm:text-[6px] font-black text-yellow-800/80 tracking-[0.2em] mt-0.5">MARKETGOD</span>
           </div>
         </div>
@@ -147,7 +147,7 @@ export default function GiveawaysPage() {
             <span className="text-mg-gold">{"Hub."}</span>
           </h1>
           <p className={`max-w-2xl text-lg font-medium ${isDark ? "text-white/70" : "text-gray-600"}`}>
-            {"Earn points by completing tasks, then spend them to claim exclusive rewards or enter high-stakes giveaways."}
+            {"Earn coins by completing tasks, then spend them to claim exclusive rewards or enter high-stakes giveaways."}
           </p>
         </div>
         
@@ -161,7 +161,7 @@ export default function GiveawaysPage() {
             <span className="text-5xl font-black text-mg-gold drop-shadow-[0_0_15px_rgba(212,175,55,0.4)]">{userPoints}</span>
           </motion.div>
           <p className={`text-xs mt-4 font-bold uppercase tracking-widest ${isDark ? "text-white/50" : "text-gray-500"}`}>
-            {"MarketGod Points (MGP)"}
+            {"MarketGod Coins (MGC)"}
           </p>
         </div>
       </motion.div>
@@ -195,7 +195,7 @@ export default function GiveawaysPage() {
                 <div>
                   <div className="flex items-center gap-3 mb-2">
                     <span className="flex items-center gap-1.5 text-xs font-black uppercase tracking-wider text-mg-gold bg-mg-gold/10 px-2 py-1 rounded-md">
-                      <Coins size={14}/> +{task.points} MGP
+                      <Coins size={14}/> +{task.points} MGC
                     </span>
                     {task.status === "pending" && (<span className="flex items-center gap-1.5 text-xs font-bold uppercase tracking-wider text-blue-400 bg-blue-500/10 px-2 py-1 rounded-md">
                         <Clock size={14}/> {"Under Review"}
@@ -227,7 +227,7 @@ export default function GiveawaysPage() {
                 <div>
                   <div className="flex items-center gap-3 mb-2">
                     <span className={`flex items-center gap-1.5 text-xs font-black uppercase tracking-wider px-2 py-1 rounded-md ${reward.claimed ? "text-green-500 bg-green-500/10" : "text-gray-400 bg-gray-500/10"}`}>
-                      <Coins size={14}/> {reward.cost} MGP
+                      <Coins size={14}/> {reward.cost} MGC
                     </span>
                   </div>
                   <h3 className={`text-lg font-bold ${isDark ? "text-white" : "text-gray-900"}`}>{reward.title['en']}</h3>
@@ -237,7 +237,7 @@ export default function GiveawaysPage() {
                   {reward.claimed ? (<button disabled className={`w-full sm:w-auto flex items-center justify-center min-w-[140px] gap-2 rounded-xl px-6 py-3.5 text-sm font-bold uppercase tracking-wider text-green-500 bg-green-500/10 border border-green-500/20`}>
                       <CheckCircle2 size={18}/> {"Claimed"}
                     </button>) : (<button onClick={() => handleClaimReward(reward.id, reward.cost)} disabled={actionLoading === reward.id || userPoints < reward.cost} className={`flex items-center justify-center min-w-[140px] rounded-xl px-6 py-3.5 text-sm font-black uppercase tracking-wider transition-transform hover:scale-[1.02] disabled:hover:scale-100 disabled:opacity-50 disabled:cursor-not-allowed ${userPoints < reward.cost ? (isDark ? "bg-white/10 text-white/50" : "bg-black/10 text-black/50") : "bg-mg-gold text-black shadow-[0_0_15px_rgba(212,175,55,0.3)]"}`}>
-                      {actionLoading === reward.id ? <Loader2 size={18} className="animate-spin text-black"/> : userPoints < reward.cost ? ("Not Enough Pts") : ("Claim Reward")}
+                      {actionLoading === reward.id ? <Loader2 size={18} className="animate-spin text-black"/> : userPoints < reward.cost ? ("Not Enough Coins") : ("Claim Reward")}
                     </button>)}
                 </div>
               </motion.div>))}
@@ -250,7 +250,7 @@ export default function GiveawaysPage() {
                 <div className="relative z-10 flex-1">
                   <div className="flex items-center gap-3 mb-3">
                     <span className={`flex items-center gap-1.5 text-xs font-black uppercase tracking-wider px-2 py-1 rounded-md ${challenge.entered ? "text-green-500 bg-green-500/10" : "text-gray-400 bg-gray-500/10"}`}>
-                      <Coins size={14}/> {challenge.cost} MGP {"Entry"}
+                      <Coins size={14}/> {challenge.cost} MGC {"Entry"}
                     </span>
                     <span className={`flex items-center gap-1.5 text-xs font-bold uppercase tracking-wider ${isDark ? "text-white/50" : "text-gray-500"}`}>
                       <CalendarDays size={14} className="text-mg-gold"/> {challenge.startDate} — {challenge.endDate}
@@ -276,7 +276,7 @@ export default function GiveawaysPage() {
                         {"Successfully Entered"}
                       </span>
                     </div>) : (<button onClick={() => handleEnterChallenge(challenge.id, challenge.cost)} disabled={actionLoading === challenge.id || userPoints < challenge.cost} className={`flex items-center justify-center w-full sm:w-[160px] py-4 rounded-xl text-sm font-black uppercase tracking-wider transition-transform hover:scale-[1.02] disabled:hover:scale-100 disabled:opacity-50 disabled:cursor-not-allowed ${userPoints < challenge.cost ? (isDark ? "bg-white/10 text-white/50" : "bg-black/10 text-black/50") : "bg-mg-gold text-black shadow-[0_0_15px_rgba(212,175,55,0.3)]"}`}>
-                      {actionLoading === challenge.id ? <Loader2 size={18} className="animate-spin text-black"/> : userPoints < challenge.cost ? ("Not Enough Pts") : ("Enter Now")}
+                      {actionLoading === challenge.id ? <Loader2 size={18} className="animate-spin text-black"/> : userPoints < challenge.cost ? ("Not Enough Coins") : ("Enter Now")}
                     </button>)}
                 </div>
               </motion.div>))}
@@ -349,4 +349,3 @@ export default function GiveawaysPage() {
       </AnimatePresence>
     </div>);
 }
-

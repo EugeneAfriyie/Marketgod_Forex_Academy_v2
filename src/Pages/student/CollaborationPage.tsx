@@ -95,7 +95,7 @@ const [matchingState, setMatchingState] = useState<'idle' | 'searching' | 'found
     // REGULAR USER VIEW (LOCKED TEASER PAGE)
     // ==========================================
     if (!isPremium) {
-        return (<div className="space-y-8 pb-10">
+        return (<div key="locked-view" className="space-y-8 pb-10">
         {/* Locked Hero Section */}
         <motion.div initial="hidden" animate="show" variants={container} className={`relative overflow-hidden rounded-[3rem] border shadow-2xl ${isDark ? "border-mg-gold/30 bg-[#0a0a0a]" : "border-mg-gold/40 bg-white"}`}>
           <div className="absolute top-0 right-0 p-10 opacity-5 pointer-events-none"><Crown size={250} className="text-mg-gold"/></div>
@@ -123,7 +123,7 @@ const [matchingState, setMatchingState] = useState<'idle' | 'searching' | 'found
         </motion.div>
 
         {/* Preview of Locked Features */}
-        <motion.div initial="hidden" whileInView="show" viewport={{ once: true, amount: 0.1 }} variants={container} className="grid gap-6 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-4">
+        <motion.div initial="hidden" animate="show" variants={container} className="grid gap-6 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-4">
           {spaces.map((space, idx) => {
                 const Icon = space.icon;
                 return (<motion.article variants={item} key={idx} className={`relative overflow-hidden rounded-[2rem] border p-8 flex flex-col transition-all duration-300 opacity-75 grayscale-[30%] ${isDark ? "border-white/5 bg-[#111111]" : "border-black/5 bg-[#faf7f0]"}`}>
@@ -158,7 +158,7 @@ const [matchingState, setMatchingState] = useState<'idle' | 'searching' | 'found
     // ==========================================
     // PREMIUM VIEW (ACTIVE COLLABORATION HUB)
     // ==========================================
-    return (<div className="space-y-8 pb-10">
+    return (<div key="active-view" className="space-y-8 pb-10">
       {/* Hero Section */}
       <motion.div initial="hidden" animate="show" variants={container} className={`relative overflow-hidden rounded-[3rem] border shadow-lg ${isDark ? "border-white/5 bg-[#0a0a0a]" : "border-black/5 bg-white"}`}>
         <div className="absolute -top-40 -right-40 w-[600px] h-[600px] bg-mg-gold/10 blur-[100px] rounded-full pointer-events-none"/>
@@ -354,4 +354,3 @@ const [matchingState, setMatchingState] = useState<'idle' | 'searching' | 'found
       </div>
     </div>);
 }
-

@@ -114,7 +114,7 @@ export default function SignalsPage() {
     // SUBSCRIBED VIEW (ACTIVE DASHBOARD)
     // ==========================================
     if (isSubscribed) {
-        return (<div className="space-y-8 pb-10">
+        return (<div key="subscribed-view" className="space-y-8 pb-10">
         <motion.div initial="hidden" animate="visible" variants={sectionVariant} className={`relative overflow-hidden rounded-[3rem] border shadow-2xl ${isDark ? "border-mg-gold/30 bg-[#0a0a0a]" : "border-mg-gold/40 bg-white"}`}>
           <div className="absolute top-0 right-0 p-10 opacity-5 pointer-events-none"><Target size={250} className="text-mg-gold"/></div>
           <div className="absolute inset-0 bg-gradient-to-br from-mg-gold/10 via-transparent to-transparent pointer-events-none"/>
@@ -187,7 +187,7 @@ export default function SignalsPage() {
     // ==========================================
     // UNENROLLED VIEW (SALES LANDING PAGE)
     // ==========================================
-    return (<div className="space-y-16 pb-16">
+    return (<div key="sales-view" className="space-y-16 pb-16">
       {/* Hero Section */}
       <motion.div initial="hidden" animate="visible" variants={sectionVariant} className={`relative overflow-hidden rounded-[3rem] border shadow-2xl ${isDark ? "border-white/5 bg-[#0a0a0a]" : "border-black/5 bg-white"}`}>
         <div className="absolute -top-40 left-1/2 -translate-x-1/2 w-[800px] h-[600px] bg-mg-gold/10 blur-[120px] rounded-full pointer-events-none"/>
@@ -204,7 +204,7 @@ export default function SignalsPage() {
       </motion.div>
 
       {/* The Problem / General Intro */}
-      <motion.div initial="hidden" whileInView="visible" viewport={{ once: true, amount: 0.3 }} variants={sectionVariant} className={`overflow-hidden rounded-[3rem] border ${isDark ? "border-white/5 bg-[#111111]" : "border-black/5 bg-[#111111]"}`}>
+      <motion.div initial="hidden" animate="visible" variants={sectionVariant} className={`overflow-hidden rounded-[3rem] border ${isDark ? "border-white/5 bg-[#111111]" : "border-black/5 bg-[#111111]"}`}>
         <div className="p-10 md:p-16 lg:p-20 text-center">
           <h2 className="text-3xl md:text-4xl font-black mb-6 text-white tracking-tight">
             {"The bridge between theory and profit."}
@@ -217,7 +217,7 @@ export default function SignalsPage() {
 
       {/* The MarketGod Difference */}
       <div className="grid lg:grid-cols-2 gap-8 items-center">
-        <motion.div initial="hidden" whileInView="visible" viewport={{ once: true }} variants={sectionVariant} className="order-2 lg:order-1">
+        <motion.div initial="hidden" animate="visible" variants={sectionVariant} className="order-2 lg:order-1">
           <h2 className={`text-3xl md:text-4xl font-black mb-6 ${isDark ? "text-white" : "text-gray-900"}`}>
             {"Why MarketGod Signals?"}
           </h2>
@@ -237,7 +237,7 @@ export default function SignalsPage() {
           </div>
         </motion.div>
         
-        <motion.div initial="hidden" whileInView="visible" viewport={{ once: true }} variants={sectionVariant} className="order-1 lg:order-2 relative aspect-square md:aspect-video lg:aspect-square overflow-hidden rounded-[3rem] border border-mg-gold/20 bg-mg-gold/5 flex items-center justify-center">
+        <motion.div initial="hidden" animate="visible" variants={sectionVariant} className="order-1 lg:order-2 relative aspect-square md:aspect-video lg:aspect-square overflow-hidden rounded-[3rem] border border-mg-gold/20 bg-mg-gold/5 flex items-center justify-center">
           {/* Abstract Phone/App Graphic representation */}
           <div className="relative w-48 h-96 rounded-[3rem] border-8 border-gray-900 bg-black shadow-2xl flex flex-col p-4">
             <div className="w-1/2 h-1 bg-gray-800 mx-auto rounded-full mb-6"></div>
@@ -252,7 +252,7 @@ export default function SignalsPage() {
       </div>
 
       {/* Features Grid */}
-      <motion.div initial="hidden" whileInView="visible" viewport={{ once: true, amount: 0.1 }} variants={gridContainerVariant} className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
+      <motion.div initial="hidden" animate="visible" variants={gridContainerVariant} className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
         {features.map((feature, idx) => {
             const Icon = feature.icon;
             return (<motion.div variants={gridItemVariant} key={idx} className={`group relative overflow-hidden rounded-[2rem] border p-8 transition-all duration-500 hover:-translate-y-2 hover:shadow-[0_20px_40px_-15px_rgba(212,175,55,0.15)] ${isDark ? "border-white/5 bg-white/[0.01] hover:bg-white/[0.03] hover:border-mg-gold/30 backdrop-blur-md" : "border-black/5 bg-[#faf7f0] hover:bg-white hover:border-mg-gold/30"}`}>
@@ -266,7 +266,7 @@ export default function SignalsPage() {
       </motion.div>
 
       {/* Offerings Grid */}
-      <motion.div initial="hidden" whileInView="visible" viewport={{ once: true, amount: 0.2 }} variants={sectionVariant}>
+      <motion.div initial="hidden" animate="visible" variants={sectionVariant}>
         <div className="text-center mb-12">
           <h2 className={`text-3xl md:text-4xl font-black ${isDark ? "text-white" : "text-gray-900"}`}>
             {"Choose Your Edge"}
@@ -276,7 +276,7 @@ export default function SignalsPage() {
           </p>
         </div>
 
-        <motion.div initial="hidden" whileInView="visible" viewport={{ once: true, amount: 0.1 }} variants={gridContainerVariant} className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
+        <motion.div initial="hidden" animate="visible" variants={gridContainerVariant} className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
           {offerings.map((offer) => {
             const Icon = offer.icon;
             return (<motion.div variants={gridItemVariant} key={offer.id} className={`flex flex-col rounded-[2.5rem] border p-8 transition-all duration-300 ${isDark ? "border-white/5 bg-[#111111]" : "border-black/5 bg-white"}`}>
@@ -315,7 +315,7 @@ export default function SignalsPage() {
       </motion.div>
 
       {/* Support Section */}
-      <motion.div initial="hidden" whileInView="visible" viewport={{ once: true, amount: 0.5 }} variants={sectionVariant} className={`overflow-hidden rounded-[3rem] border ${isDark ? "border-white/5 bg-[#111111]" : "border-black/5 bg-[#faf7f0]"}`}>
+      <motion.div initial="hidden" animate="visible" variants={sectionVariant} className={`overflow-hidden rounded-[3rem] border ${isDark ? "border-white/5 bg-[#111111]" : "border-black/5 bg-[#faf7f0]"}`}>
         <div className="p-8 md:p-12 flex flex-col md:flex-row items-center justify-between gap-6">
           <div className="flex flex-col md:flex-row items-center text-center md:text-left gap-6">
             <div className="h-16 w-16 shrink-0 rounded-full bg-mg-gold/10 text-mg-gold flex items-center justify-center">
@@ -337,7 +337,7 @@ export default function SignalsPage() {
       </motion.div>
 
       {/* Page-Level Risk Disclaimer */}
-      <motion.div initial="hidden" whileInView="visible" viewport={{ once: true, amount: 0.5 }} variants={sectionVariant} className={`mt-16 pt-12 border-t ${isDark ? "border-white/10" : "border-black/10"}`}>
+      <motion.div initial="hidden" animate="visible" variants={sectionVariant} className={`mt-16 pt-12 border-t ${isDark ? "border-white/10" : "border-black/10"}`}>
         <div className="max-w-4xl mx-auto">
           <h3 className={`flex items-center gap-3 text-xl font-black mb-4 ${isDark ? "text-white/40" : "text-gray-400"}`}>
             <AlertTriangle size={24}/>

@@ -27,7 +27,7 @@ const MiniMarketGodCoin = () => {
         {/* Back of Coin */}
         <div className="absolute inset-0 rounded-full border-[1px] border-yellow-200 flex items-center justify-center shadow-[0_0_10px_rgba(212,175,55,0.6)] bg-gradient-to-br from-yellow-600 via-mg-gold to-yellow-400 [backface-visibility:hidden]" style={{ transform: "rotateY(180deg) translateZ(1.5px)" }}>
           <div className="relative w-[85%] h-[85%] rounded-full border-[1px] border-yellow-300/60 flex flex-col items-center justify-center bg-gradient-to-tr from-yellow-500 to-mg-gold shadow-inner overflow-hidden">
-            <span className="font-black text-yellow-900/90 tracking-tighter text-[7px] drop-shadow-md">MGP</span>
+            <span className="font-black text-yellow-900/90 tracking-tighter text-[7px] drop-shadow-md">MGC</span>
           </div>
         </div>
       </motion.div>
@@ -107,9 +107,9 @@ export default function AppTopbar({
             <div className="pointer-events-none absolute top-full right-0 z-[100] mt-2 w-64 opacity-0 transition-all duration-300 group-hover:translate-y-1 group-hover:opacity-100 group-hover:pointer-events-auto">
               <div className="ml-auto mr-12 h-0 w-0 border-b-[6px] border-x-[6px] border-b-white/10 border-x-transparent" />
               <div className="rounded-xl border border-white/10 bg-[#111111]/95 p-4 shadow-2xl backdrop-blur-xl">
-                <h4 className="mb-1.5 text-sm font-black text-mg-gold">MarketGod Points (MGP)</h4>
+                <h4 className="mb-1.5 text-sm font-black text-mg-gold">MarketGod Coins (MGC)</h4>
                 <p className="text-xs font-medium leading-relaxed text-white/70">
-                  Earn MGP by completing tasks, finishing courses, and participating in the community. Spend them in the Rewards Hub to claim exclusive merch, 1-on-1 sessions, or funded account challenges!
+                  Earn MGC by completing tasks, finishing courses, and participating in the community. Spend them in the Rewards Hub to claim exclusive merch, 1-on-1 sessions, or funded account challenges!
                 </p>
                 <Link to="/dashboard/giveaways" className="mt-3 inline-block text-xs font-bold text-mg-gold hover:text-white transition-colors">
                   View Rewards Hub &rarr;

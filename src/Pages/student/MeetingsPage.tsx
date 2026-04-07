@@ -182,7 +182,7 @@ export default function MeetingsPage() {
     // REGULAR USER VIEW (LOCKED TEASER PAGE)
     // ==========================================
     if (!isPremium) {
-        return (<div className="space-y-8 pb-10">
+        return (<div key="locked-view" className="space-y-8 pb-10">
         {/* Locked Hero Section */}
         <motion.div initial="hidden" animate="show" variants={container} className={`relative overflow-hidden rounded-[3rem] border shadow-2xl ${isDark ? "border-mg-gold/30 bg-[#0a0a0a]" : "border-mg-gold/40 bg-white"}`}>
           <div className="absolute top-0 left-10 p-10 opacity-5 pointer-events-none"><User size={250} className="text-mg-gold"/></div>
@@ -227,7 +227,7 @@ export default function MeetingsPage() {
         </div>
       </div>);
     }
-    return (<div className="space-y-8 pb-10">
+    return (<div key="active-view" className="space-y-8 pb-10">
       {/* Hero Section */}
       <motion.div initial="hidden" animate="show" variants={container} className={`relative overflow-hidden rounded-[3rem] border shadow-lg ${isDark ? "border-white/5 bg-[#0a0a0a]" : "border-black/5 bg-white"}`}>
         <div className="absolute -top-40 -right-40 w-[600px] h-[600px] bg-mg-gold/10 blur-[100px] rounded-full pointer-events-none"/>
@@ -577,4 +577,3 @@ export default function MeetingsPage() {
       </div>
     </div>);
 }
-

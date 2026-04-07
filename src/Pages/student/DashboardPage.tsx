@@ -4,7 +4,6 @@ import { motion, type Variants } from "framer-motion";
 import { useTheme } from "../../context/ThemeContext";
 import StudentSectionCard from "../../Components/student/StudentSectionCard";
 const stats = [
-    { label: "Coin Balance", value: "1,250", note: "MarketGod Points", icon: Coins, link: "/dashboard/giveaways" },
     { label: "Coin Balance", value: "1,250", note: "MarketGod Coins", icon: Coins, link: "/dashboard/giveaways" },
     { label: "Active Programs", value: "2", note: "Mentorship + VIP", icon: CreditCard, link: "/dashboard/subscriptions" },
     { label: "Courses Available", value: "6", note: "Protected lessons", icon: BookOpen, link: "/dashboard/courses" },
