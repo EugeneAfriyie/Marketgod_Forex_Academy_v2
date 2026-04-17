@@ -8,10 +8,10 @@ import "react-toastify/dist/ReactToastify.css";
 const mockUser = {
     id: "MG-8924",
     role: "Student",
-    name: "Kwame Asare",
+    name: "Eugene Afriyie",
     email: "kwame.trades@example.com",
     phone: "+233 50 123 4567",
-    telegram: "@kwametrading",
+    telegram: "@eugenetrading",
     country: "Ghana",
     bio: "Focused on Gold and EU. Trading the London breakout and New York overlap.",
     rank: "Elite Sniper",
